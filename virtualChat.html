@@ -1,557 +1,439 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PharmaSales Pro - Virtual Chat</title>
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-    />
-    <link rel="stylesheet" href="css/menu.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Raleway:wght@600&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css"
-    />
-    <!-- Iconos de FontAwesome  -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
-    />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/petite-vue"></script>
-    <script src="https://cdn.jsdelivr.net/npm/livekit-client@2.11.3/dist/livekit-client.umd.min.js"></script>
-    <link rel="stylesheet" href="css/style.css" />
-  </head>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>PharmaSales Pro - Virtual Chat</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="css/menu.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Raleway:wght@600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/petite-vue"></script>
+  <script src="https://cdn.jsdelivr.net/npm/livekit-client@2.11.3/dist/livekit-client.umd.min.js"></script>
+
+  <link rel="stylesheet" href="css/style.css" />
+
   <style>
     body {
       font-family: "Roboto", "Open Sans", sans-serif;
     }
   </style>
-  <body
-    class="bg-gray-100 text-gray-800 min-h-screen flex flex-col items-center sm:items-stretch text-center"
-  >
-    <!--Movil-->
-    <!-- Meter TODO lo que use 'open' en el mismo v-scope -->
-    <div
-      v-scope="{ open:false }"
-      class="w-full flex flex-col items-center block md:hidden"
-    >
-      <!-- Header móvil -->
-      <div class="block md:hidden" v-scope="HeaderMv('Roleplay')"></div>
+</head>
 
-      <section class="mt-[15%] mb-[20%]">
-        <div class="flex items-center justify-center gap-6 mt-4">
-          <!-- Botón de Objecciones -->
-          <button
-            @click="open = true"
-            id="btnObejetionsMv"
-            class="bg-amber-500 text-white font-bold py-2 px-6 rounded-xl hover:bg-amber-600 active:scale-95 transition-all flex items-center gap-2"
-          >
-            <i class="bi bi-list"></i>
-          </button>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col items-center sm:items-stretch text-center">
 
-          <!-- Botón de Iniciar -->
-          <div v-scope="{ estado: 'iniciar' }" class="flex justify-center">
-            <button
-              id="iniciarMv"
-              class="btn-estado flex items-center gap-2 font-semibold py-2 px-6 rounded-xl transition-all duration-200 bg-blue-600 text-white hover:bg-blue-700 active:scale-95 cursor-pointer"
-            >
-              <i class="bi bi-play-fill"></i>
-            </button>
-          </div>
+  <!-- ============================================ -->
+  <!-- VERSION WEB (Desktop) - ORIGINAL SIN CAMBIOS -->
+  <!-- ============================================ -->
+  <section class="mt-[1%] mb-5 px-1 flex-grow hidden md:block">
+    <!-- Sidebar (dinámico) -->
+    <div class="hidden md:block" v-scope="Header()"></div>
 
-          <!-- Contador y progreso -->
-          <div
-            id="contar"
-            class="flex items-center gap-3 bg-gray-800/40 px-4 py-2 mb-2 rounded-lg text-white"
-          >
-            <!-- Cronómetro -->
-            <div class="flex items-baseline gap-1">
-              <span id="mfTimer" class="text-lg font-extrabold mfTimer"
-                >00:00</span
-              >
-              <span class="text-[10px] text-white/80">min:seg</span>
-            </div>
-
-            <!-- Separador -->
-            <span class="h-6 w-px bg-white/30"></span>
-
-            <!-- Progreso -->
-            <div class="flex items-center gap-2">
-              <span class="text-sm font-semibold">
-                <span  class="mfProgAct">0</span>/<span
-                  
-                  >4</span
-                >
-              </span>
-            </div>
-          </div>
+    <!-- Contenido principal (empujado por el sidebar) -->
+    <main id="content" class="hidden md:block transition-all duration-300 ml-[80px]">
+      <section class="pb-5 pt-1 mb-5 bg-white rounded-lg shadow-md shadow-black/85 shadow-[0_3px_2px_rgba(0,0,0,0.85)]">
+        <!-- Título -->
+        <div class="p-5 bg-blue-950 rounded-t-lg w-[100%]">
+          <h1 class="text-4xl font-extrabold text-white mb-4">
+            PharmaSales Pro
+          </h1>
         </div>
-        <div
-          class="w-[45vh] max-w-3xl mx-auto aspect-video bg-black rounded-2xl overflow-hidden shadow-lg relative"
-        >
-          <!-- 🎥 Video -->
-          <video
-            id="mediaElementMv"
-            autoplay
-            playsinline
-            style="
-              width: 101%;
-              height: 100%;
-              border-radius: 8px;
-              background: #0f0f0f;
-            "
-          ></video>
+        <div class="px-5 py-4">
+          <h1 class="text-2xl font-extrabold text-blue-950 mb-2 flex items-center gap-3">
+            <i class="fa-solid fa-theater-masks text-blue-950 text-2xl"></i>
+            Roleplay
+          </h1>
+        </div>
 
-          <!-- ⏳ Loader -->
-          <div
-            id="loadMv"
-            class="loader absolute inset-0 flex flex-col items-center justify-center bg-black/70 hidden"
-          >
+        <!-- Grid 50/50 -->
+        <div class="flex w-full gap-10 pl-5 pr-5">
+          <!-- Columna izquierda (Doctor virtual / HeyGen) -->
+          <div class="flex flex-col basis-1/2">
+            <!-- Video HeyGen -->
+            <div id="heygenContainer" class="w-full aspect-video rounded-t-2xl bg-black overflow-hidden">
+              <div id="heygen-avatar" class="relative w-full h-full">
+                <!-- 🎥 Video -->
+                <video id="mediaElementWb" autoplay playsinline class="w-[101%] h-full rounded-lg bg-[#0f0f0f]"></video>
+
+                <!-- 🕹️ Mensaje inicio -->
+                <div id="mensajeInicio"
+                  class="absolute inset-0 flex flex-col items-center justify-center bg-black/70 text-white text-center px-4">
+                  <i id="btnStart2" class="bi bi-play-circle text-5xl text-teal-400 mb-4 animate-pulse"></i>
+                  <p class="text-lg font-medium">
+                    Da clic en el botón
+                    <span class="font-semibold text-teal-400">Play</span> para
+                    comenzar.
+                  </p>
+                </div>
+
+                <!-- ⏳ Loader -->
+                <div id="loadWb" class="absolute inset-0 hidden flex flex-col items-center justify-center bg-black/70">
+                  <div class="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-yellow-500"></div>
+                  <h2 class="text-white mt-4 font-semibold">Cargando...</h2>
+                  <p class="text-gray-300 text-sm text-center px-4">
+                    El especialista estará contigo en unos momentos.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Estatus doctor -->
+            <div id="estatusDocd"
+              class="w-full h-6 bg-gray-200 grid place-items-center estatusDoc border-l-2 border-r-2 border-blue-900">
+              <p id="estatusDoc" class="text-black font-medium text-xl text-left pl-3 estatusDoct">
+                Sin iniciar.
+              </p>
+            </div>
+
+            <!-- Título IA -->
+            <div class="w-full h-10 bg-blue-950 grid place-items-center border-l-2 border-r-2 border-blue-900">
+              <p id="tituloIa" class="text-white font-semibold text-left pl-3">
+                Doctora Virtual Judy
+              </p>
+            </div>
+
+            <!-- Chat IA -->
             <div
-              class="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-yellow-500"
-            ></div>
-            <h2 class="text-white mt-4 font-semibold">Cargando...</h2>
-            <p class="text-gray-300 text-sm text-center px-4">
-              El especialista estará contigo en unos momentos.
-            </p>
+              class="w-full min-h-[200px] max-h-[200px] overflow-y-auto rounded-b-2xl bg-white p-4 border-b-2 border-l-2 border-r-2 border-blue-900 pb-2">
+              <p id="textoBotWb"></p>
+            </div>
+          </div>
+
+          <!-- Columna derecha (Tu cámara + panel) -->
+          <div class="flex flex-col basis-1/2">
+            <!-- Cámara local -->
+            <div class="relative w-full aspect-video rounded-t-2xl bg-black overflow-hidden">
+              <video id="localVideo" class="w-full h-full object-cover" autoplay playsinline muted></video>
+
+              <!-- Overlay si no hay cámara -->
+              <div id="noCamOverlay"
+                class="absolute inset-0 flex flex-col items-center justify-center text-center text-gray-300 text-sm bg-black/60">
+                <i class="bi bi-camera-video-off text-4xl text-red-400 mb-3 animate-pulse"></i>
+                <p class="text-gray-300 font-medium text-lg">
+                  Cámara desactivada
+                </p>
+              </div>
+
+              <!-- Barra inferior -->
+              <div
+                class="absolute bottom-0 left-0 w-full flex items-center justify-between px-4 py-2 bg-black/60 backdrop-blur-sm">
+                <!-- Botones izquierda -->
+                <div class="flex items-center gap-3">
+                  <!-- Iniciar (pulsa hasta que se presione) -->
+                  <button id="btnStart"
+                    class="btnStart btn-estado w-10 h-10 grid place-items-center rounded-xl bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition animate-pulse"
+                    title="Iniciar">
+                    <i class="bi bi-play-fill text-lg"></i>
+                    <span class="sr-only">Iniciar</span>
+                  </button>
+
+                  <!-- Objecciones -->
+                  <button id="btnObjections"
+                    class="w-10 h-10 grid place-items-center rounded-xl bg-amber-500 text-white hover:bg-amber-600 active:scale-95 transition"
+                    title="Objecciones">
+                    <i class="bi bi-list text-lg"></i>
+                    <span class="sr-only">Objecciones</span>
+                  </button>
+
+                  <!-- Cámara -->
+                  <button id="btnCam"
+                    class="w-10 h-10 grid place-items-center rounded-xl bg-gray-200 text-gray-700 hover:bg-gray-300 active:scale-95 transition"
+                    title="Cámara">
+                    <i class="bi bi-camera-video-fill text-lg"></i>
+                    <span class="sr-only">Cámara</span>
+                  </button>
+
+                  <!-- Pausa -->
+                  <button id="btnPause"
+                    class="w-10 h-10 grid place-items-center rounded-xl bg-slate-600 text-white hover:bg-slate-700 active:scale-95 transition disabled:opacity-50"
+                    title="Pausar" disabled>
+                    <i class="bi bi-pause-fill text-lg"></i>
+                    <span class="sr-only">Pausar</span>
+                  </button>
+                </div>
+
+                <!-- Indicadores derecha -->
+                <div id="indicat" class="panel-voz flex items-center gap-3 text-white">
+                  <span class="mfTimer font-bold text-sm tabular-nums">00:00</span>
+                  <span class="h-5 w-px bg-white/40"></span>
+                  <span class="text-sm font-semibold">
+                    <span id="mfProgAct">0</span>/<span id="mfProgTot">7</span>
+                  </span>
+                  <span class="recDot inline-block w-2.5 h-2.5 rounded-full bg-red-500 opacity-0"
+                    title="Grabando"></span>
+                  <span class="recLabel text-sm text-white/80">Listo</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Estatus usuario -->
+            <div id="estatusUserd"
+              class="w-full h-6 bg-gray-200 grid place-items-center estatusUser border-l-2 border-r-2 border-blue-900">
+              <p id="estatusUser" class="text-black font-medium text-xl text-left pl-3 estatusUsert">
+                Sin iniciar.
+              </p>
+            </div>
+
+            <!-- Título usuario -->
+            <div class="w-full h-10 bg-blue-950 grid place-items-center border-l-2 border-r-2 border-blue-900">
+              <p id="tituloUse" class="text-white font-semibold text-left pl-3">
+                Tú — Agente de Ventas
+              </p>
+            </div>
+
+            <!-- Chat usuario -->
+            <div
+              class="w-full min-h-[200px] max-h-[200px] overflow-y-auto rounded-b-2xl bg-white p-4 border-l-2 border-r-2 border-b-2 border-blue-900">
+              <p id="textoUsuarioWb"></p>
+            </div>
           </div>
         </div>
 
-        <div
-          class="w-[45vh] h-[4vh] my-3 bg-white flex items-center justify-center rounded-2xl"
-        >
-          <p id="nombreIa" class="text-gray-600 font-semibold text-left pl-3">
-            Doctora Virtual Judy
-          </p>
-        </div>
-
-        <div
-          class="w-[45vh] h-[20vh] mx-auto bg-white rounded-2xl overflow-y-scroll shadow-lg"
-        >
-          <p id="textoBotMv"></p>
-        </div>
-        <hr class="border-t border-gray-500 mt-3" />
-        <div
-          class="w-[45vh] mt-5 h-[4vh] my-3 bg-white flex items-center justify-center rounded-2xl"
-        >
-          <p
-            id="nombreUsuario"
-            class="text-gray-600 font-semibold text-left pl-3"
-          >
-            Tu - Agente de ventas.
-          </p>
-        </div>
-
-        <div
-          class="w-[45vh] h-[20vh] mx-auto bg-white rounded-2xl overflow-y-scroll shadow-lg"
-        >
-          <p id="textoUsuarioMv"></p>
-        </div>
-
-        <!--Mofal Objecciones-->
-        <div
-          id="modalObjeccionesMv"
-          class="fixed inset-0 bg-black/50 hidden z-50"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="objectionsTitleMv"
-        >
-          <div
-            class="bg-white w-full max-w-2xl mx-auto mt-[25vh] rounded-2xl shadow-xl overflow-hidden"
-          >
+        <!-- Modal de Objecciones -->
+        <div id="modalObjecciones" class="fixed inset-0 bg-black/50 hidden z-50" role="dialog" aria-modal="true"
+          aria-labelledby="objectionsTitle">
+          <div class="bg-white w-full max-w-2xl mx-auto mt-24 rounded-2xl shadow-xl overflow-hidden">
             <div class="flex items-center justify-between px-5 py-3 border-b">
-              <h3
-                id="objectionsTitleMv"
-                class="text-xl font-bold text-blue-600"
-              >
+              <h3 id="objectionsTitle" class="text-xl font-bold text-blue-600">
                 Lista de Objecciones
               </h3>
-              <button
-                id="closeModalObjeccionesMv"
-                class="p-2 rounded-lg hover:bg-gray-100"
-                aria-label="Cerrar modal"
-              >
+              <button id="closeModal" class="p-2 rounded-lg hover:bg-gray-100" aria-label="Cerrar modal">
                 <i class="fa-solid fa-xmark text-gray-600"></i>
               </button>
             </div>
 
-            <!-- Tabla (ID solicitado) -->
             <div class="p-6 overflow-x-auto">
-              <table id="tablaObjMv" class="w-full border-collapse">
+              <table id="tablaObjWeb" class="w-full border-collapse">
                 <thead>
                   <tr class="border-b border-gray-300 text-left">
                     <th class="py-2 px-3 text-gray-700 font-semibold">
                       Objección
                     </th>
-                    <th
-                      class="py-2 px-3 text-gray-700 font-semibold text-center"
-                    >
+                    <th class="py-2 px-3 text-gray-700 font-semibold text-center">
                       Estado
                     </th>
                   </tr>
                 </thead>
-                <tbody>
-                  <!-- Se llenará dinámicamente -->
-                </tbody>
+                <tbody id="tablaObjWeb"></tbody>
               </table>
             </div>
 
             <div class="px-6 py-4 border-t">
-              <button
-                id="okModalObjeccionesMv"
-                class="w-full bg-teal-500 text-white font-bold py-2 px-6 rounded-xl hover:bg-teal-600 active:scale-95 transition-all"
-              >
+              <button id="okModal"
+                class="w-full bg-teal-500 text-white font-bold py-2 px-6 rounded-xl hover:bg-teal-600 active:scale-95 transition-all">
                 Cerrar
               </button>
             </div>
           </div>
         </div>
       </section>
+    </main>
+  </section>
 
-      <div class="block md:hidden" v-scope="FooterMv()"></div>
-      <!--Movil-->
+  <!-- ============================================ -->
+  <!-- VERSION MOVIL (responsive) -->
+  <!-- ============================================ -->
+  <section class="block md:hidden w-full min-h-screen">
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
 
-      <!-- MODAL dentro del MISMO v-scope y dentro del body -->
-      <div
-        class="contar flex items-center gap-3 bg-gray-800/40 px-4 py-2 rounded-lg text-white"
-      >
-        <!-- Cronómetro -->
-        <div class="flex items-baseline gap-1">
-          <span class="mfTimer text-lg font-extrabold">00:00</span>
-          <span class="text-[10px] text-white/80">min:seg</span>
+    <!-- Sidebar -->
+    <div v-scope="Header()"></div>
+
+    <!-- Header Móvil -->
+    <header class="fixed top-0 inset-x-0 z-50 bg-blue-950/95 backdrop-blur border-b border-blue-900">
+      <div class="h-14 px-4 flex items-center justify-between">
+        <button id="mobile-toggle"
+          class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-blue-800 text-gray-100 hover:bg-blue-900 active:scale-95 transition"
+          aria-label="Abrir menú">
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+        <span class="text-lg font-bold text-white">Roleplay</span>
+        <div class="w-12"></div>
+      </div>
+    </header>
+
+    <!-- Contenido móvil -->
+    <div class="pt-14 px-3 pb-5">
+      <div class="bg-white rounded-lg shadow-md" style="margin-top: 5%;">
+
+        <!-- Título móvil -->
+        <div class="p-4 bg-blue-950 rounded-t-lg">
+          <h1 class="text-2xl font-extrabold text-white text-center">
+            PharmaSales Pro
+          </h1>
         </div>
 
-        <!-- Separador -->
-        <span class="h-6 w-px bg-white/30"></span>
+        <!-- Subtítulo móvil -->
+        <div class="px-4 py-3">
+          <h2 class="text-xl font-extrabold text-blue-950 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-theater-masks text-xl"></i>
+            Roleplay
+          </h2>
+        </div>
 
-        <!-- Progreso -->
-        <div class="flex items-center gap-2">
-          <span class="text-sm font-semibold">
-            <span class="mfProgAct">0</span>/<span class="mfProgTot">3</span>
-          </span>
+        <!-- Videos apilados verticalmente -->
+        <div class="px-3 pb-5 space-y-4">
+
+          <!-- Doctor Virtual (arriba) -->
+          <div class="flex flex-col w-full">
+            <div class="w-full aspect-video rounded-t-2xl bg-black overflow-hidden relative">
+              <video id="mediaElementMv" autoplay playsinline class="w-full h-full rounded-lg bg-[#0f0f0f]"></video>
+
+              <!-- Mensaje inicio móvil -->
+              <div id="mensajeInicioMv"
+                class="absolute inset-0 flex flex-col items-center justify-center bg-black/70 text-white text-center px-4">
+                <i id="btnStart2Mv" class="bi bi-play-circle text-5xl text-teal-400 mb-4 animate-pulse"></i>
+                <p class="text-base font-medium">
+                  Da clic en el botón <span class="font-semibold text-teal-400">Play</span> para comenzar.
+                </p>
+              </div>
+
+              <!-- Loader móvil -->
+              <div id="loadMv" class="absolute inset-0 hidden flex flex-col items-center justify-center bg-black/70">
+                <div class="w-12 h-12 border-4 border-dashed rounded-full animate-spin border-yellow-500"></div>
+                <h2 class="text-white mt-4 font-semibold text-sm">Cargando...</h2>
+                <p class="text-gray-300 text-xs text-center px-4">
+                  El especialista estará contigo en unos momentos.
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="w-full h-6 bg-gray-200 grid place-items-center estatusDoc border-l-2 border-r-2 border-blue-900">
+              <p id="estatusDocMv" class="text-black font-medium text-sm text-left pl-3 estatusDoct">
+                Sin iniciar.
+              </p>
+            </div>
+
+            <div class="w-full h-10 bg-blue-950 grid place-items-center border-l-2 border-r-2 border-blue-900">
+              <p id="nombreIa" class="text-white font-semibold text-sm text-left pl-3">
+                Doctora Virtual Judy
+              </p>
+            </div>
+
+            <div
+              class="w-full min-h-[150px] max-h-[150px] overflow-y-auto rounded-b-2xl bg-white p-3 border-b-2 border-l-2 border-r-2 border-blue-900">
+              <p id="textoBotMv" class="text-sm"></p>
+            </div>
+          </div>
+
+          <!-- Usuario (abajo) -->
+          <div class="flex flex-col w-full">
+            <div class="relative w-full aspect-video rounded-t-2xl bg-black overflow-hidden">
+              <video id="localVideoMv" class="w-full h-full object-cover" autoplay playsinline muted></video>
+
+              <div id="noCamOverlayMv"
+                class="absolute inset-0 flex flex-col items-center justify-center text-center text-gray-300 bg-black/60">
+                <i class="bi bi-camera-video-off text-4xl text-red-400 mb-3 animate-pulse"></i>
+                <p class="text-base font-medium">Cámara desactivada</p>
+              </div>
+
+              <!-- Barra inferior móvil -->
+              <div
+                class="absolute bottom-0 left-0 w-full flex items-center justify-between px-3 py-2 bg-black/60 backdrop-blur-sm">
+                <div class="flex items-center gap-2">
+                  <button id="iniciarMv"
+                    class="btnStart btn-estado w-10 h-10 grid place-items-center rounded-xl bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition animate-pulse">
+                    <i class="bi bi-play-fill text-lg"></i>
+                  </button>
+
+                  <button id="btnObejetionsMv"
+                    class="w-10 h-10 grid place-items-center rounded-xl bg-amber-500 text-white hover:bg-amber-600 active:scale-95 transition">
+                    <i class="bi bi-list text-lg"></i>
+                  </button>
+
+                  <button id="btnCamMv"
+                    class="w-10 h-10 grid place-items-center rounded-xl bg-gray-200 text-gray-700 hover:bg-gray-300 active:scale-95 transition">
+                    <i class="bi bi-camera-video-fill text-lg"></i>
+                  </button>
+
+                  <button id="btnPauseMov"
+                    class="w-10 h-10 grid place-items-center rounded-xl bg-slate-600 text-white hover:bg-slate-700 active:scale-95 transition disabled:opacity-50"
+                    title="Pausar" disabled>
+                    <i class="bi bi-pause-fill text-lg"></i>
+                    <span class="sr-only">Pausar</span>
+                  </button>
+                </div>
+
+                <div class="panel-voz flex items-center gap-2 text-white text-xs">
+                  <span class="mfTimer font-bold tabular-nums">00:00</span>
+                  <span class="h-4 w-px bg-white/40"></span>
+                  <span class="font-semibold contar">
+                    <span id="mfProgActMv">0</span>/<span id="mfProgTotMv">7</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="w-full h-6 bg-gray-200 grid place-items-center estatusUser border-l-2 border-r-2 border-blue-900">
+              <p id="estatusUserMv" class="text-black font-medium text-sm text-left pl-3 estatusUsert">
+                Sin iniciar.
+              </p>
+            </div>
+
+            <div class="w-full h-10 bg-blue-950 grid place-items-center border-l-2 border-r-2 border-blue-900">
+              <p id="nombreUsuario" class="text-white font-semibold text-sm text-left pl-3">
+                Tú — Agente de Ventas
+              </p>
+            </div>
+
+            <div
+              class="w-full min-h-[150px] max-h-[150px] overflow-y-auto rounded-b-2xl bg-white p-3 border-l-2 border-r-2 border-b-2 border-blue-900">
+              <p id="textoUsuarioMv" class="text-sm"></p>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
-    <!--Movil-->
-    <!--Web-->
 
-    <section class="mt-[1%] mb-5 px-1 flex-grow hidden md:block">
-      <!-- Sidebar (dinámico) -->
-      <div class="hidden md:block" v-scope="Header()"></div>
+    <!-- Modal Objecciones Móvil -->
+    <div id="modalObjeccionesMv" class="fixed inset-0 bg-black/50 hidden z-50 p-4">
+      <div
+        class="bg-white w-full max-w-lg mx-auto mt-20 rounded-2xl shadow-xl overflow-hidden max-h-[80vh] flex flex-col">
+        <div class="flex items-center justify-between px-4 py-3 border-b flex-shrink-0">
+          <h3 class="text-lg font-bold text-blue-600">Lista de Objecciones</h3>
+          <button id="closeModalObjeccionesMv" class="p-2 rounded-lg hover:bg-gray-100">
+            <i class="fa-solid fa-xmark text-gray-600"></i>
+          </button>
+        </div>
 
-      <!-- Contenido principal (empujado por el sidebar) -->
-      <main
-        id="content"
-        class="hidden md:block transition-all duration-300 ml-[80px]"
-      >
-        <section
-          class="pb-5 pt-1 mb-5 bg-white rounded-lg shadow-md shadow-black/85 shadow-[0_3px_2px_rgba(0,0,0,0.85)]"
-        >
-          <!-- Título -->
-          <div class="p-5 bg-blue-950 rounded-t-lg w-[100%]">
-            <h1 class="text-4xl font-extrabold text-white mb-4">
-              PharmaSales Pro
-            </h1>
-          </div>
-          <div class="px-5 py-4">
-            <h1
-              class="text-2xl font-extrabold text-blue-950 mb-2 flex items-center gap-3"
-            >
-              <i class="fa-solid fa-theater-masks text-blue-950 text-2xl"></i>
-              Roleplay
-            </h1>
-          </div>
+        <div class="p-4 overflow-y-auto flex-grow">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="border-b border-gray-300 text-left">
+                <th class="py-2 px-2 text-gray-700 font-semibold text-sm">Objección</th>
+                <th class="py-2 px-2 text-gray-700 font-semibold text-center text-sm">Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tablaObjMv"></tbody>
+          </table>
+        </div>
 
-          <!-- Grid 50/50 -->
-          <div class="flex w-full gap-10 pl-5 pr-5">
-            <!-- Columna izquierda (Doctor virtual / HeyGen) -->
-            <div class="flex flex-col basis-1/2">
-              <!-- Video HeyGen -->
-              <div
-                id="heygenContainer"
-                class="w-full aspect-video rounded-t-2xl bg-black overflow-hidden"
-              >
-                <div id="heygen-avatar" class="relative w-full h-full">
-                  <!-- 🎥 Video -->
-                  <video
-                    id="mediaElementWb"
-                    autoplay
-                    playsinline
-                    class="w-[101%] h-full rounded-lg bg-[#0f0f0f]"
-                  ></video>
+        <div class="px-4 py-3 border-t flex-shrink-0">
+          <button id="okModalObjeccionesMv"
+            class="w-full bg-teal-500 text-white font-bold py-2 px-4 rounded-xl hover:bg-teal-600 active:scale-95 transition-all">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
 
-                  <!-- 🕹️ Mensaje inicio -->
-                  <div
-                    id="mensajeInicio"
-                    class="absolute inset-0 flex flex-col items-center justify-center bg-black/70 text-white text-center px-4"
-                  >
-                    <i
-                      id="btnStart2"
-                      class="bi bi-play-circle text-5xl text-teal-400 mb-4 animate-pulse"
-                    ></i>
-                    <p class="text-lg font-medium">
-                      Da clic en el botón
-                      <span class="font-semibold text-teal-400">Play</span> para
-                      comenzar.
-                    </p>
-                  </div>
+  </section>
 
-                  <!-- ⏳ Loader -->
-                  <div
-                    id="loadWb"
-                    class="absolute inset-0 hidden flex flex-col items-center justify-center bg-black/70"
-                  >
-                    <div
-                      class="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-yellow-500"
-                    ></div>
-                    <h2 class="text-white mt-4 font-semibold">Cargando...</h2>
-                    <p class="text-gray-300 text-sm text-center px-4">
-                      El especialista estará contigo en unos momentos.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Estatus doctor -->
-              <div
-                id="estatusDocd"
-                class="w-full h-6 bg-gray-200 grid place-items-center estatusDoc border-l-2 border-r-2 border-blue-900"
-              >
-                <p
-                  id="estatusDoc"
-                  class="text-black font-medium text-xl text-left pl-3 estatusDoct"
-                >
-                  Sin iniciar.
-                </p>
-              </div>
-
-              <!-- Título IA -->
-              <div
-                class="w-full h-10 bg-blue-950 grid place-items-center border-l-2 border-r-2 border-blue-900"
-              >
-                <p
-                  id="tituloIa"
-                  class="text-white font-semibold text-left pl-3"
-                >
-                  Doctora Virtual Judy
-                </p>
-              </div>
-
-              <!-- Chat IA -->
-              <div
-                class="w-full min-h-[200px] max-h-[200px] overflow-y-auto rounded-b-2xl bg-white p-4 border-b-2 border-l-2 border-r-2 border-blue-900 pb-2"
-              >
-                <p id="textoBotWb"></p>
-              </div>
-            </div>
-
-            <!-- Columna derecha (Tu cámara + panel) -->
-            <div class="flex flex-col basis-1/2">
-              <!-- Cámara local -->
-              <div
-                class="relative w-full aspect-video rounded-t-2xl bg-black overflow-hidden"
-              >
-                <video
-                  id="localVideo"
-                  class="w-full h-full object-cover"
-                  autoplay
-                  playsinline
-                  muted
-                ></video>
-
-                <!-- Overlay si no hay cámara -->
-                <div
-                  id="noCamOverlay"
-                  class="absolute inset-0 flex flex-col items-center justify-center text-center text-gray-300 text-sm bg-black/60"
-                >
-                  <i
-                    class="bi bi-camera-video-off text-4xl text-red-400 mb-3 animate-pulse"
-                  ></i>
-                  <p class="text-gray-300 font-medium text-lg">
-                    Cámara desactivada
-                  </p>
-                </div>
-
-                <!-- Barra inferior -->
-                <div
-                  class="absolute bottom-0 left-0 w-full flex items-center justify-between px-4 py-2 bg-black/60 backdrop-blur-sm"
-                >
-                  <!-- Botones izquierda -->
-                  <div class="flex items-center gap-3">
-                    <!-- Iniciar (pulsa hasta que se presione) -->
-                    <button
-                      id="btnStart"
-                      class="btnStart btn-estado w-10 h-10 grid place-items-center rounded-xl bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition animate-pulse"
-                      title="Iniciar"
-                    >
-                      <i class="bi bi-play-fill text-lg"></i>
-                      <span class="sr-only">Iniciar</span>
-                    </button>
-
-                    <!-- Objecciones -->
-                    <button
-                      id="btnObjections"
-                      class="w-10 h-10 grid place-items-center rounded-xl bg-amber-500 text-white hover:bg-amber-600 active:scale-95 transition"
-                      title="Objecciones"
-                    >
-                      <i class="bi bi-list text-lg"></i>
-                      <span class="sr-only">Objecciones</span>
-                    </button>
-
-                    <!-- Cámara -->
-                    <button
-                      id="btnCam"
-                      class="w-10 h-10 grid place-items-center rounded-xl bg-gray-200 text-gray-700 hover:bg-gray-300 active:scale-95 transition"
-                      title="Cámara"
-                    >
-                      <i class="bi bi-camera-video-fill text-lg"></i>
-                      <span class="sr-only">Cámara</span>
-                    </button>
-                  </div>
-
-                  <!-- Indicadores derecha -->
-                  <div
-                    id="indicat"
-                    class="panel-voz flex items-center gap-3 text-white"
-                  >
-                    <span class="mfTimer font-bold text-sm tabular-nums"
-                      >00:00</span
-                    >
-                    <span class="h-5 w-px bg-white/40"></span>
-                    <span class="text-sm font-semibold">
-                      <span id="mfProgAct">0</span>/<span id="mfProgTot"
-                        >7</span
-                      >
-                    </span>
-                    <span
-                      class="recDot inline-block w-2.5 h-2.5 rounded-full bg-red-500 opacity-0"
-                      title="Grabando"
-                    ></span>
-                    <span class="recLabel text-sm text-white/80">Listo</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Estatus usuario -->
-              <div
-                id="estatusUserd"
-                class="w-full h-6 bg-gray-200 grid place-items-center estatusUser border-l-2 border-r-2 border-blue-900"
-              >
-                <p
-                  id="estatusUser"
-                  class="text-black font-medium text-xl text-left pl-3 estatusUsert"
-                >
-                  Sin iniciar.
-                </p>
-              </div>
-
-              <!-- Título usuario -->
-              <div
-                class="w-full h-10 bg-blue-950 grid place-items-center border-l-2 border-r-2 border-blue-900"
-              >
-                <p
-                  id="tituloUse"
-                  class="text-white font-semibold text-left pl-3"
-                >
-                  Tú — Agente de Ventas
-                </p>
-              </div>
-
-              <!-- Chat usuario -->
-              <div
-                class="w-full min-h-[200px] max-h-[200px] overflow-y-auto rounded-b-2xl bg-white p-4 border-l-2 border-r-2 border-b-2 border-blue-900"
-              >
-                <p id="textoUsuarioWb"></p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Modal de Objecciones -->
-          <div
-            id="modalObjecciones"
-            class="fixed inset-0 bg-black/50 hidden z-50"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="objectionsTitle"
-          >
-            <div
-              class="bg-white w-full max-w-2xl mx-auto mt-24 rounded-2xl shadow-xl overflow-hidden"
-            >
-              <div class="flex items-center justify-between px-5 py-3 border-b">
-                <h3
-                  id="objectionsTitle"
-                  class="text-xl font-bold text-blue-600"
-                >
-                  Lista de Objecciones
-                </h3>
-                <button
-                  id="closeModal"
-                  class="p-2 rounded-lg hover:bg-gray-100"
-                  aria-label="Cerrar modal"
-                >
-                  <i class="fa-solid fa-xmark text-gray-600"></i>
-                </button>
-              </div>
-
-              <div class="p-6 overflow-x-auto">
-                <table id="tablaObjWeb" class="w-full border-collapse">
-                  <thead>
-                    <tr class="border-b border-gray-300 text-left">
-                      <th class="py-2 px-3 text-gray-700 font-semibold">
-                        Objección
-                      </th>
-                      <th
-                        class="py-2 px-3 text-gray-700 font-semibold text-center"
-                      >
-                        Estado
-                      </th>
-                    </tr>
-                  </thead>
-                 <tbody id="tablaObjWeb"></tbody>
-                </table>
-              </div>
-
-              <div class="px-6 py-4 border-t">
-                <button
-                  id="okModal"
-                  class="w-full bg-teal-500 text-white font-bold py-2 px-6 rounded-xl hover:bg-teal-600 active:scale-95 transition-all"
-                >
-                  Cerrar
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
-    </section>
-
-    <!--Web
-    <div v-scope="Modal()"></div>-->
-
-    <!--Menu movil-->
-  </body>
+  <!-- Scripts -->
   <script type="module" src="./js/main.js"></script>
   <script src="./js/ia.js"></script>
   <script src="./js/stores/webSocket.js"></script>

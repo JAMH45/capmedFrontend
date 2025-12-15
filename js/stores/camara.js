@@ -10,7 +10,8 @@ const recLabel = document.getElementById("recLabel");
 
 // Botones / refs que SÍ usamos
 
-const btnCam = document.getElementById("btnCam");
+const btnCamWeb = document.getElementById("btnCam");
+const btnCamMv = document.getElementById("btnCamMv");
 const btnObj = document.getElementById("btnObjections");
 
 // Modal
@@ -19,8 +20,10 @@ const closeModal = document.getElementById("closeModal");
 const okModal = document.getElementById("okModal");
 
 // Preview
-const localVideo = document.getElementById("localVideo");
-const noCamOverlay = document.getElementById("noCamOverlay");
+const localVideoWeb = document.getElementById("localVideo");
+const noCamOverlayWeb = document.getElementById("noCamOverlay");
+const localVideoMv = document.getElementById("localVideoMv");
+const noCamOverlayMv = document.getElementById("noCamOverlayMv");
 
 // ===== Util =====
 function setRecUI(on) {
@@ -58,28 +61,55 @@ modal.addEventListener("click", (e) => {
 });
 
 // ===== Cámara: SOLO vista previa (no afecta la grabación) =====
-btnCam.addEventListener("click", async () => {
-  try {
-    await ensureRecordingStream();
-    previewOn = !previewOn;
+if (btnCamWeb) {
+  btnCamWeb.addEventListener("click", async () => {
+    try {
+      await ensureRecordingStream();
+      previewOn = !previewOn;
 
-    if (previewOn) {
-      localVideo.srcObject = recordingStream; // misma stream que se graba
-      localVideo.muted = true; // evita eco
-      noCamOverlay.classList.add("hidden");
-      btnCam.classList.remove("bg-gray-200", "text-gray-700");
-      btnCam.classList.add("bg-blue-600", "text-white");
-    } else {
-      localVideo.srcObject = null; // ocultar solo la vista previa
-      noCamOverlay.classList.remove("hidden");
-      btnCam.classList.add("bg-gray-200", "text-gray-700");
-      btnCam.classList.remove("bg-blue-600", "text-white");
+      if (previewOn) {
+        localVideoWeb.srcObject = recordingStream;
+        localVideoWeb.muted = true;
+        noCamOverlayWeb.classList.add("hidden");
+        btnCamWeb.classList.remove("bg-gray-200", "text-gray-700");
+        btnCamWeb.classList.add("bg-blue-600", "text-white");
+      } else {
+        localVideoWeb.srcObject = null;
+        noCamOverlayWeb.classList.remove("hidden");
+        btnCamWeb.classList.add("bg-gray-200", "text-gray-700");
+        btnCamWeb.classList.remove("bg-blue-600", "text-white");
+      }
+    } catch (err) {
+      console.error("Cam error:", err);
+      alert("No se pudo acceder a la cámara/micrófono.");
     }
-  } catch (err) {
-    console.error("Cam error:", err);
-    alert("No se pudo acceder a la cámara/micrófono.");
-  }
-});
+  });
+}
+
+if (btnCamMv) {
+  btnCamMv.addEventListener("click", async () => {
+    try {
+      await ensureRecordingStream();
+      previewOn = !previewOn;
+
+      if (previewOn) {
+        localVideoMv.srcObject = recordingStream;
+        localVideoMv.muted = true;
+        noCamOverlayMv.classList.add("hidden");
+        btnCamMv.classList.remove("bg-gray-200", "text-gray-700");
+        btnCamMv.classList.add("bg-blue-600", "text-white");
+      } else {
+        localVideoMv.srcObject = null;
+        noCamOverlayMv.classList.remove("hidden");
+        btnCamMv.classList.add("bg-gray-200", "text-gray-700");
+        btnCamMv.classList.remove("bg-blue-600", "text-white");
+      }
+    } catch (err) {
+      console.error("Cam error:", err);
+      alert("No se pudo acceder a la cámara/micrófono.");
+    }
+  });
+}
 
 // ===== Grabación: inicia SOLO con botón Iniciar =====
 async function startRecording() {

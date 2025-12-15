@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const contenedor = document.getElementById("contenedorActividades");
+  const tituloSemana = document.getElementById("tituloSemana");
+  
   if (!contenedor) {
     console.warn("No se encontró el contenedor de actividades");
     return;
@@ -46,6 +48,12 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  // Actualizar título dinámicamente
+  if (tituloSemana) {
+    const numeroSemana = semanaActual.replace('semana', '');
+    tituloSemana.textContent = `${cursoActual} — Semana ${numeroSemana}`;
+  }
+
   const activitiesObj = semanaObj.activities || {};
   const actividadesLista = Object.values(activitiesObj);
 
@@ -71,46 +79,43 @@ document.addEventListener("DOMContentLoaded", () => {
   contenedor.innerHTML = "";
 
   // Crear una card por actividad
- // Crear una card por actividad
- console.log(actividadesLista);
-actividadesLista.forEach((act) => {
- 
-  const id = act.id || "";
-  const titulo = act.titulo || "Sin título";
-  const descripcion = act.descripcion || "";
-  const rol = tipoToRol(act.tipo); // agente / doctor / default
+  console.log(actividadesLista);
+  actividadesLista.forEach((act) => {
+    const id = act.id || "";
+    const titulo = act.titulo || "Sin título";
+    const descripcion = act.descripcion || "";
+    const rol = tipoToRol(act.tipo); // agente / doctor / default
 
+    // Aquí decidimos a qué URL va
+    let urlActividad;
 
-  // 👉 Aquí decidimos a qué URL va
-  let urlActividad;
+    if (act.tipo === "AGENTE" || act.tipo === "DOCTOR") {
+      // Enviar al virtualChat
+      urlActividad = `./virtualChat.html?tipo=${rol}&id=${encodeURIComponent(id)}`;
+    } else {
+      // Comportamiento normal
+      urlActividad = `./${act.tipo}.html?id=${encodeURIComponent(id)}`;
+    }
 
-  if (act.tipo === "AGENTE" || act.tipo === "DOCTOR") {
-    // Enviar al virtualChat
-    urlActividad = `./virtualChat.html?tipo=${rol}&id=${encodeURIComponent(id)}`;
-  } else {
-    // Comportamiento normal
-    urlActividad = `./${act.tipo}.html?id=${encodeURIComponent(id)}`;
-  }
+    const cardDiv = document.createElement("div");
+    // Responsive: w-full en móvil, w-[330px] en desktop
+    cardDiv.className = "w-full sm:w-[330px]";
 
-  const cardDiv = document.createElement("div");
-  cardDiv.className = "w-[330px]";
+    cardDiv.setAttribute(
+      "v-scope",
+      `CardWb('${act.tipo}', '${titulo.replace(/'/g, "\\'")}', '${descripcion.replace(
+        /'/g,
+        "\\'"
+      )}', '${rol}', '${urlActividad}')`
+    );
 
-  cardDiv.setAttribute(
-    "v-scope",
-    `CardWb('${act.tipo}', '${titulo.replace(/'/g, "\\'")}', '${descripcion.replace(
-      /'/g,
-      "\\'"
-    )}', '${rol}', '${urlActividad}')`
-  );
-
-  contenedor.appendChild(cardDiv);
-});
-
+    contenedor.appendChild(cardDiv);
+  });
 
   // Activar PetiteVue después de insertar dinámicamente
-  if (window.petiteVue) {
-    window.petiteVue.createApp().mount();
+  if (window.PetiteVue) {
+    window.PetiteVue.createApp().mount();
   } else {
-    console.warn("PetiteVue no está disponible en window.petiteVue");
+    console.warn("PetiteVue no está disponible en window.PetiteVue");
   }
 });

@@ -41,43 +41,73 @@
     body {
       font-family: "Roboto", "Open Sans", sans-serif;
     }
+    
+    /* Quitar margin-left en móvil */
+    @media (max-width: 768px) {
+      #content {
+        margin-left: 0 !important;
+      }
+    }
   </style>
-  <body
-    class="bg-gray-100 min-h-screen flex flex-col items-center sm:items-stretch text-center"
-  >
-    <!--Web-->
-    <div class="hidden md:block" v-scope="Header()"></div>
+  <body class="bg-gray-100 min-h-screen">
+    
+    <!-- Overlay para cerrar sidebar en móvil -->
+    <div id="overlay" class="overlay"></div>
 
-    <main
-      id="content"
-      class="hidden md:block rounden-lg transition-all duration-300 mb-4"
-    >
-      <section
-        class="m-5 pb-6 bg-white rounded-lg shadow-md shadow-black/85 shadow-[0_3px_2px_rgba(0,0,0,0.85)]"
-      >
-        <!-- Título pegado arriba a la izquierda -->
-        <div class="p-5 bg-blue-950 rounded-t-lg w-[100%]">
-          <h1 class="text-4xl font-extrabold text-white mb-4">
+    <!-- Sidebar -->
+    <div v-scope="Header()"></div>
+
+    <!-- Header Móvil con botón de menú -->
+    <header class="block md:hidden fixed top-0 inset-x-0 z-50 bg-blue-950/95 backdrop-blur border-b border-blue-900">
+      <div class="h-14 px-4 flex items-center justify-between">
+        <!-- Botón de menú -->
+        <button
+          id="mobile-toggle"
+          class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-blue-800
+                 text-gray-100 hover:bg-blue-900 active:scale-95 transition"
+          aria-label="Abrir menú"
+        >
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+
+        <!-- Título -->
+        <span class="text-sm sm:text-lg font-bold text-white">Semanas</span>
+
+        <!-- Espacio vacío para centrar -->
+        <div class="w-12"></div>
+      </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main id="content" class="transition-all duration-300 mb-4 pt-14 md:pt-0">
+      <section class="m-3 sm:m-5 pb-6 bg-white rounded-lg shadow-md">
+        
+        <!-- Título principal -->
+        <div class="p-4 sm:p-5 bg-blue-950 rounded-t-lg w-full">
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-2 sm:mb-4 text-center">
             PharmaSales Pro
           </h1>
-          <h2 class="text-xl font-bold text-blue-200">
+          <h2 class="text-sm sm:text-base md:text-xl font-bold text-blue-200 text-center">
             Semanas de la capacitación de <span id="titCurso"></span>
           </h2>
         </div>
-        <div class="px-5 py-4">
-          <h1
-            class="text-2xl font-extrabold text-blue-950 mb-2 flex items-center gap-3"
-          >
-            <i class="fa-solid fa-calendar-days text-blue-950 text-2xl"></i>
+
+        <!-- Subtítulo -->
+        <div class="px-4 sm:px-5 py-3 sm:py-4">
+          <h1 class="text-xl sm:text-2xl font-extrabold text-blue-950 mb-2 flex items-center gap-3 justify-center md:justify-start">
+            <i class="fa-solid fa-calendar-days text-blue-950 text-xl sm:text-2xl"></i>
             Semanas
           </h1>
         </div>
-        <!-- Contenedor centrado con tarjetas rectangulares -->
-        <div class="px-5 pb-5" id="listaSemanas">
+
+        <!-- Lista de semanas (generada por JS) -->
+        <div class="px-4 sm:px-5 pb-5" id="listaSemanas">
           <!-- Aquí JS va a generar las semanas -->
         </div>
+
       </section>
     </main>
+
   </body>
   <script type="module" src="./js/main.js"></script>
   <script src="./js/components/slide.js"></script>

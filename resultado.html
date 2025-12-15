@@ -1,709 +1,471 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PharmaSales Pro - Resultados</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PharmaSales Pro - Resultados</title>
 
-    <script src="https://unpkg.com/petite-vue" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/petite-vue" defer></script>
 
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/resultados.css">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Raleway:wght@600&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-    />
-    <link rel="stylesheet" href="css/menu.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Raleway:wght@600&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css"
-    />
-    <!-- Iconos de FontAwesome  -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
-    />
-  </head>
-  </head>
-  <style>
-    /* Utilidades mínimas para el flip */
-    .transform-style-preserve-3d {
-      transform-style: preserve-3d;
-    }
-    .backface-hidden {
-      backface-visibility: hidden;
-    }
-    .rotate-y-180 {
-      transform: rotateY(180deg);
-    }
-    .is-flipped {
-      transform: rotateY(180deg);
-    }
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/resultados.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Raleway:wght@600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="css/menu.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" />
+</head>
 
-    body {
-      font-family: "Roboto", "Open Sans", sans-serif;
-    }
+<style>
+  body {
+    font-family: "Roboto", "Open Sans", sans-serif;
+  }
 
-    .transform-style-preserve-3d {
-      transform-style: preserve-3d;
-    }
-    .backface-hidden {
-      backface-visibility: hidden;
-    }
-    .rotate-y-180 {
-      transform: rotateY(180deg);
-    }
-    #graficoTotal canvas {
-  transform: scale(1.4); /* 40% más grande */
-  transform-origin: center;
-}
+  /* Utilidades para el flip */
+  .transform-style-preserve-3d {
+    transform-style: preserve-3d;
+  }
 
-  </style>
-  <body
-    class="bg-gray-100 text-gray-800 min-h-screen flex flex-col items-center sm:items-stretch text-center"
-  >
-    <!--Movil-->
-    <div class="block md:hidden" v-scope="HeaderMv('Resultados')"></div>
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+
+  .is-flipped {
+    transform: rotateY(180deg);
+  }
+
+  #graficoTotal canvas {
+    transform: scale(1.4);
+    transform-origin: center;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    #content {
+      margin-left: 0 !important;
+    }
     
-    <div class="min-h-screen flex items-center  pl px-4 pb-10">
-      <div class="hidden md:block" v-scope="Header()"></div>
-      <main id="content" class="hidden md:block rounden-lg transition-all duration-300 mb-4"></main>
-    <section class=" mt-10 rounded-lg  w-[100%] md:mb-1  bg-white shadow-md shadow-black/85 shadow-[0_3px_2px_rgba(0,0,0,0.85)]">
-    <div class="p-5 bg-blue-950 rounded-t-lg w-[100%] " >
-      <h1 class="text-4xl font-extrabold text-white mb-4">PharmaSales Pro</h1>
-      </div>
-       <div class="px-5 py-4">
-    <h1 class="text-2xl font-extrabold text-blue-950  mb-2 flex items-center gap-3">
-      <i class="fa-solid fa-chart-line text-blue-950 text-2xl"></i>
-      Análisis de resultados
-    </h1>
-  </div>
-       <div class="main-tabs px-5 rounded-lg " >
-                        <div class="main-tab-buttons rounded-t-lg " >
-                        <button class="main-tab-button active" data-main-tab="mainCom">
-  <i class="fas fa-layer-group"></i> Por Competencias
-</button>
-
-<button class="main-tab-button" data-main-tab="mainCla">
-  <i class="fas fa-list-check"></i> Clasificación de Respuestas
-</button>
-<button class="main-tab-button" data-main-tab="mainTab">
-  <i class="fas fa-star-half-alt"></i> Calificación General
-</button>
-                        </div>
-                        
-                        <!-- Contenido -->
-                        <div class="main-tab-content active" id="mainCom">
-                                    <!-- Resultados por competencia -->
-          <div
-            class="w-full max-w-[44vh] md:max-w-[54vh] mx-auto lg:max-w-none"
-          >
-          <div class="w-full p-1 md:p-0 md:h-[5vh] h-[4vh] bg-white rounded-lg flex items-center gap-2">
-  <i class="fa-solid fa-clipboard-list text-blue-950 text-xl"></i>
-  <h1 class="font-bold text-2xl text-blue-950">
-    Resultados por competencia
-  </h1>
-</div>
-
-
-            <div
-              v-scope="{
-    idx: 0,
-    total: 4,           // total de tarjetas
-    perView: 1,         // cuántas se ven a la vez
-    init(){
-      this.updatePerView();
-      window.addEventListener('resize', this.updatePerView);
-    },
-    updatePerView(){
-      // >= md (768px) mostramos 2; en móvil 1
-      this.perView = window.innerWidth >= 768 ? 2 : 1;
-      // Corrige idx si quedó fuera de rango
-      if (this.idx > this.total - this.perView) this.idx = Math.max(0, this.total - this.perView);
-    },
-    next(){
-      // avanza 1 tarjeta pero no se pasa del último “marco” visible
-      this.idx = Math.min(this.idx + 1, this.total - this.perView);
-    },
-    prev(){
-      this.idx = Math.max(this.idx - 1, 0);
-    },
-    trackStyle(){
-      const step = 100 / this.perView; // 100% si 1 por vista; 50% si 2 por vista
-      return `transform: translateX(-${this.idx * step}%);`;
-    },
-    slideStyle(){
-      // cada slide ocupa 100% / perView del ancho visible
-      return `flex: 0 0 ${100 / this.perView}%;`;
-    },
-    pageCount(){
-      return Math.max(1, this.total - this.perView + 1);
+    .main-tab-buttons {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
-  }"
-              @vue:mounted="init()"
-              class="relative w-full h-[30vh] md:h-[55vh] overflow-hidden rounded-sm"
-            >
-              <!-- Pista -->
-              <div
-                class="flex h-full transition-transform duration-500 ease-out"
-                :style="trackStyle()"
-              >
-                <!-- Slide 1 -->
-                <div class="p-2" :style="slideStyle()">
-                  <!-- Tarjeta 1 -->
-                  <div
-  id="cardCP"
-  class="relative rounded-lg border-2 border-teal-400 cursor-pointer overflow-hidden h-full"
->
-  <div
-    id="cardCPInner"
-    class="absolute inset-0 w-full h-full transition-transform duration-700 transform-style-preserve-3d"
-  >
-    <!-- Frente -->
-    <div
-      class="absolute inset-0 flex flex-col items-center justify-between py-6 backface-hidden"
-    >
-      <h1
-        class="font-bold text-3xl md:text-2xl mb-[1vh] md:mb-[2vh] text-center mt-1 md:mt-2"
-      >
-        Conocimiento del producto
-      </h1>
-      <h1
-        class="text-8xl mt-[7vh] md:text-6xl md:mt-[6vh] font-extrabold text-black mb-6 md:mb-[10vh]"
-      >
-        <span id="calP"></span>%
-      </h1>
+    
+    .main-tab-button {
+      min-width: 100px;
+      padding: 12px 16px;
+      font-size: 0.875rem;
+    }
+  }
+</style>
+
+<body class="bg-gray-100 text-gray-800 min-h-screen">
+
+  <!-- Overlay para sidebar móvil -->
+  <div id="overlay" class="overlay"></div>
+
+  <!-- Sidebar (responsive) -->
+  <div v-scope="Header()"></div>
+
+  <!-- Header Móvil -->
+  <header class="block md:hidden fixed top-0 inset-x-0 z-50 bg-blue-950/95 backdrop-blur border-b border-blue-900">
+    <div class="h-14 px-4 flex items-center justify-between">
+      <button id="mobile-toggle" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-blue-800 text-gray-100 hover:bg-blue-900 active:scale-95 transition" aria-label="Abrir menú">
+        <i class="fas fa-bars text-xl"></i>
+      </button>
+      <span class="text-lg font-bold text-white">Resultados</span>
+      <div class="w-12"></div>
     </div>
+  </header>
 
-    <!-- Reverso -->
-    <div
-      class="absolute inset-0 flex flex-col items-center justify-center rotate-y-180 backface-hidden p-5 text-white"
-      id="cardCPBack"
-    >
-      <h1 class="font-bold text-5xl mb-2">
-        Consejo
-      </h1>
-      <p class="text-2xl text-center px-4">
-        Da un repaso rápido antes de entrar a junta...
-      </p>
-    </div>
-  </div>
-</div>
-
-                </div>
-
-                <!-- Slide 2 -->
-                <div class="p-2" :style="slideStyle()">
-                  <div
-  id="cardRT"
-  class="relative rounded-lg bg-white border-2 border-amber-500 flex items-stretch justify-center cursor-pointer overflow-hidden h-full"
->
-  <div
-    id="cardRTInner"
-    class="absolute inset-0 w-full h-full transition-transform duration-700 transform-style-preserve-3d"
-  >
-    <!-- Frente -->
-    <div
-      class="absolute inset-0 flex flex-col items-center justify-between py-6 backface-hidden"
-    >
-      <h1 class="font-bold text-3xl md:text-2xl mb-[4vh] md:mb-[9vh] md:mt-[2vh] text-center">
-        Ritmo
-      </h1>
-
-      <div class="flex items-end md:mb-[10vh]">
-        <h1
-          class="text-8xl md:text-6xl mt-[4vh] md:mt-[3vh] font-extrabold text-amber-500 leading-none"
-        >
-          <span id="calR"></span>
-        </h1>
-        <p class="text-2xl text-amber-500 ml-1 mb-2">ppm</p>
-      </div>
-    </div>
-
-    <!-- Reverso -->
-    <div
-      class="absolute inset-0 flex flex-col items-center justify-center rotate-y-180 backface-hidden bg-amber-500 p-5"
-    >
-      <h1 class="text-white font-bold text-5xl mb-2">Consejo</h1>
-      <p class="text-white text-2xl text-center px-4">
-        Repite en voz alta el discurso cronometrando un minuto; resume sin perder claridad para entrenar síntesis.
-      </p>
-    </div>
-  </div>
-</div>
-
-                </div>
-
-                <!-- Slide 3 -->
-                <div class="p-2" :style="slideStyle()">
-                 <div
-  id="cardTN"
-  class="relative rounded-lg bg-white border-2 border-green-400 border-b-8 border-b-green-400 flex items-stretch justify-center cursor-pointer overflow-hidden h-full"
->
-  <div
-    id="cardTNInner"
-    class="absolute inset-0 w-full h-full transition-transform duration-700 transform-style-preserve-3d"
-  >
-    <!-- Frente -->
-    <div
-      class="absolute inset-0 flex flex-col items-center justify-between py-6 backface-hidden"
-    >
-      <h1 class="font-bold text-3xl md:text-2xl mb-[2vh] md:mt-[2vh] text-center">
-        Tono
-      </h1>
-
-      <div class="flex items-end md:mb-[8vh]">
-        <h1
-          class="text-8xl md:text-6xl mt-[6vh] md:mt-[9vh] font-extrabold text-green-400 leading-none"
-        >
-          <span id="calT"></span>
-        </h1>
-        <p class="text-3xl text-red-400 ml-1 mb-2">claro</p>
-      </div>
-    </div>
-
-    <!-- Reverso -->
-    <div
-      class="absolute inset-0 flex flex-col items-center justify-center rotate-y-180 backface-hidden bg-green-400 p-5"
-    >
-      <h1 class="text-white font-bold text-5xl mb-2">Consejo</h1>
-      <p class="text-white text-2xl text-center px-4 p-5">
-        Asocia cada beneficio con una emoción y usa un tono que la refleje para mejorar el recuerdo.
-      </p>
-    </div>
-  </div>
-</div>
-
-                </div>
-
-                <!-- Slide 4 -->
-                <div class="p-2" :style="slideStyle()">
-                  <div
-  id="cardMD"
-  class="relative rounded-lg bg-white border-2 border-teal-400 flex items-stretch justify-center cursor-pointer overflow-hidden h-full"
->
-  <div
-    id="cardMDInner"
-    class="absolute inset-0 w-full h-full transition-transform duration-700 transform-style-preserve-3d"
-  >
-    <!-- Frente -->
-    <div
-      class="absolute inset-0 flex flex-col items-center justify-between py-6 backface-hidden"
-    >
-      <h1 class="font-bold text-3xl md:text-2xl mb-[2vh] md:mt-[2vh] text-center">
-        Modulación
-      </h1>
-      <div class="flex items-end md:mb-[8vh]">
-        <h1
-          class="text-8xl md:text-6xl mt-[6vh] md:mt-[9vh] font-extrabold text-teal-400 leading-none"
-        >
-          <span id="calM"></span>
-        </h1>
-        <p class="text-3xl text-black ml-1 mb-3">claro</p>
-      </div>
-    </div>
-
-    <!-- Reverso -->
-    <div
-      class="absolute inset-0 flex flex-col items-center justify-center rotate-y-180 backface-hidden bg-teal-400 p-5"
-    >
-      <h1 class="text-white font-bold text-8xl mb-2">Consejo</h1>
-      <p class="text-white text-2xl text-center px-4">
-        Divide en secciones (intro, problema, solución, cierre) y cambia ligeramente
-        volumen o ritmo en cada transición.
-      </p>
-    </div>
-  </div>
-</div>
-
-                </div>
-              </div>
-
-              <!-- Controles -->
-              <button
-                @click="prev"
-                class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full w-9 h-9 grid place-items-center"
-              >
-                ‹
-              </button>
-              <button
-                @click="next"
-                class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full w-9 h-9 grid place-items-center"
-              >
-                ›
-              </button>
-
-              <!-- Dots (paginación por “marco” visible) -->
-              <div
-                class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2"
-              >
-                <template v-for="n in pageCount()">
-                  <button
-                    @click="idx = n-1"
-                    class="w-2.5 h-2.5 rounded-full transition-all"
-                    :class="idx === (n-1) ? 'bg-white w-6' : 'bg-white/50'"
-                  ></button>
-                </template>
-              </div>
-            </div>
-          </div>
-          <!-- Resultados por competencia -->
-                        </div>
-                        <div class="main-tab-content " id="mainCla">
-                                    <!-- Calificación General -->
-          <div class="mt-1 w-full max-w-[44vh] mx-auto lg:max-w-none lg:mt-0">
-            <div class="w-full mt-5 md:mt-0 p-1 md:p-0 h-[5vh] bg-white rounded-lg flex items-center">
-  <h1 class="font-bold text-2xl text-blue-950 flex items-center gap-2">
-    <i class="fa-solid fa-chart-pie text-blue-950"></i>
-    Calificación general
-  </h1>
-</div>
-
-            <div
-              class="mt-3 border-2 border-blue-600 w-full h-[25vh] md:h-[28vh] rounded-lg bg-white flex flex-row p-0 m-0 items-center"
-            >
-              <!-- Columna 1 -->
-              <div
-                class="w-[49%] h-full flex flex-col justify-center items-start pl-4"
-              >
-                <p class="font-bold text-blue-950 text-lg">Nombre:</p>
-                <p class="text-gray-700">Joshua Adiran Mascota</p>
-
-                <p class="font-bold text-blue-950 text-lg mt-2">Rango:</p>
-                <p id="nivelTexto" class="text-gray-700">---</p>
-              </div>
-
-              <!-- Separador -->
-              <div class="w-[1%] h-[80%] border-2 border-blue-600"></div>
-
-              <!-- Columna 3 (gráfico tipo dona) -->
-              <div
-                class="w-[50%] h-full flex flex-col items-center justify-center"
-              >
-                <p class="font-semibold text-gray-800 mb-1">Total</p>
-
-                <div id="graficoTotal" class="grafico-grande w-[65%] h-full flex flex-col items-center justify-center"></div>
-              </div>
-            </div>
-
-            <div
-              class="mt-1  md:mt-6 border-2 border-blue-600 w-full h-[15vh] rounded-lg bg-white flex flex-row items-center justify-between p-0 m-0"
-            >
-              <!-- Izquierda -->
-              <div class="flex flex-col justify-center items-start pl-4">
-                <p class="font-semibold text-gray-800 text-sm">
-                  Calificación del curso
-                </p>
-                <p class="text-2xl font-bold text-gray-700 leading-none"><span id="promGeneral" ></span>%</p>
-              </div>
-
-              <!-- Derecha -->
-              <div class="flex flex-col justify-center items-end pr-4">
-                <p class="font-semibold text-gray-800 text-sm">Categoría</p>
-                <div class="flex items-center gap-2 mt-[2px]">
-                  <i class="fa-solid fa-crown text-green-500 text-lg"></i>
-                 <p id="categoriaTexto" class="font-bold text-lg">---</p>
-                </div>
-              </div>
-            </div>
-          </div>
-<div class="w-full p-1 h-[5vh] bg-white rounded-lg flex items-center mt-5">
-  <h1 class="font-bold text-2xl text-blue-950 flex items-center gap-2">
-    <i class="fa-solid fa-video text-blue-950"></i>
-    Video del Roleplay
-  </h1>
-</div>
-
-          <!-- Contenedor del video -->
-          <div
-            class="mt-3 md:mt-9 border-2 border-gray-400 w-full max-w-[44vh] mx-auto h-[25vh] md:h-[60.5vh] rounded-lg bg-black overflow-hidden flex items-center justify-center lg:max-w-none"
-          >
-          
-            <video
-              src="./assets/video/"
-              controls
-              muted
-              loop
-              class="w-full h-full object-cover rounded-lg"
-            ></video>
-          </div>
-           <!-- Calificación General -->
-                        </div>
-                        <div class="main-tab-content  " id="mainTab">
-                          <div
-            class="mt-5 w-full max-w-[40vh] mb-0 md:mb-0 mx-auto h-auto lg:max-w-none "
-          >
-            <div class="w-full p-1 h-[4vh] md:h-[5vh] md:p-0 bg-white rounded-lg flex items-center">
-  <h1 class="font-bold text-2xl text-blue-950 flex items-center gap-2">
-    <i class="fa-solid fa-user-check text-blue-950"></i>
-    Respuestas del usuario
-  </h1>
-</div>
-
-
-            <div
-              class="mt-[1vh] rounded-lg overflow-hidden w-full max-w-md mx-auto lg:max-w-none"
-            >
-              <table class="w-full  border  bg-white">
-                <thead>
-                  <tr class="bg-blue-950 border-blue-800 text-white">
-                    <th
-                      class="border border-blue-800 py-2 text-center font-semibold text"
-                    >
-                      Correcto
-                    </th>
-                    <th
-                      class="border border-blue-800 py-2 text-center font-semibold"
-                    >
-                      Parcialmente
-                    </th>
-                    <th
-                      class="border border-blue-800 py-2 text-center font-semibold"
-                    >
-                      Incorrecto
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="text-center font-bold text-gray-900">
-                    <td
-                      class="border rounded-2xl border-blue-800 py-3 text-3xl"
-                    >
-                      <span id="bienT"></span>
-                    </td>
-                    <td class="border border-blue-800 py-3 text-3xl">
-                      <span id="momT"></span>
-                    </td>
-                    <td class="border border-blue-800 py-3 text-3xl">
-                      <span id="malT"></span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-
-                <div class="w-full p-1 mt-5 h-[4vh] md:h-[5vh] md:p-0 bg-white rounded-lg flex items-center gap-2">
-  <i class="fa-solid fa-layer-group text-blue-950 text-xl"></i>
-
-  <h1 class="font-bold text-2xl text-blue-950">
-    Clasificación de respuestas
-  </h1>
-</div>
-
-              <div
-                class="overflow-y-auto bg-white max-h-[40vh] lg:max-h-[64vh] scrollbar-hidden"
-              >
-                <!--Tarjetas-->
-                <div class="mt-5 w-full " id="respuestasWrap">
-                  <!-- Tarjeta 1 (Bien) -->
-                  <div
-                    class="w-full bg-white rounded-b-lg border-t-8 border-green-400 px-4 py-0 flex flex-col justify-around shadow-md"
-                  >
-                    <p class="text-lg font-bold font-sans">
-                      Ob1. Es más caro que Ensure Advance
-                    </p>
-                    <div class="py-3">
-                      <p class="text-gray-400 text-sm">
-                        Casec ofrece caseinato de alta biodisponibilidad,
-                        optimizando recuperación por cada peso. Casec ofrece
-                        caseinato de alta biodisponibilidad, optimizando
-                        recuperación por cada peso.
-                      </p>
-                    </div>
-                    <div class="flex items-center justify-end gap-3">
-                      <i
-                        class="fa-solid fa-thumbs-up text-2xl text-green-500"
-                      ></i>
-                      <i class="fa-solid fa-hand text-2xl text-yellow-500"></i>
-                      <i
-                        class="fa-solid fa-thumbs-down text-2xl text-red-500"
-                      ></i>
-                    </div>
-                  </div>
-
-                  <!-- Vista previa difuminada -->
-                  <div id="previewGroup" class="relative">
-                    <div
-                      class="mt-1 w-full bg-white rounded-b-lg border-t-8 border-yellow-400 px-4 py-3 shadow-sm filter blur-[1.5px] opacity-70 overflow-hidden max-h-12 pointer-events-none card--rest"
-                    >
-                      <p class="font-semibold text-sm text-gray-700">
-                        Ob2. No hay estudios locales
-                      </p>
-                    </div>
-                    <div
-                      class="mt-1 w-full bg-white rounded-b-lg border-t-8 border-red-500 px-4 py-3 shadow-sm filter blur-[1.5px] opacity-70 overflow-hidden max-h-12 pointer-events-none card--rest"
-                    >
-                      <p class="font-semibold text-sm text-gray-700">
-                        Ob3. Mi paciente no lo tolera
-                      </p>
-                    </div>
-
-                    <div
-                      class="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-b from-transparent to-white pointer-events-none"
-                    ></div>
-                  </div>
-
-                  <!-- Contenido completo oculto -->
-                  <div id="restCards" class="hidden mt-2 space-y-2">
-                    <div
-                      class="w-full mt-3 bg-white rounded-b-lg border-t-8 border-yellow-400 px-4 py-5 flex flex-col justify-around shadow"
-                    >
-                      <p class="text-lg font-bold font-sans">
-                        Ob2. No hay estudios locales
-                      </p>
-                      <div class="py-3">
-                        <p class="text-gray-400 text-sm">
-                          Hay evidencia regional y guías internacionales; puedo
-                          compartirte un resumen y casos similares.
-                        </p>
-                      </div>
-                      <div class="flex items-center justify-end gap-3">
-                        <i
-                          class="fa-solid fa-thumbs-up text-2xl text-green-500"
-                        ></i>
-                        <i
-                          class="fa-solid fa-hand text-2xl text-yellow-500"
-                        ></i>
-                        <i
-                          class="fa-solid fa-thumbs-down text-2xl text-red-500"
-                        ></i>
-                      </div>
-                    </div>
-
-                    <div
-                      class="w-full bg-white mt-3 rounded-b-lg border-t-8 border-red-500 px-4 py-5 flex flex-col justify-around shadow"
-                    >
-                      <p class="text-lg font-bold font-sans">
-                        Ob3. Mi paciente no lo tolera
-                      </p>
-                      <div class="py-3">
-                        <p class="text-gray-400 text-sm">
-                          (Respuesta incompleta) No se indagó en síntomas ni
-                          alternativas; falta propuesta clara de manejo.
-                        </p>
-                      </div>
-                      <div class="flex items-center justify-end gap-3">
-                        <i
-                          class="fa-solid fa-thumbs-up text-2xl text-green-500"
-                        ></i>
-                        <i
-                          class="fa-solid fa-hand text-2xl text-yellow-500"
-                        ></i>
-                        <i
-                          class="fa-solid fa-thumbs-down text-2xl text-red-500"
-                        ></i>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- Botón mover aquí -->
-                  <div class="flex justify-center mt-3">
-                    <button
-                      id="toggleAll"
-                      class="flex items-center gap-2 text-sm font-semibold border rounded-full px-3 py-1 bg-white hover:bg-gray-50 shadow"
-                    >
-                      <span>Ver todas</span>
-                      <i id="chev" class="fa-solid fa-chevron-down"></i>
-                    </button>
-                  </div>
-                </div>
-                <!--Tarjetas-->
-              </div>
-            </div>
-          </div>
-                        </div>
-                        
-                    </div>
-      <!-- Contenedor principal para web -->
-      <div class="lg:flex lg:flex-wrap lg:gap-6">
-        <!-- Columna izquierda para web -->
-        <div class="lg:w-[calc(47.5%-12px)]">
-
-          <hr class="mt-3" />
-          <!-- Respuestas dadas por el usuario -->
-          
+  <div class="min-h-screen flex items-center px-3 sm:px-4 pb-10 md:pt-0">
+    <main id="content" class="transition-all duration-300 mb-4 w-full">
+      
+      <section class="mt-3 sm:mt-10 rounded-lg w-full bg-white shadow-md mx-auto max-w-7xl">
+        
+        <!-- Header del section -->
+        <div class="p-4 sm:p-5 bg-blue-950 rounded-t-lg w-full">
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-2 sm:mb-4 text-center">
+            PharmaSales Pro
+          </h1>
         </div>
 
-        <!-- Columna derecha para web -->
-        <div class="lg:w-[calc(50%-12px)]">
+        <!-- Subtítulo -->
+        <div class="px-4 sm:px-5 py-3 sm:py-4">
+          <h1 class="text-xl sm:text-2xl font-extrabold text-blue-950 mb-2 flex items-center gap-3 justify-center md:justify-start">
+            <i class="fa-solid fa-chart-line text-blue-950 text-xl sm:text-2xl"></i>
+            Análisis de resultados
+          </h1>
+        </div>
+
+        <!-- Tabs principales -->
+        <div class="main-tabs px-3 sm:px-5 rounded-lg">
+          
+          <div class="main-tab-buttons rounded-t-lg flex-col sm:flex-row">
+            <button class="main-tab-button active text-sm sm:text-base" data-main-tab="mainCom">
+              <i class="fas fa-layer-group"></i> <span class="hidden sm:inline">Por </span>Competencias
+            </button>
+            <button class="main-tab-button text-sm sm:text-base" data-main-tab="mainCla">
+              <i class="fas fa-list-check"></i> Clasificación
+            </button>
+            <button class="main-tab-button text-sm sm:text-base" data-main-tab="mainTab">
+              <i class="fas fa-star-half-alt"></i> <span class="hidden sm:inline">Calificación </span>General
+            </button>
+          </div>
+
+          <!-- ========================================= -->
+          <!-- TAB 1: Por Competencias -->
+          <!-- ========================================= -->
+          <div class="main-tab-content active" id="mainCom">
+            <div class="w-full max-w-[44vh] md:max-w-[54vh] mx-auto lg:max-w-none">
+              
+              <div class="w-full p-2 md:p-0 md:h-[5vh] h-[4vh] bg-white rounded-lg flex items-center gap-2">
+                <i class="fa-solid fa-clipboard-list text-blue-950 text-lg sm:text-xl"></i>
+                <h1 class="font-bold text-lg sm:text-xl md:text-2xl text-blue-950">
+                  Resultados por competencia
+                </h1>
+              </div>
+
+              <!-- Carousel de competencias -->
+              <div v-scope="{
+                idx: 0,
+                total: 4,
+                perView: 1,
+                init(){
+                  this.updatePerView();
+                  window.addEventListener('resize', this.updatePerView);
+                },
+                updatePerView(){
+                  this.perView = window.innerWidth >= 768 ? 2 : 1;
+                  if (this.idx > this.total - this.perView) this.idx = Math.max(0, this.total - this.perView);
+                },
+                next(){
+                  this.idx = Math.min(this.idx + 1, this.total - this.perView);
+                },
+                prev(){
+                  this.idx = Math.max(this.idx - 1, 0);
+                },
+                trackStyle(){
+                  const step = 100 / this.perView;
+                  return `transform: translateX(-${this.idx * step}%);`;
+                },
+                slideStyle(){
+                  return `flex: 0 0 ${100 / this.perView}%;`;
+                },
+                pageCount(){
+                  return Math.max(1, this.total - this.perView + 1);
+                }
+              }" @vue:mounted="init()" class="relative w-full h-[30vh] md:h-[55vh] overflow-hidden rounded-sm">
+                
+                <div class="flex h-full transition-transform duration-500 ease-out" :style="trackStyle()">
+                  
+                  <!-- Slide 1: Conocimiento del producto -->
+                  <div class="p-2" :style="slideStyle()">
+                    <div id="cardCP" class="relative rounded-lg border-2 border-teal-400 cursor-pointer overflow-hidden h-full">
+                      <div id="cardCPInner" class="absolute inset-0 w-full h-full transition-transform duration-700 transform-style-preserve-3d">
+                        <div class="absolute inset-0 flex flex-col items-center justify-between py-6 backface-hidden">
+                          <h1 class="font-bold text-xl sm:text-2xl md:text-3xl mb-[1vh] md:mb-[2vh] text-center mt-1 md:mt-2 px-2">
+                            Conocimiento del producto
+                          </h1>
+                          <h1 class="text-6xl sm:text-7xl md:text-8xl mt-[7vh] md:mt-[6vh] font-extrabold text-black mb-6 md:mb-[10vh]">
+                            <span id="calP"></span>%
+                          </h1>
+                        </div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center rotate-y-180 backface-hidden p-5 text-white" id="cardCPBack">
+                          <h1 class="font-bold text-3xl sm:text-4xl md:text-5xl mb-2">Consejo</h1>
+                          <p class="text-lg sm:text-xl md:text-2xl text-center px-4">
+                            Da un repaso rápido antes de entrar a junta...
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Slide 2: Ritmo -->
+                  <div class="p-2" :style="slideStyle()">
+                    <div id="cardRT" class="relative rounded-lg bg-white border-2 border-amber-500 cursor-pointer overflow-hidden h-full">
+                      <div id="cardRTInner" class="absolute inset-0 w-full h-full transition-transform duration-700 transform-style-preserve-3d">
+                        <div class="absolute inset-0 flex flex-col items-center justify-between py-6 backface-hidden">
+                          <h1 class="font-bold text-xl sm:text-2xl md:text-3xl mb-[4vh] md:mb-[9vh] md:mt-[2vh] text-center px-2">
+                            Ritmo
+                          </h1>
+                          <div class="flex items-end md:mb-[10vh]">
+                            <h1 class="text-6xl sm:text-7xl md:text-8xl mt-[4vh] md:mt-[3vh] font-extrabold text-amber-500 leading-none">
+                              <span id="calR"></span>
+                            </h1>
+                            <p class="text-xl sm:text-2xl text-amber-500 ml-1 mb-2">ppm</p>
+                          </div>
+                        </div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center rotate-y-180 backface-hidden bg-amber-500 p-5">
+                          <h1 class="text-white font-bold text-3xl sm:text-4xl md:text-5xl mb-2">Consejo</h1>
+                          <p class="text-white text-lg sm:text-xl md:text-2xl text-center px-4">
+                            Repite en voz alta el discurso cronometrando un minuto; resume sin perder claridad para entrenar síntesis.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Slide 3: Tono -->
+                  <div class="p-2" :style="slideStyle()">
+                    <div id="cardTN" class="relative rounded-lg bg-white border-2 border-green-400 border-b-8 cursor-pointer overflow-hidden h-full">
+                      <div id="cardTNInner" class="absolute inset-0 w-full h-full transition-transform duration-700 transform-style-preserve-3d">
+                        <div class="absolute inset-0 flex flex-col items-center justify-between py-6 backface-hidden">
+                          <h1 class="font-bold text-xl sm:text-2xl md:text-3xl mb-[2vh] md:mt-[2vh] text-center px-2">
+                            Tono
+                          </h1>
+                          <div class="flex items-end md:mb-[8vh]">
+                            <h1 class="text-6xl sm:text-7xl md:text-8xl mt-[6vh] md:mt-[9vh] font-extrabold text-green-400 leading-none">
+                              <span id="calT"></span>
+                            </h1>
+                            <p class="text-2xl sm:text-3xl text-red-400 ml-1 mb-2">claro</p>
+                          </div>
+                        </div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center rotate-y-180 backface-hidden bg-green-400 p-5">
+                          <h1 class="text-white font-bold text-3xl sm:text-4xl md:text-5xl mb-2">Consejo</h1>
+                          <p class="text-white text-lg sm:text-xl md:text-2xl text-center px-4 p-5">
+                            Asocia cada beneficio con una emoción y usa un tono que la refleje para mejorar el recuerdo.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Slide 4: Modulación -->
+                  <div class="p-2" :style="slideStyle()">
+                    <div id="cardMD" class="relative rounded-lg bg-white border-2 border-teal-400 cursor-pointer overflow-hidden h-full">
+                      <div id="cardMDInner" class="absolute inset-0 w-full h-full transition-transform duration-700 transform-style-preserve-3d">
+                        <div class="absolute inset-0 flex flex-col items-center justify-between py-6 backface-hidden">
+                          <h1 class="font-bold text-xl sm:text-2xl md:text-3xl mb-[2vh] md:mt-[2vh] text-center px-2">
+                            Modulación
+                          </h1>
+                          <div class="flex items-end md:mb-[8vh]">
+                            <h1 class="text-6xl sm:text-7xl md:text-8xl mt-[6vh] md:mt-[9vh] font-extrabold text-teal-400 leading-none">
+                              <span id="calM"></span>
+                            </h1>
+                            <p class="text-2xl sm:text-3xl text-black ml-1 mb-3">claro</p>
+                          </div>
+                        </div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center rotate-y-180 backface-hidden bg-teal-400 p-5">
+                          <h1 class="text-white font-bold text-4xl sm:text-6xl md:text-8xl mb-2">Consejo</h1>
+                          <p class="text-white text-lg sm:text-xl md:text-2xl text-center px-4">
+                            Divide en secciones (intro, problema, solución, cierre) y cambia ligeramente volumen o ritmo en cada transición.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <!-- Controles del carousel -->
+                <button @click="prev" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full w-9 h-9 grid place-items-center text-xl">
+                  ‹
+                </button>
+                <button @click="next" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full w-9 h-9 grid place-items-center text-xl">
+                  ›
+                </button>
+
+                <!-- Dots de paginación -->
+                <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
+                  <template v-for="n in pageCount()">
+                    <button @click="idx = n-1" class="w-2.5 h-2.5 rounded-full transition-all"
+                      :class="idx === (n-1) ? 'bg-white w-6' : 'bg-white/50'"></button>
+                  </template>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ========================================= -->
+          <!-- TAB 2: Clasificación -->
+          <!-- ========================================= -->
+          <div class="main-tab-content" id="mainCla">
+            <div class="mt-1 w-full max-w-[44vh] mx-auto lg:max-w-none lg:mt-0">
+              
+              <div class="w-full mt-5 md:mt-0 p-2 md:p-0 h-auto md:h-[5vh] bg-white rounded-lg flex items-center">
+                <h1 class="font-bold text-lg sm:text-xl md:text-2xl text-blue-950 flex items-center gap-2">
+                  <i class="fa-solid fa-chart-pie text-blue-950"></i>
+                  Calificación general
+                </h1>
+              </div>
+
+              <!-- Card de calificación general -->
+              <div class="mt-3 border-2 border-blue-600 w-full min-h-[25vh] rounded-lg bg-white flex flex-col sm:flex-row p-0 m-0 items-center">
+                
+                <!-- Columna 1: Info del usuario -->
+                <div class="w-full sm:w-[49%] h-full flex flex-col justify-center items-start p-4 sm:pl-4">
+                  <p class="font-bold text-blue-950 text-base sm:text-lg">Nombre:</p>
+                  <p class="text-gray-700 text-sm sm:text-base">Joshua Adiran Mascota</p>
+
+                  <p class="font-bold text-blue-950 text-base sm:text-lg mt-2">Rango:</p>
+                  <p id="nivelTexto" class="text-gray-700 text-sm sm:text-base">---</p>
+                </div>
+
+                <!-- Separador -->
+                <div class="w-full sm:w-[1%] h-px sm:h-[80%] border-t-2 sm:border-t-0 sm:border-l-2 border-blue-600"></div>
+
+                <!-- Columna 3: Gráfico dona -->
+                <div class="w-full sm:w-[50%] h-full flex flex-col items-center justify-center p-4">
+                  <p class="font-semibold text-gray-800 mb-1 text-sm sm:text-base">Total</p>
+                  <div id="graficoTotal" class="grafico-grande w-[65%] h-full flex flex-col items-center justify-center"></div>
+                </div>
+              </div>
+
+              <!-- Card de categoría -->
+              <div class="mt-3 sm:mt-6 border-2 border-blue-600 w-full min-h-[15vh] rounded-lg bg-white flex flex-row items-center justify-between px-4 py-3">
+                <div class="flex flex-col justify-center items-start">
+                  <p class="font-semibold text-gray-800 text-xs sm:text-sm">Calificación del curso</p>
+                  <p class="text-xl sm:text-2xl font-bold text-gray-700 leading-none"><span id="promGeneral"></span>%</p>
+                </div>
+
+                <div class="flex flex-col justify-center items-end">
+                  <p class="font-semibold text-gray-800 text-xs sm:text-sm">Categoría</p>
+                  <div class="flex items-center gap-2 mt-[2px]">
+                    <i class="fa-solid fa-crown text-green-500 text-base sm:text-lg"></i>
+                    <p id="categoriaTexto" class="font-bold text-base sm:text-lg">---</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Título video -->
+              <div class="w-full p-2 h-auto md:h-[5vh] md:p-0 bg-white rounded-lg flex items-center mt-5">
+                <h1 class="font-bold text-lg sm:text-xl md:text-2xl text-blue-950 flex items-center gap-2">
+                  <i class="fa-solid fa-video text-blue-950"></i>
+                  Video del Roleplay
+                </h1>
+              </div>
+
+              <!-- Video -->
+              <div class="mt-3 sm:mt-9 border-2 border-gray-400 w-full aspect-video rounded-lg bg-black overflow-hidden flex items-center justify-center">
+                <video src="./assets/video/" controls muted loop class="w-full h-full object-cover rounded-lg"></video>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ========================================= -->
+          <!-- TAB 3: Respuestas del usuario -->
+          <!-- ========================================= -->
+          <div class="main-tab-content" id="mainTab">
+            <div class="mt-5 w-full max-w-[40vh] mb-0 md:mb-0 mx-auto h-auto lg:max-w-none">
+              
+              <div class="w-full p-2 h-auto md:h-[5vh] md:p-0 bg-white rounded-lg flex items-center">
+                <h1 class="font-bold text-lg sm:text-xl md:text-2xl text-blue-950 flex items-center gap-2">
+                  <i class="fa-solid fa-user-check text-blue-950"></i>
+                  Respuestas del usuario
+                </h1>
+              </div>
+
+              <!-- Tabla de respuestas -->
+              <div class="mt-[1vh] rounded-lg overflow-hidden w-full max-w-md mx-auto lg:max-w-none">
+                <table class="w-full border bg-white">
+                  <thead>
+                    <tr class="bg-blue-950 border-blue-800 text-white">
+                      <th class="border border-blue-800 py-2 text-center font-semibold text-xs sm:text-sm md:text-base">
+                        Correcto
+                      </th>
+                      <th class="border border-blue-800 py-2 text-center font-semibold text-xs sm:text-sm md:text-base">
+                        Parcialmente
+                      </th>
+                      <th class="border border-blue-800 py-2 text-center font-semibold text-xs sm:text-sm md:text-base">
+                        Incorrecto
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="text-center font-bold text-gray-900">
+                      <td class="border rounded-2xl border-blue-800 py-3 text-2xl sm:text-3xl">
+                        <span id="bienT"></span>
+                      </td>
+                      <td class="border border-blue-800 py-3 text-2xl sm:text-3xl">
+                        <span id="momT"></span>
+                      </td>
+                      <td class="border border-blue-800 py-3 text-2xl sm:text-3xl">
+                        <span id="malT"></span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- Título clasificación -->
+                <div class="w-full p-2 mt-5 h-auto md:h-[5vh] md:p-0 bg-white rounded-lg flex items-center gap-2">
+                  <i class="fa-solid fa-layer-group text-blue-950 text-lg sm:text-xl"></i>
+                  <h1 class="font-bold text-lg sm:text-xl md:text-2xl text-blue-950">
+                    Clasificación de respuestas
+                  </h1>
+                </div>
+
+                <!-- Contenedor scrolleable de tarjetas -->
+                <div class="overflow-y-auto bg-white max-h-[40vh] lg:max-h-[64vh] scrollbar-hidden">
+                  <div class="mt-5 w-full" id="respuestasWrap">
+                    <!-- Las tarjetas se generan dinámicamente por JavaScript -->
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
 
         </div>
-      </div>
-    </section>
-   </div>
-    <div class="block md:hidden" v-scope="FooterMv()"></div>
-    <!--Movil-->
-  </body>
+      </section>
+    </main>
+  </div>
+
+  <!-- Scripts -->
   <script type="module" src="./js/main.js"></script>
   <script src="./js/resultado/res.js"></script>
-    <script src="./js/components/slide.js"></script>
+  <script src="./js/components/slide.js"></script>
+  
   <script>
-   // Tabs con delegación (soporta contenido dinámico)
-(function initMainTabs(){
-  const root = document.querySelector('.main-tabs');
-  if (!root) return;
+    // Sistema de tabs
+    (function initMainTabs() {
+      const root = document.querySelector('.main-tabs');
+      if (!root) return;
 
-  // Normaliza estado inicial: oculta todos menos el que tenga .active
-  const panels = [...root.querySelectorAll('.main-tab-content')];
-  const activePanel = root.querySelector('.main-tab-content.active') || panels[0];
-  panels.forEach(p => p.classList.add('hidden'));
-  activePanel?.classList.remove('hidden');
+      const panels = [...root.querySelectorAll('.main-tab-content')];
+      const activePanel = root.querySelector('.main-tab-content.active') || panels[0];
+      panels.forEach(p => p.classList.add('hidden'));
+      activePanel?.classList.remove('hidden');
 
-  root.addEventListener('click', (e) => {
-    const btn = e.target.closest('.main-tab-button');
-    if (!btn || !root.contains(btn)) return;
+      root.addEventListener('click', (e) => {
+        const btn = e.target.closest('.main-tab-button');
+        if (!btn || !root.contains(btn)) return;
 
-    // 1) Botones: active solo en el clickeado
-    root.querySelectorAll('.main-tab-button.active')
-        .forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+        root.querySelectorAll('.main-tab-button.active').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-    // 2) Paneles: ocultar todos
-    const allPanels = root.querySelectorAll('.main-tab-content');
-    allPanels.forEach(p => {
-      p.classList.add('hidden');
-      p.classList.remove('active');
-    });
+        const allPanels = root.querySelectorAll('.main-tab-content');
+        allPanels.forEach(p => {
+          p.classList.add('hidden');
+          p.classList.remove('active');
+        });
 
-    // 3) Mostrar el panel objetivo (por data-main-tab o índice)
-    let targetId = (btn.dataset.mainTab || '').trim();
-    let targetPanel = targetId ? root.querySelector(`#${targetId}`) : null;
+        let targetId = (btn.dataset.mainTab || '').trim();
+        let targetPanel = targetId ? root.querySelector(`#${targetId}`) : null;
 
-    if (!targetPanel) {
-      // Fallback por orden si no hay data o id inválido
-      const buttons = [...root.querySelectorAll('.main-tab-button')];
-      const idx = Math.max(0, buttons.indexOf(btn));
-      targetPanel = allPanels[idx] || allPanels[0];
-    }
+        if (!targetPanel) {
+          const buttons = [...root.querySelectorAll('.main-tab-button')];
+          const idx = Math.max(0, buttons.indexOf(btn));
+          targetPanel = allPanels[idx] || allPanels[0];
+        }
 
-    targetPanel?.classList.remove('hidden');
-    targetPanel?.classList.add('active');
-  });
-})();
-
+        targetPanel?.classList.remove('hidden');
+        targetPanel?.classList.add('active');
+      });
+    })();
   </script>
+
+</body>
 </html>

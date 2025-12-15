@@ -1,5 +1,5 @@
 // === Config ===
-const FORCE_COLLAPSED_ON_LOAD = true; // true = siempre inicia pequeño; false = solo por defecto
+const FORCE_COLLAPSED_ON_LOAD = true;
 
 // === Helpers ===
 function applyCollapsedState(collapsed) {
@@ -13,34 +13,61 @@ function applyCollapsedState(collapsed) {
 
 function setCollapsed(collapsed) {
   applyCollapsedState(collapsed);
-  // Si quieres persistir el toggle del usuario, guarda siempre;
-  // si fuerzas colapsado, igual lo guardamos para coherencia de la UI.
   localStorage.setItem('sidebarCollapsed', String(collapsed));
+}
+
+// Función para cerrar sidebar móvil
+function closeMobileSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('overlay');
+  sidebar?.classList.remove('mobile-open');
+  overlay?.classList.remove('active');
+  document.body.classList.remove('sidebar-open');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   // Decide estado inicial
   let collapsed;
   if (FORCE_COLLAPSED_ON_LOAD) {
-    collapsed = true;                    // forzar pequeño SIEMPRE
+    collapsed = true;
   } else {
     const saved = localStorage.getItem('sidebarCollapsed');
-    collapsed = (saved === null) ? true  // por defecto pequeño si no hay preferencia
-                                 : (saved === 'true');
+    collapsed = (saved === null) ? true : (saved === 'true');
   }
   setCollapsed(collapsed);
 
-  // Aplicar a sidebars que aparezcan después (contenido dinámico)
+  // Aplicar a sidebars que aparezcan después
   const mo = new MutationObserver(() => applyCollapsedState(
     document.body.classList.contains('sidebar-collapsed')
   ));
   mo.observe(document.documentElement, { childList: true, subtree: true });
 
-  // Delegación de clicks (dinámico)
+  // Variables de control
+  let isNavigating = false;
+
+  // Listener para menu items en móvil
   document.addEventListener('click', (e) => {
+    const menuLink = e.target.closest('.sidebar .menu-item');
+    if (menuLink && window.innerWidth <= 768) {
+      isNavigating = true;
+      setTimeout(() => {
+        closeMobileSidebar();
+        isNavigating = false;
+      }, 150);
+      return; // Dejar que el link funcione
+    }
+  }, true); // CAPTURE PHASE - se ejecuta primero
+
+  // Resto de los listeners
+  document.addEventListener('click', (e) => {
+    // Si está navegando, ignorar otros clicks
+    if (isNavigating) return;
+
     // Toggle desktop
     const toggleBtn = e.target.closest('#toggle-btn, [data-action="toggle-sidebar"]');
     if (toggleBtn) {
+      e.preventDefault();
+      e.stopPropagation();
       const current = document.body.classList.contains('sidebar-collapsed');
       setCollapsed(!current);
       return;
@@ -49,6 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Toggle móvil
     const mobileToggle = e.target.closest('#mobile-toggle, [data-action="toggle-sidebar-mobile"]');
     if (mobileToggle) {
+      e.preventDefault();
+      e.stopPropagation();
       const sidebar = document.querySelector('.sidebar');
       const overlay = document.getElementById('overlay');
       if (sidebar) {
@@ -62,10 +91,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cerrar por overlay
     const overlayClick = e.target.closest('#overlay');
     if (overlayClick) {
-      const sidebar = document.querySelector('.sidebar');
-      overlayClick.classList.remove('active');
-      sidebar?.classList.remove('mobile-open');
-      document.body.classList.remove('sidebar-open');
+      e.preventDefault();
+      e.stopPropagation();
+      closeMobileSidebar();
       return;
     }
   });
@@ -73,10 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Cerrar sidebar móvil si pasa a desktop
   window.addEventListener('resize', () => {
     if (window.innerWidth > 768) {
-      document.querySelectorAll('.sidebar').forEach(sb => sb.classList.remove('mobile-open'));
-      const overlay = document.getElementById('overlay');
-      overlay?.classList.remove('active');
-      document.body.classList.remove('sidebar-open');
+      closeMobileSidebar();
     }
   });
 });
