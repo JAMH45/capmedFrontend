@@ -18,7 +18,7 @@ const listaObjecciones = Object.values(data.docpack.objecciones);
 
 objeciones = data.docpack.objecciones;
 console.log(objeciones);
-
+/*
 (async () => {
   try {
     console.log(objeciones);
@@ -65,7 +65,7 @@ console.log(objeciones);
   }
 })();
 console.log(objeciones);
-
+*/
 async function consultarIa(text) {
   let prompt = `Te voy a enviar unas preguntas a continuacion, tu tarea es reformular esas preguntas a un tono mas natural y coloquial con unas 50 palabras por duda como si fuera un medico amable e interesado en el producto. Tienes que regresarme cada pregunta entre []. Ejemplo duda: "No tengo suficiente experiencia con inhibidores de miosina cardíaca.” Tu me regresas: "[La verdad no tengo suficiente experiencia con inhibidores de miosina cardiaca. ¿Como puedo saber que es bueno?]"
 dudas:

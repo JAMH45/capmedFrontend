@@ -199,76 +199,183 @@ let isRunning = true;
 let pClave = [];
 let respuesta = [];
 let hist = [];
-async function ciclo() {
-  await habla(txtHabla);
-  delay(5000);
-  const ejecutarCiclo = async () => {
-    try {
-      iniciarCuentaRegresiva(30);
-      cambioDeTexto(2);
-      let texto = await iniciarReconocimientoVoz();
-      numeroPalabras = contarPalabras(texto);
-      calReco = calReco + numeroPalabras;
-      console.log(calReco);
-      respuestaGemini = await evaluarTexto2(texto, pClave);
-      console.log(respuestaGemini);
-      let calTemp = extraerCalificaciones(respuestaGemini);
-      console.log("calTemp: " + calTemp);
-      retro = evaluarProducto(
-        calTemp.calReco,
-        calTemp.calC,
-        txtHabla,
-        resActual,
-        texto
-      );
-      caliCono = caliCono + parseInt(calTemp.calReco);
-      calMod = calMod + parseInt(calTemp.calC);
-      console.log(caliCono + " " + calMod);
-      resRestro = obtenerRetroPorCalificacion(calTemp.calReco, resActual);
-      console.log("resRetro: " + resRestro);
-      if (!pre) {
-        agregarAHist(objtxt.titulo, texto, parseInt(calTemp.calReco));
-        guardarRetro(
-          objtxt.titulo,
-          objtxt.objeccion,
-          objtxt.argumento,
-          resRestro
-        );
-      }
-      cambioDeTexto(1);
-      if (segundaFase) {
-        console.log(listaRetro);
+const cicloCtrl = {
+  running: false,
+  paused: false,
+  stopped: false,
+  _resumeResolve: null,
 
-        await habla(
-          "No hay más objeciones, la práctica ha sido finalizada. " +
-            "Ahora pasaré a darte tu retroalimentación por cada una de tus respuestas a mis objeciones. " +
-            "Presiona el botón azul para continuar."
-        );
-        isRunning = false;
-        btnStart.disabled = false;
-        restaurarBtnStart();
-        return;
-      }
-      objtxt = obtenerObjeccionActual();
-      hilo = objtxt.argumento;
-      txtHabla = objtxt.objeccion;
-      resActual = objtxt.respuestas;
-      pClave = objtxt.pClaves;
-      incrementarProgreso();
-      await habla(txtHabla);
-      await delay(2000);
-      avanzarObjeccion();
-      pre = false;
-      if (isRunning) {
-        await ejecutarCiclo();
-      }
-    } catch (err) {
-      console.error("Error en ejecutarCiclo:", err);
+  pause() {
+    this.paused = true;
+  },
+
+  resume() {
+    this.paused = false;
+    if (this._resumeResolve) {
+      this._resumeResolve();
+      this._resumeResolve = null;
     }
-  };
+  },
 
-  await ejecutarCiclo();
+  stop() {
+    this.stopped = true;
+    this.paused = false;
+    if (this._resumeResolve) {
+      this._resumeResolve();
+      this._resumeResolve = null;
+    }
+  },
+};
+let cicloActivo = false;
+
+const btnPause = document.getElementById("btnPause");
+// Punto de control: si está pausado, se queda aquí hasta resume()
+btnPause.onclick = () => {
+  if (!cicloActivo) return;
+
+  if (!cicloCtrl.paused) {
+    // ⏸ PAUSAR
+    cicloCtrl.pause();
+
+    btnPause.title = "Reanudar";
+    btnPause.innerHTML = `
+      <i class="bi bi-play-fill text-lg"></i>
+      <span class="sr-only">Reanudar</span>
+    `;
+
+    // 🔇 si estaba grabando, corta el mic
+    if (isRecordingWS) {
+      detenerReconocimientoVozWS();
+    }
+  } else {
+    // ▶️ REANUDAR
+    cicloCtrl.resume();
+
+    btnPause.title = "Pausar";
+    btnPause.innerHTML = `
+      <i class="bi bi-pause-fill text-lg"></i>
+      <span class="sr-only">Pausar</span>
+    `;
+  }
+};
+
+async function esperarSiPausado() {
+  if (cicloCtrl.stopped) throw new Error("Ciclo detenido");
+  if (!cicloCtrl.paused) return;
+
+  await new Promise((resolve) => {
+    cicloCtrl._resumeResolve = resolve;
+  });
+
+  if (cicloCtrl.stopped) throw new Error("Ciclo detenido");
 }
+async function delayPausable(ms) {
+  const step = 100; // revisa pausa cada 100ms
+  let elapsed = 0;
+  while (elapsed < ms) {
+    await esperarSiPausado();
+    const chunk = Math.min(step, ms - elapsed);
+    await new Promise((r) => setTimeout(r, chunk));
+    elapsed += chunk;
+  }
+}
+
+async function ciclo() {
+  cicloCtrl.running = true;
+  cicloCtrl.stopped = false;
+   cicloActivo = true;
+  btnPause.disabled = false;
+
+  try {
+    await esperarSiPausado();
+    await habla(txtHabla);
+
+    await delayPausable(5000);
+
+    const ejecutarCiclo = async () => {
+      await esperarSiPausado();
+
+      try {
+        iniciarCuentaRegresiva(30);
+        cambioDeTexto(2);
+
+        await esperarSiPausado();
+        let texto = await iniciarReconocimientoVoz(); // si quieres pausa DURANTE escucha, te digo abajo cómo
+
+        await esperarSiPausado();
+        numeroPalabras = contarPalabras(texto);
+        calReco = calReco + numeroPalabras;
+
+        respuestaGemini = await evaluarTexto2(texto, pClave);
+        let calTemp = extraerCalificaciones(respuestaGemini);
+
+        retro = evaluarProducto(
+          calTemp.calReco,
+          calTemp.calC,
+          txtHabla,
+          resActual,
+          texto
+        );
+
+        caliCono = caliCono + parseInt(calTemp.calReco);
+        calMod = calMod + parseInt(calTemp.calC);
+
+        resRestro = obtenerRetroPorCalificacion(calTemp.calReco, resActual);
+
+        if (!pre) {
+          agregarAHist(objtxt.titulo, texto, parseInt(calTemp.calReco));
+          guardarRetro(
+            objtxt.titulo,
+            objtxt.objeccion,
+            objtxt.argumento,
+            resRestro
+          );
+        }
+
+        cambioDeTexto(1);
+
+        if (segundaFase) {
+          await habla(
+            "No hay más objeciones, la práctica ha sido finalizada. " +
+              "Ahora pasaré a darte tu retroalimentación por cada una de tus respuestas a mis objeciones. " +
+              "Presiona el botón azul para continuar."
+          );
+          isRunning = false;
+          btnStart.disabled = false;
+          restaurarBtnStart();
+          return;
+        }
+
+        objtxt = obtenerObjeccionActual();
+        hilo = objtxt.argumento;
+        txtHabla = objtxt.objeccion;
+        resActual = objtxt.respuestas;
+        pClave = objtxt.pClaves;
+
+        incrementarProgreso();
+
+        await esperarSiPausado();
+        await habla(txtHabla);
+
+        await delayPausable(2000);
+
+        avanzarObjeccion();
+        pre = false;
+
+        if (isRunning && !cicloCtrl.stopped) {
+          await ejecutarCiclo();
+        }
+      } catch (err) {
+        console.error("Error en ejecutarCiclo:", err);
+      }
+    };
+
+    await ejecutarCiclo();
+  } finally {
+    cicloCtrl.running = false;
+  }
+}
+
 function restaurarBtnStart() {
   const btn = document.getElementById("btnStart");
   if (!btn) return;
@@ -301,54 +408,73 @@ function restaurarBtnStart() {
 }
 
 async function ciclo2() {
-  console.log("📋 listaRetro en ciclo2:", listaRetro);
+  try {
+    await esperarSiPausado();
 
-  if (!Array.isArray(listaRetro) || listaRetro.length === 0) {
-    await habla("Por el momento no tengo retroalimentaciones registradas.");
-    return;
+    console.log("📋 listaRetro en ciclo2:", listaRetro);
+
+    if (!Array.isArray(listaRetro) || listaRetro.length === 0) {
+      await esperarSiPausado();
+      await habla("Por el momento no tengo retroalimentaciones registradas.");
+      return;
+    }
+
+    await esperarSiPausado();
+    cambioDeTexto(3);
+
+    // Si esto no es async, igual el checkpoint sirve
+    await esperarSiPausado();
+    cerrarWS();
+
+    const ordinales = [
+      "primera",
+      "segunda",
+      "tercera",
+      "cuarta",
+      "quinta",
+      "sexta",
+      "séptima",
+      "octava",
+      "novena",
+      "décima",
+    ];
+
+    for (let i = 0; i < listaRetro.length; i++) {
+      await esperarSiPausado();
+
+      const item = listaRetro[i];
+      const ord = ordinales[i] || `${i + 1}ª`;
+      if (!item) continue;
+
+      const objeccion = item.titulo || "sin texto de objeción registrado";
+      const retro = item.retroalimentacion || "sin retroalimentación registrada";
+
+      // 🎙️ Voz: objeción
+      await esperarSiPausado();
+      await habla(`Mi ${ord} objeción fue: ${objeccion}`);
+
+      // ⏳ pausa-friendly
+      await delayPausable(1000);
+
+      // 🎙️ Voz: retro
+      await esperarSiPausado();
+      await habla(`${retro}`);
+
+      await delayPausable(1000);
+    }
+
+    await esperarSiPausado();
+    await habla(
+      "Estas fueron todas las retroalimentaciones. Pasaremos al panel para que puedas ver más a detalle la información que te acabo de dar."
+    );
+
+    await esperarSiPausado();
+    cordinarFinal();
+  } catch (err) {
+    console.warn("ciclo2 interrumpido:", err?.message || err);
   }
-  cambioDeTexto(3);
-  cerrarWS();
-
-  const ordinales = [
-    "primera",
-    "segunda",
-    "tercera",
-    "cuarta",
-    "quinta",
-    "sexta",
-    "séptima",
-    "octava",
-    "novena",
-    "décima",
-  ];
-
-  // Recorremos cada retro
-  for (let i = 0; i < listaRetro.length; i++) {
-    const item = listaRetro[i];
-    const ord = ordinales[i] || `${i + 1}ª`;
-
-    // Por si acaso viene algo raro
-    if (!item) continue;
-
-    const objeccion = item.titulo || "sin texto de objeción registrado";
-    const argumento = item.argumento || "sin argumento registrado";
-    const retro = item.retroalimentacion || "sin retroalimentación registrada";
-
-    // Lo que dices en voz
-    await habla(`Mi ${ord} objeción fue: ${objeccion}`);
-    await delay(1000);
-    await habla(`${retro}`);
-    await delay(1000);
-  }
-
-  // Mensaje final
-  await habla(
-    "Estas fueron todas las retroalimentaciones. Pasaremos al panel para que puedas ver más a detalle la información que te acabo de dar."
-  );
-
-  cordinarFinal();
 }
+
 
 function cordinarFinal() {
   caliCono = caliCono / 4;
@@ -372,7 +498,7 @@ function cordinarFinal() {
   // respuesta ES un array
   sessionStorage.setItem("dataSig", JSON.stringify(respuesta));
   console.log(sessionStorage.getItem("dataSig"));
-  
+
   window.location.href = "./resultado.html";
 }
 
@@ -495,22 +621,6 @@ function random(min, max) {
 
 //temporales
 //Funciones nuevas
-function cambiarTexto(textoUsuario, hilo2 = "Presentación del producto") {
-  let textoU = `Eres un coach evaluador. Califica la respuesta del usuario comparándola con este argumento base: ${hilo2}.
-Debes generar EXACTAMENTE dos líneas:
-1) Una calificación dentro de llaves la cual evaluara la relacion de la respuesta con el argumento base Ejemplo: {85}
-2) Una calificación dentro de corchetes la cual evaluara ortografia, sintaxis y coehrencia el texto sin tomar en cuenta el argumento.  Ejemplo: [90]
-Reglas:
-- NO expliques qué significan las calificaciones.
-- NO agregues títulos, notas, ni texto adicional.
-- Si la respuesta del usuario no se relaciona con el argumento base:
-  {0}
-  [0]
-Respuesta del usuario: ${textoUsuario}
-`;
-  console.log("fUNCION CAMBIAR TEXTO:", textoU);
-  return textoU;
-}
 
 function extraerLlaves(texto) {
   // Busca el primer contenido entre llaves
@@ -730,18 +840,13 @@ function cambioDeTexto(caso) {
 
 async function evaluarTexto2(texto, palabrasClave) {
   // Si no hay palabras clave → calificación perfecta
-  console.log("recibo");
+
   console.log(texto);
   console.log(palabrasClave);
   console.log("final");
 
   if (!palabrasClave || palabrasClave.length === 0) {
     return `{100}\n[100]`;
-  }
-
-  if (!texto) {
-    let numero = Math.floor(Math.random() * (100 - 70 + 1)) + 70;
-    return `{${numero}}\n[${numero - 4}]`;
   }
 
   const t = texto.toLowerCase();
