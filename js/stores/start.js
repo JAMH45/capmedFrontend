@@ -1,6 +1,14 @@
+// ============================================
+// DETECCIÓN DE DISPOSITIVO Y CONFIGURACIÓN
+// ============================================
+const isMobile = window.innerWidth < 768;
+
+// Referencias a botones (manejo de nulls)
 const btnStart = document.getElementById("btnStart");
 const btnStart2 = document.getElementById("btnStart2");
 const btnStartMv = document.getElementById("iniciarMv");
+const btnStart2Mv = document.getElementById("btnStart2Mv");
+
 const totalObjeciones = objeciones.length;
 let idTextoBot;
 let cuadroTexto;
@@ -19,21 +27,27 @@ let segundaFase = false;
 let listaObj = [];
 let dataSig = [];
 
-btnStart2.addEventListener("click", inciarWeb);
-btnStart.addEventListener("click", inciarWeb);
-btnStartMv.addEventListener("click", inciarMovil);
+// Event Listeners con verificación de existencia
+if (btnStart2) btnStart2.addEventListener("click", inciarWeb);
+if (btnStart) btnStart.addEventListener("click", inciarWeb);
+if (btnStartMv) btnStartMv.addEventListener("click", inciarMovil);
+if (btnStart2Mv) btnStart2Mv.addEventListener("click", inciarMovil);
 
 let mediaElement;
 let texto = saludo;
+
 async function inciarWeb() {
   if (segundaFase) {
     ciclo2();
   } else {
-    btnStart.classList.remove("btn-animando");
+    if (btnStart) btnStart.classList.remove("btn-animando");
+    
     mediaElement = document.getElementById("mediaElementWb");
     agregarClase("mensajeInicio", "hidden");
     quitarClase("loadWb", "hidden");
-    quitarClase("iniciarMv", "btn-estado");
+    if (document.getElementById("iniciarMv")) {
+      quitarClase("iniciarMv", "btn-estado");
+    }
 
     mico = ".btn-estado";
     setEstadoBoton("espera", mico);
@@ -41,109 +55,118 @@ async function inciarWeb() {
     tabla = "tablaObjWeb";
 
     cuadroTexto = "textoUsuarioWb";
+    
     conectarWS();
     await iniciarHeyGen();
     ciclo();
   }
 }
+
 async function inciarMovil() {
-  mico = ".btn-estado";
-  setEstadoBoton("espera", mico);
-  quitarClase("loadMv", "hidden");
-  mediaElement = document.getElementById("mediaElementMv");
-  tabla = "tablaObjMv";
-  cargarObjeciones();
-  idTextoBot = "textoBotMv";
-  cuadroTexto = "textoUsuarioMv";
-  await iniciarHeyGen();
-  testTexto();
+  if (segundaFase) {
+    ciclo2();
+  } else {
+    mico = ".btn-estado";
+    setEstadoBoton("espera", mico);
+    
+    agregarClase("mensajeInicioMv", "hidden");
+    quitarClase("loadMv", "hidden");
+    
+    mediaElement = document.getElementById("mediaElementMv");
+    tabla = "tablaObjMv";
+    idTextoBot = "textoBotMv";
+    cuadroTexto = "textoUsuarioMv";
+    
+    conectarWS();
+    await iniciarHeyGen();
+    ciclo();
+  }
 }
 
 async function iniciarHeyGen() {
-  cambiarEstatusColor("estatusUser", "estatusUsert", "Cargando...", "gris");
+  // Usar IDs según el dispositivo
+  const estatusUserClass = "estatusUser";
+  const estatusUserTextClass = "estatusUsert";
+  const estatusDocClass = "estatusDoc";
+  const estatusDocTextClass = "estatusDoct";
 
-  cambiarEstatusColor("estatusDoc", "estatusDoct", "Cargando...", "gris");
+  cambiarEstatusColor(estatusUserClass, estatusUserTextClass, "Cargando...", "gris");
+  cambiarEstatusColor(estatusDocClass, estatusDocTextClass, "Cargando...", "gris");
+  
   await getSessionToken();
   await createNewSession(doctorIa, vozIa);
-
   await startStreamingSession();
   await delay(4000);
+  
   agregarClase("loadMv", "hidden");
   agregarClase("loadWb", "hidden");
-  cambiarEstatusColor(
-    "estatusUser",
-    "estatusUsert",
-    "Doctor presentandose",
-    "azul"
-  );
-
-  cambiarEstatusColor(
-    "estatusDoc",
-    "estatusDoct",
-    "Doctor presentandose",
-    "azul"
-  );
+  
+  cambiarEstatusColor(estatusUserClass, estatusUserTextClass, "Doctor presentandose", "azul");
+  cambiarEstatusColor(estatusDocClass, estatusDocTextClass, "Doctor presentandose", "azul");
 
   await habla(respuestaGemini);
 }
+
 function setEstadoBoton(estado, selector = ".btn-estado") {
-  const boton = document.querySelector(selector);
-  if (!boton) return;
-  const texto = boton.querySelector(".texto");
+  const botones = document.querySelectorAll(selector);
+  
+  botones.forEach(boton => {
+    if (!boton) return;
+    
+    const texto = boton.querySelector(".texto");
 
-  // Limpiar clases anteriores
-  boton.classList.remove(
-    "bg-blue-600",
-    "text-white",
-    "hover:bg-blue-700",
-    "bg-gray-200",
-    "text-gray-500",
-    "cursor-not-allowed",
-    "bg-green-500",
-    "hover:bg-green-600"
-  );
-
-  // Aplicar clases según estado
-  if (estado === "iniciar") {
-    boton.classList.add(
+    // Limpiar clases anteriores
+    boton.classList.remove(
       "bg-blue-600",
       "text-white",
       "hover:bg-blue-700",
-      "cursor-pointer"
-    );
-    texto.textContent = "Iniciar";
-    boton.disabled = false;
-  }
-  //espera
-  else if (estado === "espera") {
-    boton.classList.add("bg-gray-200", "text-gray-500", "cursor-not-allowed");
-    boton.disabled = true;
-
-    boton.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" viewBox="0 0 20 20" fill="currentColor">
-        <path d="M10 2a2 2 0 00-2 2v6a2 2 0 104 0V4a2 2 0 00-2-2z" />
-        <path fill-rule="evenodd" d="M5 10a5 5 0 0010 0h1a6 6 0 01-5 5.917V18h2a1 1 0 110 2H7a1 1 0 110-2h2v-2.083A6 6 0 014 10h1z" clip-rule="evenodd" />
-      </svg>
-    `;
-  }
-
-  //  Estado: Habla
-  else if (estado === "habla") {
-    boton.classList.add(
+      "bg-gray-200",
+      "text-gray-500",
+      "cursor-not-allowed",
       "bg-green-500",
-      "text-white",
-      "hover:bg-green-600",
-      "cursor-pointer"
+      "hover:bg-green-600"
     );
-    boton.disabled = true;
 
-    boton.innerHTML = `
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M10 2a2 2 0 00-2 2v6a2 2 0 104 0V4a2 2 0 00-2-2zM4 10a6 6 0 0012 0h-1a5 5 0 11-10 0H4z" clip-rule="evenodd" />
-      </svg>
-    `;
-  }
+    // Aplicar clases según estado
+    if (estado === "iniciar") {
+      boton.classList.add(
+        "bg-blue-600",
+        "text-white",
+        "hover:bg-blue-700",
+        "cursor-pointer"
+      );
+      if (texto) texto.textContent = "Iniciar";
+      boton.disabled = false;
+    }
+    else if (estado === "espera") {
+      boton.classList.add("bg-gray-200", "text-gray-500", "cursor-not-allowed");
+      boton.disabled = true;
+
+      boton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M10 2a2 2 0 00-2 2v6a2 2 0 104 0V4a2 2 0 00-2-2z" />
+          <path fill-rule="evenodd" d="M5 10a5 5 0 0010 0h1a6 6 0 01-5 5.917V18h2a1 1 0 110 2H7a1 1 0 110-2h2v-2.083A6 6 0 014 10h1z" clip-rule="evenodd" />
+        </svg>
+      `;
+    }
+    else if (estado === "habla") {
+      boton.classList.add(
+        "bg-green-500",
+        "text-white",
+        "hover:bg-green-600",
+        "cursor-pointer"
+      );
+      boton.disabled = true;
+
+      boton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 2a2 2 0 00-2 2v6a2 2 0 104 0V4a2 2 0 00-2-2zM4 10a6 6 0 0012 0h-1a5 5 0 11-10 0H4z" clip-rule="evenodd" />
+        </svg>
+      `;
+    }
+  });
 }
+
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -170,6 +193,7 @@ function interrupcion() {
   const indice = Math.floor(Math.random() * interrupciones.length);
   return interrupciones[indice];
 }
+
 let interrupcionBool = false;
 let tipoRespuestaGemini = true;
 let objtxt;
@@ -199,9 +223,11 @@ let isRunning = true;
 let pClave = [];
 let respuesta = [];
 let hist = [];
+
 async function ciclo() {
   await habla(txtHabla);
   delay(5000);
+  
   const ejecutarCiclo = async () => {
     try {
       iniciarCuentaRegresiva(30);
@@ -245,8 +271,17 @@ async function ciclo() {
             "Presiona el botón azul para continuar."
         );
         isRunning = false;
-        btnStart.disabled = false;
-        restaurarBtnStart();
+        
+        // Restaurar botón correcto según dispositivo
+        if (btnStart) {
+          btnStart.disabled = false;
+          restaurarBtnStart();
+        }
+        if (btnStartMv) {
+          btnStartMv.disabled = false;
+          restaurarBtnStartMv();
+        }
+        
         return;
       }
       objtxt = obtenerObjeccionActual();
@@ -269,6 +304,7 @@ async function ciclo() {
 
   await ejecutarCiclo();
 }
+
 function restaurarBtnStart() {
   const btn = document.getElementById("btnStart");
   if (!btn) return;
@@ -297,6 +333,32 @@ function restaurarBtnStart() {
   btn.innerHTML = `
     <i class="bi bi-play-fill text-lg"></i>
     <span class="sr-only">Iniciar</span>
+  `;
+}
+
+function restaurarBtnStartMv() {
+  const btn = document.getElementById("iniciarMv");
+  if (!btn) return;
+
+  btn.className = "";
+  btn.classList.add(
+    "btnStart",
+    "btn-estado",
+    "w-10",
+    "h-10",
+    "grid",
+    "place-items-center",
+    "rounded-xl",
+    "bg-blue-600",
+    "text-white",
+    "hover:bg-blue-700",
+    "active:scale-95",
+    "transition",
+    "animate-pulse"
+  );
+
+  btn.innerHTML = `
+    <i class="bi bi-play-fill text-lg"></i>
   `;
 }
 
@@ -473,8 +535,11 @@ function decidirTipoRetro(calRNum, calCNum) {
   if (calRNum >= 70 && calCNum >= 70) return "media";
   return "mala";
 }
+
 function incrementarProgreso() {
-  const el = document.getElementById("mfProgAct");
+  // Buscar el elemento correcto según el dispositivo
+  let el = document.getElementById("mfProgAct");
+  if (!el) el = document.getElementById("mfProgActMv");
   if (!el) return;
 
   // Convertir el contenido a número
@@ -486,7 +551,7 @@ function incrementarProgreso() {
   // Actualizar el span
   el.textContent = valor;
 }
-//temporales
+
 let contadorCalificacion = 0;
 
 function random(min, max) {
@@ -532,11 +597,12 @@ function procesarTexto(texto) {
 
   return textoLimpio;
 }
+
 function quitarLlavesYContenido(texto) {
   return texto.replace(/\{[^}]*\}/g, "");
 }
 
-let progreso = 0; // lleva el conteo de cuántas filas ya se actualizaron
+let progreso = 0;
 
 function actualizarProgreso() {
   const filas = document.querySelectorAll("#" + tabla + " tbody tr");
@@ -562,10 +628,11 @@ function actualizarProgreso() {
       </svg>
     `;
 
-    progreso++; // avanza al siguiente ítem
+    progreso++;
     setProgreso(progreso, totalObjeciones);
   }
 }
+
 function evaluarProducto(caliR, caliC, obj, arg, res, respuestasAvatar) {
   if (!interrupcionesActivas) return null;
 
@@ -615,15 +682,15 @@ function evaluarProducto(caliR, caliC, obj, arg, res, respuestasAvatar) {
 
   // Guardar en listaObj **todo el paquete**, incluyendo la retro
   listaObj.push({
-    obj: "Ob" + numObj + ". " + obj, // texto de la objeción
-    arg: arg, // argumento base usado en el prompt
-    res: res, // respuesta del usuario
-    calReco: calRNum, // calificación relevancia
-    calC: calCNum, // calificación calidad
-    clasR: clasR, // clasificación por relevancia
-    clasC: clasC, // clasificación por calidad
-    tipoRetro: tipoRetro, // "buena" | "media" | "mala"
-    retro: textoRetro, // texto de la retroalimentación elegida
+    obj: "Ob" + numObj + ". " + obj,
+    arg: arg,
+    res: res,
+    calReco: calRNum,
+    calC: calCNum,
+    clasR: clasR,
+    clasC: clasC,
+    tipoRetro: tipoRetro,
+    retro: textoRetro,
   });
 
   numObj++;
@@ -644,10 +711,10 @@ function evaluarNumero(num) {
 
 function cambiarEstatusColor(contenedorClass, textoClass, text, color) {
   const colores = {
-    gris: "#e5e7eb", // gris pastel
-    amarillo: "#fef9c3", // amarillo pastel
-    azul: "#dbeafe", // azul pastel
-    verde: "#d1fae5", // verde pastel
+    gris: "#e5e7eb",
+    amarillo: "#fef9c3",
+    azul: "#dbeafe",
+    verde: "#d1fae5",
   };
 
   const bgColor = colores[color] || colores.gris;
@@ -661,7 +728,7 @@ function cambiarEstatusColor(contenedorClass, textoClass, text, color) {
   document.querySelectorAll(`.${textoClass}`).forEach((txt) => {
     txt.textContent = text;
     txt.style.color = "black";
-    txt.style.fontSize = "1.25rem"; // text-xs
+    txt.style.fontSize = "1.25rem";
   });
 }
 
@@ -760,8 +827,8 @@ async function evaluarTexto2(texto, palabrasClave) {
     let numero = Math.floor(Math.random() * (100 - 70 + 1)) + 70;
     return `{${numero}}\n[${numero - 4}]`;
   }
-  // Calificación secundaria: 5 a 7 puntos menos, mínimo 0
-  const resta = Math.floor(Math.random() * 3) + 5; // 5, 6 o 7
+  
+  const resta = Math.floor(Math.random() * 3) + 5;
   const score2 = Math.max(score1 - resta, 0);
 
   return `{${score1}}\n[${score2}]`;
