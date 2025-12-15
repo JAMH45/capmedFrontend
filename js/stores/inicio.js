@@ -148,6 +148,10 @@ if (tipo == "agente") {
 
   console.log("OBJECIONES FINALES:", objeciones);
   cargarObjeccionesEnTabla(objeciones);
+  // Recargar después de un delay para asegurar que el DOM móvil esté listo
+  setTimeout(() => {
+    cargarObjeccionesEnTabla(objeciones);
+  }, 200);
   primerRespuesta = data.docpack.saludo;
   doctorIa = data.docpack.id_avatar;
   vozIa = data.docpack.idvox;
@@ -235,65 +239,82 @@ function quitarClase(idElemento, clase) {
   }
 }
 function cargarObjeccionesEnTabla(objeccionesFuente) {
-  // 1) Buscar el tbody
-  const tbody = document.getElementById("tablaObjWeb");
-  if (!tbody) {
-    console.error("No se encontró el tbody con id 'tablaObjWeb'");
+  // Buscar ambas tablas
+  let tbodyWeb = document.getElementById("tablaObjWeb");
+  let tbodyMv = document.getElementById("tablaObjMv");
+  
+  console.log("🔍 Buscando tablas:");
+  console.log("- Web:", tbodyWeb);
+  console.log("- Móvil:", tbodyMv);
+  
+  if (!tbodyWeb && !tbodyMv) {
+    console.error("❌ No se encontró ninguna tabla (ni Web ni Móvil)");
     return;
   }
 
-  // 2) Definir la fuente de objecciones
+  // Definir la fuente de objecciones
   let lista;
 
   if (Array.isArray(objeccionesFuente)) {
-    // Si ya es un array
     lista = objeccionesFuente;
   } else if (objeccionesFuente && typeof objeccionesFuente === "object") {
-    // Si es un objeto tipo {objeccion1: {...}, objeccion2: {...}}
     lista = Object.values(objeccionesFuente);
   } else if (data && data.docpack && data.docpack.objecciones) {
-    // Fallback: usa el docpack
     lista = Object.values(data.docpack.objecciones);
   } else {
-    console.warn("No hay objecciones para cargar:", objeccionesFuente);
+    console.warn("⚠️ No hay objecciones para cargar:", objeccionesFuente);
     return;
   }
 
-  // 3) Limpiar tabla
-  tbody.innerHTML = "";
+  console.log("📋 Lista de objecciones a cargar:", lista);
 
-  // 4) Llenar tabla
-  lista.forEach((obj, idx) => {
-    const tr = document.createElement("tr");
-    tr.className = "border-b border-gray-200";
+  // Función para llenar una tabla
+  const llenarTabla = (tbody) => {
+    if (!tbody) return;
+    
+    tbody.innerHTML = "";
 
-    const titulo = obj.titulo || `Objección ${idx + 1}`;
+    lista.forEach((obj, idx) => {
+      const tr = document.createElement("tr");
+      tr.className = "border-b border-gray-200";
 
-    tr.innerHTML = `
-      <td class="py-2 px-3 text-gray-800">
-        ${titulo}
-      </td>
-      <td class="py-2 px-3 text-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="h-5 w-5 mx-auto text-yellow-500"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-8.75V6a.75.75 0 00-1.5 0v4.25a.75.75 0 00.22.53l2.5 2.5a.75.75 0 101.06-1.06l-2.28-2.22z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </td>
-    `;
+      const titulo = obj.titulo || `Objección ${idx + 1}`;
 
-    tbody.appendChild(tr);
-  });
+      tr.innerHTML = `
+        <td class="py-2 px-3 text-gray-800">
+          ${titulo}
+        </td>
+        <td class="py-2 px-3 text-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 mx-auto text-yellow-500"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-8.75V6a.75.75 0 00-1.5 0v4.25a.75.75 0 00.22.53l2.5 2.5a.75.75 0 101.06-1.06l-2.28-2.22z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </td>
+      `;
 
-  const total = Object.keys(objeccionesFuente).length;
-  document.getElementById("mfProgTot").textContent = total;
+      tbody.appendChild(tr);
+    });
+    
+    console.log(`✅ Tabla llenada con ${lista.length} objecciones`);
+  };
+
+  // Llenar ambas tablas si existen
+  llenarTabla(tbodyWeb);
+  llenarTabla(tbodyMv);
+
+  // Actualizar contador de progreso
+  const total = lista.length;
+  let elProgTot = document.getElementById("mfProgTot");
+  if (!elProgTot) elProgTot = document.getElementById("mfProgTotMv");
+  if (elProgTot) elProgTot.textContent = total;
 }
 
 function getRoleplayDataFromLocalStorage() {
@@ -350,4 +371,36 @@ function getRoleplayDataFromLocalStorage() {
     config
   );
   return null;
+}
+
+// ===== EVENT LISTENERS PARA MODAL MÓVIL =====
+const btnObjecionesMv = document.getElementById("btnObejetionsMv"); // Nota: tiene el typo del HTML
+const modalObjecionesMv = document.getElementById("modalObjeccionesMv");
+const closeModalObjecionesMv = document.getElementById("closeModalObjeccionesMv");
+const okModalObjecionesMv = document.getElementById("okModalObjeccionesMv");
+
+if (btnObjecionesMv) {
+  btnObjecionesMv.addEventListener("click", () => {
+    modalObjecionesMv.classList.remove("hidden");
+  });
+}
+
+if (closeModalObjecionesMv) {
+  closeModalObjecionesMv.addEventListener("click", () => {
+    modalObjecionesMv.classList.add("hidden");
+  });
+}
+
+if (okModalObjecionesMv) {
+  okModalObjecionesMv.addEventListener("click", () => {
+    modalObjecionesMv.classList.add("hidden");
+  });
+}
+
+if (modalObjecionesMv) {
+  modalObjecionesMv.addEventListener("click", (e) => {
+    if (e.target === modalObjecionesMv) {
+      modalObjecionesMv.classList.add("hidden");
+    }
+  });
 }

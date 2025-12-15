@@ -47,7 +47,7 @@ body.sidebar-open {
 }
 
 .overlay.active {
-    opacity: 1;
+    /* opacity: 1; */
     visibility: visible;
 }
 
@@ -545,4 +545,15 @@ body.sidebar-collapsed #content {
 /* (Opcional) En móvil no empujar contenido */
 @media (max-width: 768px) {
   #content { margin-left: 0; }
+}
+
+/* Asegurar que el sidebar esté por encima del overlay en móvil */
+@media (max-width: 768px) {
+  .sidebar {
+    z-index: 1001; /* Mayor que overlay (999) */
+  }
+  
+  .overlay {
+    z-index: 999;
+  }
 }
