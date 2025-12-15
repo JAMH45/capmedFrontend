@@ -1,0 +1,548 @@
+/* ===== Variables CSS ===== */
+:root {
+    --primary-color: #172554;
+    --secondary-color: #334155;
+    --accent-color: #172554;
+    --accent-hover: #2563eb;
+    --white: #ffffff;
+    --text-light: #e2e8f0;
+    --text-muted: #94a3b8;
+    --hover-bg: rgba(59, 130, 246, 0.1);
+    --border-color: #374151;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 70px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --border-radius: 8px;
+}
+
+/* ===== Fuente para el sidebar ===== */
+.sidebar,
+.sidebar * {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ===== Reset y Base ===== */
+* {
+    box-sizing: border-box;
+}
+
+body.sidebar-open {
+    overflow: hidden;
+}
+
+/* ===== Overlay para móvil ===== */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ===== Sidebar Principal ===== */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: var(--sidebar-width);
+    background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+    z-index: 1;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border-right: 1px solid var(--border-color);
+}
+
+/* Estado colapsado */
+.sidebar.collapsed {
+    width: var(--sidebar-collapsed-width);
+}
+
+/* ===== Header del Sidebar ===== */
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    gap: 12px;
+    border-bottom: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+}
+
+.toggle-btn:hover {
+    background: var(--hover-bg);
+    color: var(--accent-color);
+    transform: scale(1.1);
+}
+
+.logo-container {
+    overflow: hidden;
+}
+
+.sidebar-title {
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--white);
+    white-space: nowrap;
+    opacity: 1;
+    transition: var(--transition);
+    background: #dbdbdb;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ===== Navegación ===== */
+.sidebar-nav {
+    flex: 1;
+    padding: 20px 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 2px;
+}
+
+.menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.menu-item-container {
+    position: relative;
+}
+
+/* ===== Items del Menú ===== */
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    position: relative;
+    transition: var(--transition);
+    border-radius: 0 25px 25px 0;
+    margin-right: 20px;
+    white-space: nowrap;
+}
+
+.menu-item i {
+    min-width: 20px;
+    text-align: center;
+    font-size: 18px;
+    transition: var(--transition);
+}
+
+.menu-text {
+    opacity: 1;
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+/* Efectos hover */
+.menu-item:hover {
+    background: var(--hover-bg);
+    color: var(--white);
+    transform: translateX(5px);
+    border-radius: 0 25px 25px 0;
+}
+
+.menu-item:hover i {
+    color: var(--accent-color);
+    transform: scale(1.1);
+}
+
+.menu-item:hover::before {
+    transform: scaleY(1);
+}
+
+/* Borde lateral animado */
+.menu-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: linear-gradient(180deg, var(--accent-color), var(--accent-hover));
+    transform: scaleY(0);
+    transition: var(--transition);
+    border-radius: 0 2px 2px 0;
+}
+
+/* Estado activo */
+.menu-item.active {
+    background: var(--hover-bg);
+    color: var(--white);
+    border-radius: 0 25px 25px 0;
+}
+
+.menu-item.active::before {
+    transform: scaleY(1);
+}
+
+.menu-item.active i {
+    color: var(--accent-color);
+}
+
+/* ===== Tooltips para sidebar colapsado ===== */
+.menu-item-container::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    font-size: 13px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    z-index: 1001;
+}
+
+.sidebar.collapsed .menu-item-container:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ===== Footer del Sidebar ===== */
+.menu-footer {
+    border-top: 1px solid var(--border-color);
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    margin-bottom: 10px;
+    transition: var(--transition);
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--white);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-role {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.logout-item {
+    margin-right: 0;
+    border-radius: var(--border-radius);
+    color: #ef4444;
+}
+
+.logout-item:hover {
+    background: rgba(239, 68, 68, 0.1);
+    transform: translateX(2px);
+}
+
+.logout-item:hover i {
+    color: #ef4444;
+}
+
+/* ===== Estados de colapso ===== */
+.sidebar.collapsed .menu-text,
+.sidebar.collapsed .sidebar-title,
+.sidebar.collapsed .user-details {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+}
+
+.sidebar.collapsed .user-info {
+    justify-content: center;
+}
+
+.sidebar.collapsed .menu-item {
+    justify-content: center;
+    margin-right: 0;
+    border-radius: var(--border-radius);
+}
+
+/* ===== Contenido Principal ===== */
+.content {
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    transition: var(--transition);
+    background: #f8fafc;
+}
+
+.content.expanded {
+    margin-left: var(--sidebar-collapsed-width);
+}
+
+.content-header {
+    background: var(--white);
+    padding: 20px 30px;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: var(--border-radius);
+    color: var(--primary-color);
+    transition: var(--transition);
+}
+
+.mobile-toggle:hover {
+    background: var(--hover-bg);
+    color: var(--accent-color);
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.content-body {
+    padding: 30px;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 1024px) {
+    :root {
+        --sidebar-width: 240px;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        width: var(--sidebar-width);
+    }
+    
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+    
+    .sidebar.collapsed {
+        transform: translateX(-100%);
+        width: var(--sidebar-width);
+    }
+    
+    .sidebar.collapsed.mobile-open {
+        transform: translateX(0);
+        width: var(--sidebar-width);
+    }
+    
+    .content,
+    .content.expanded {
+        margin-left: 0;
+    }
+    
+    .mobile-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Restaurar elementos ocultos en móvil */
+    .sidebar.mobile-open .menu-text,
+    .sidebar.mobile-open .sidebar-title,
+    .sidebar.mobile-open .user-details {
+        opacity: 1;
+        visibility: visible;
+        width: auto;
+    }
+    
+    .sidebar.mobile-open .user-info {
+        justify-content: flex-start;
+    }
+    
+    .sidebar.mobile-open .menu-item {
+        justify-content: flex-start;
+        margin-right: 20px;
+        border-radius: 0 25px 25px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-header {
+        padding: 15px 20px;
+    }
+    
+    .content-body {
+        padding: 20px;
+    }
+    
+    .page-title {
+        font-size: 20px;
+    }
+}
+
+/* ===== Animaciones adicionales ===== */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.menu-item {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* ===== Scrollbar personalizado ===== */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-hover);
+}
+
+/* ===== Estados de enfoque para accesibilidad ===== */
+.toggle-btn:focus,
+.mobile-toggle:focus,
+.menu-item:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* ===== Mejoras visuales adicionales ===== */
+.sidebar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, var(--accent-color), transparent);
+    opacity: 0.3;
+}
+
+/* Ancho del sidebar */
+:root {
+  --sb-w: 280px;   /* expandido */
+  --sb-w-col: 80px;/* colapsado */
+}
+
+/* Empuje del contenido cuando el sidebar está abierto */
+#content {
+  margin-left: var(--sb-w);
+  transition: margin-left .3s ease;
+}
+
+/* Cuando el sidebar esté colapsado */
+body.sidebar-collapsed #content {
+  margin-left: var(--sb-w-col);
+}
+
+/* (Opcional) En móvil no empujar contenido */
+@media (max-width: 768px) {
+  #content { margin-left: 0; }
+}

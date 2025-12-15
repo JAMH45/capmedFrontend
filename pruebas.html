@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba OpenRouter (DevStral) con Fetch</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 20px;
+            padding: 15px;
+            box-sizing: border-box;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: block;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        #responseOutput {
+            white-space: pre-wrap;
+            background: linear-gradient(135deg, #f8f9ff 0%, #f5f7ff 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 5px solid #667eea;
+            min-height: 100px;
+            line-height: 1.6;
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #667eea;
+        }
+        
+        .loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .api-key-input {
+            margin-bottom: 20px;
+        }
+        
+        .api-key-input input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        
+        .api-key-input input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .info {
+            background: #e8f4fc;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #2c5282;
+        }
+        
+        .error {
+            color: #e74c3c;
+            background: #fee;
+            border-left: 5px solid #e74c3c;
+        }
+        
+        .success {
+            background: #f0fff4;
+            border-left: 5px solid #38a169;
+        }
+        
+        .token-info {
+            font-size: 12px;
+            color: #666;
+            text-align: right;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 Prueba OpenRouter con DevStral</h1>
+        
+        <div class="api-key-input">
+            <input type="password" id="apiKeyInput" placeholder="Pega aquí tu API Key de OpenRouter" value="">
+            <div class="info">
+                🔑 Obtén tu API Key en: 
+                <a href="https://openrouter.ai" target="_blank">openrouter.ai</a><br>
+                Usando el modelo: <code>mistralai/devstral-2512:free</code>
+            </div>
+        </div>
+        
+        <textarea id="promptInput" placeholder="Escribe tu consulta para DevStral vía OpenRouter..."></textarea>
+        
+        <button id="askButton">🚀 Enviar Consulta</button>
+        
+        <h2>📝 Respuesta:</h2>
+        <div id="responseOutput">Aquí aparecerá la respuesta del modelo...</div>
+    </div>
+
+<script>
+  // Endpoint de OpenRouter
+  const API_URL = "https://openrouter.ai/api/v1/chat/completions";
+
+  // Opcional (puedes dejarlos vacíos si quieres)
+  const SITE_URL  = "https://mi-sitio-de-pruebas.com"; 
+  const SITE_NAME = "Prueba OpenRouter Frontend";
+
+  // Elementos del DOM
+  const askButton      = document.getElementById('askButton');
+  const promptInput    = document.getElementById('promptInput');
+  const responseOutput = document.getElementById('responseOutput');
+  const apiKeyInput    = document.getElementById('apiKeyInput');
+
+  console.log("✅ Script cargado, elementos:", {
+    askButton, promptInput, responseOutput, apiKeyInput
+  });
+
+  askButton.addEventListener('click', consultarOpenRouter);
+
+  // Enter para enviar (Shift+Enter = salto de línea)
+  promptInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      consultarOpenRouter();
+    }
+  });
+
+  async function consultarOpenRouter() {
+    const prompt = promptInput.value.trim();
+    const apiKey = apiKeyInput.value.trim();
+
+    console.log("🟡 consultando con:", { prompt, apiKeyInicio: apiKey.slice(0, 5) + "..." });
+
+    // Validaciones básicas
+    if (!prompt) {
+      mostrarError('Por favor, escribe una consulta.');
+      return;
+    }
+
+    if (!apiKey) {
+      mostrarError('Por favor, ingresa tu API Key de OpenRouter.');
+      return;
+    }
+
+    // Mostrar estado de carga
+    askButton.disabled = true;
+    askButton.textContent = 'Consultando...';
+    responseOutput.className = 'loading';
+    responseOutput.textContent = 'Conectando con OpenRouter...';
+
+    const requestBody = {
+      model: "mistralai/devstral-2512:free",
+      messages: [
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      temperature: 0.7
+    };
+
+    console.log("📦 requestBody:", requestBody);
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          // Opcionales (puedes comentarlos si dan problema)
+          "HTTP-Referer": SITE_URL,
+          "X-Title": SITE_NAME
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      console.log("📡 Status respuesta:", response.status, response.statusText);
+
+      const rawText = await response.text();
+      console.log("📜 Texto bruto de la API:", rawText);
+
+      let data;
+      try {
+        data = JSON.parse(rawText);
+      } catch (e) {
+        throw new Error("No se pudo parsear la respuesta JSON: " + e.message);
+      }
+
+      if (!response.ok) {
+        console.error("❌ Error en respuesta:", data);
+        throw new Error(data?.error?.message || `Error ${response.status}: ${response.statusText}`);
+      }
+
+      console.log("✅ JSON parseado:", data);
+
+      const respuesta = data?.choices?.[0]?.message?.content;
+
+      if (respuesta) {
+        responseOutput.className = 'success';
+        responseOutput.textContent = respuesta;
+      } else {
+        console.warn("⚠️ Respuesta sin contenido usable:", data);
+        throw new Error('No se recibió contenido en la respuesta del modelo.');
+      }
+
+    } catch (error) {
+      console.error('💥 Error en la consulta:', error);
+      responseOutput.className = 'error';
+      responseOutput.textContent = `❌ Error: ${error.message}`;
+    } finally {
+      askButton.disabled = false;
+      askButton.textContent = '🚀 Enviar Consulta';
+    }
+  }
+
+  function mostrarError(mensaje) {
+    responseOutput.className = 'error';
+    responseOutput.textContent = `⚠️ ${mensaje}`;
+  }
+
+  // Guardar/cargar API Key en localStorage
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedKey = localStorage.getItem('openrouter_api_key');
+    if (savedKey) {
+      apiKeyInput.value = savedKey;
+    }
+    apiKeyInput.addEventListener('input', () => {
+      localStorage.setItem('openrouter_api_key', apiKeyInput.value);
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PharmaSales Pro - Configuración</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://unpkg.com/petite-vue" defer></script>
+
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/menu.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Raleway:wght@600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css"
+    />
+    <!-- Iconos de FontAwesome  -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+    />
+  </head>
+  <style>
+    body {
+      font-family: "Roboto", "Open Sans", sans-serif;
+    }
+  </style>
+  <body>
+    <div class="hidden md:block" v-scope="Header()"></div>
+
+    <main
+      id="content"
+      class="hidden md:block rounden-lg transition-all duration-300 mb-4"
+    >
+      <section
+        class="m-5 pb-6 bg-white rounded-lg shadow-md shadow-black/85 shadow-[0_3px_2px_rgba(0,0,0,0.85)]"
+      >
+        <!-- Título pegado arriba a la izquierda -->
+        <div class="p-5 bg-blue-950 rounded-t-lg w-full text-center">
+          <h1 class="text-4xl font-extrabold text-white mb-4">
+            PharmaSales Pro
+          </h1>
+          <h2 class="text-xl font-bold text-blue-200">Cursos existentes</h2>
+        </div>
+        <div class="px-5 py-4">
+          <div class="flex items-center justify-between gap-3">
+            <h1
+              class="text-2xl font-extrabold text-blue-950 mb-2 flex items-center gap-3"
+            >
+              <i class="fa-solid fa-tools text-blue-950 text-2xl"></i>
+              Administración de Medicamentos
+            </h1>
+
+            <!-- Botón nuevo medicamento -->
+            <button
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              data-open-modal="nuevoMedicamento"
+            >
+              <i class="fa-solid fa-plus"></i>
+              Nuevo medicamento
+            </button>
+          </div>
+        </div>
+
+        <!-- Contenedor centrado con tarjetas rectangulares -->
+       <div
+  class="flex flex-wrap justify-center gap-8"
+  v-scope="CursosMedicamentos()"
+>
+  <template v-for="curso in cursos">
+    <div
+      class="w-[330px]"
+      v-scope="CardWb(
+        curso.slug,
+        curso.name,
+        curso.description,
+        curso.name,
+        curso.href
+      )"
+    ></div>
+  </template>
+</div>
+
+
+      </section>
+    </main>
+    <!--Modal-->
+    <!-- Modal Nuevo Medicamento -->
+    <div
+      id="modalNuevoMedicamento"
+      class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden"
+    >
+      <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+        <h2 class="text-xl font-bold text-blue-950 mb-4">Nuevo medicamento</h2>
+
+        <form id="formNuevoMedicamento" class="space-y-4">
+          <!-- Name -->
+          <div>
+            <label
+              for="medName"
+              class="block text-sm font-semibold text-gray-700 mb-1"
+            >
+              Nombre del medicamento
+            </label>
+            <input
+              type="text"
+              id="medName"
+              name="name"
+              required
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Ej. CASEC, CAMZYOS"
+            />
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label
+              for="medDescription"
+              class="block text-sm font-semibold text-gray-700 mb-1"
+            >
+              Descripción
+            </label>
+            <textarea
+              id="medDescription"
+              name="description"
+              rows="4"
+              required
+              class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Breve descripción del producto, uso o beneficios..."
+            ></textarea>
+          </div>
+
+          <div class="mt-6 flex justify-end gap-3">
+            <button
+              type="button"
+              class="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 text-sm hover:bg-gray-50"
+              data-close-modal="nuevoMedicamento"
+            >
+              Cancelar
+            </button>
+            <button
+             id="guardarCurso"
+              class="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+            >
+              Guardar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!--Modal-->
+  </body>
+  <script type="module" src="./js/main.js"></script>
+  <script src="./js/components/slide.js"></script>
+  <script src="./js/admin/adminCursos.js"></script>
+</html>
