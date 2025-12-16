@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  
-</body>
-<script>
+
   function normalizeText(str = "") {
   return str
     .toLowerCase()
@@ -34,7 +24,7 @@ function includesAll(textNorm, arr = []) {
 
 function detectarRompehielosVosk(textoUsuario, intents, opts = {}) {
   const {
-    maxWords = 16,   // 👈 clave: si es largo, no es rompehielos
+    maxWords = 16,   
     maxChars = 140,
     minScore = 3,    // umbral de confianza
   } = opts;
@@ -202,30 +192,11 @@ function responderRompehielosYObjeccionVosk(textoUsuario, objActual) {
   const puente = " expliqueme esto";
   const objeccion = objActual?.objeccion || objActual || "";
 
-  // Si tu respuesta ya termina en "ahora digame esto", no repitas puente
+  
   const base = r.text;
   const yaTraePuente = base.includes("expliqueme") || base.includes("digame esto");
   return yaTraePuente ? `${base} ${objeccion}`.trim() : `${base} ${puente} ${objeccion}`.trim();
 }
 
 
-  // === TEXTO SIMULADO DE VOSK ===
-  const textoVosk = "";
-
-  // === OBJECIÓN SIMULADA ===
-  const objtxt = {
-    objeccion: "CAMZYOS requiere ecocardiogramas frecuentes, como lo ve en su practica"
-  };
-
-  // === LLAMADA CORRECTA ===
-  const msg = responderRompehielosYObjeccionVosk(textoVosk, objtxt);
-
-  if (msg) {
-    console.log("RESPUESTA BOT:", msg);
-  } else {
-    console.log("No se detecto rompehielos");
-  }
-</script>
-
-
-</html>
+ 

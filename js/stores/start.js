@@ -41,7 +41,7 @@ async function inciarWeb() {
     ciclo2();
   } else {
     if (btnStart) btnStart.classList.remove("btn-animando");
-    
+
     mediaElement = document.getElementById("mediaElementWb");
     agregarClase("mensajeInicio", "hidden");
     quitarClase("loadWb", "hidden");
@@ -55,7 +55,7 @@ async function inciarWeb() {
     tabla = "tablaObjWeb";
 
     cuadroTexto = "textoUsuarioWb";
-    
+
     conectarWS();
     await iniciarHeyGen();
     ciclo();
@@ -68,15 +68,15 @@ async function inciarMovil() {
   } else {
     mico = ".btn-estado";
     setEstadoBoton("espera", mico);
-    
+
     agregarClase("mensajeInicioMv", "hidden");
     quitarClase("loadMv", "hidden");
-    
+
     mediaElement = document.getElementById("mediaElementMv");
     tabla = "tablaObjMv";
     idTextoBot = "textoBotMv";
     cuadroTexto = "textoUsuarioMv";
-    
+
     conectarWS();
     await iniciarHeyGen();
     ciclo();
@@ -90,29 +90,49 @@ async function iniciarHeyGen() {
   const estatusDocClass = "estatusDoc";
   const estatusDocTextClass = "estatusDoct";
 
-  cambiarEstatusColor(estatusUserClass, estatusUserTextClass, "Cargando...", "gris");
-  cambiarEstatusColor(estatusDocClass, estatusDocTextClass, "Cargando...", "gris");
-  
+  cambiarEstatusColor(
+    estatusUserClass,
+    estatusUserTextClass,
+    "Cargando...",
+    "gris"
+  );
+  cambiarEstatusColor(
+    estatusDocClass,
+    estatusDocTextClass,
+    "Cargando...",
+    "gris"
+  );
+
   await getSessionToken();
   await createNewSession(doctorIa, vozIa);
   await startStreamingSession();
   await delay(4000);
-  
+
   agregarClase("loadMv", "hidden");
   agregarClase("loadWb", "hidden");
-  
-  cambiarEstatusColor(estatusUserClass, estatusUserTextClass, "Doctor presentandose", "azul");
-  cambiarEstatusColor(estatusDocClass, estatusDocTextClass, "Doctor presentandose", "azul");
+
+  cambiarEstatusColor(
+    estatusUserClass,
+    estatusUserTextClass,
+    "Doctor presentandose",
+    "azul"
+  );
+  cambiarEstatusColor(
+    estatusDocClass,
+    estatusDocTextClass,
+    "Doctor presentandose",
+    "azul"
+  );
 
   await habla(respuestaGemini);
 }
 
 function setEstadoBoton(estado, selector = ".btn-estado") {
   const botones = document.querySelectorAll(selector);
-  
-  botones.forEach(boton => {
+
+  botones.forEach((boton) => {
     if (!boton) return;
-    
+
     const texto = boton.querySelector(".texto");
 
     // Limpiar clases anteriores
@@ -137,8 +157,7 @@ function setEstadoBoton(estado, selector = ".btn-estado") {
       );
       if (texto) texto.textContent = "Iniciar";
       boton.disabled = false;
-    }
-    else if (estado === "espera") {
+    } else if (estado === "espera") {
       boton.classList.add("bg-gray-200", "text-gray-500", "cursor-not-allowed");
       boton.disabled = true;
 
@@ -148,8 +167,7 @@ function setEstadoBoton(estado, selector = ".btn-estado") {
           <path fill-rule="evenodd" d="M5 10a5 5 0 0010 0h1a6 6 0 01-5 5.917V18h2a1 1 0 110 2H7a1 1 0 110-2h2v-2.083A6 6 0 014 10h1z" clip-rule="evenodd" />
         </svg>
       `;
-    }
-    else if (estado === "habla") {
+    } else if (estado === "habla") {
       boton.classList.add(
         "bg-green-500",
         "text-white",
@@ -238,7 +256,6 @@ const cicloCtrl = {
     if (this._resumeResolve) {
       this._resumeResolve();
       this._resumeResolve = null;
-
     }
   },
 
@@ -252,14 +269,14 @@ const cicloCtrl = {
   },
 };
 let cicloActivo = false;
-
+const btnPauseMv = document.getElementById("btnPauseMov");
 const btnPause = document.getElementById("btnPause");
 // Punto de control: si está pausado, se queda aquí hasta resume()
 btnPause.onclick = () => {
   if (!cicloActivo) return;
 
   if (!cicloCtrl.paused) {
-    // ⏸ PAUSAR
+    //  PAUSAR
     cicloCtrl.pause();
 
     btnPause.title = "Reanudar";
@@ -268,12 +285,12 @@ btnPause.onclick = () => {
       <span class="sr-only">Reanudar</span>
     `;
 
-    // 🔇 si estaba grabando, corta el mic
+    // si estaba grabando, corta el mic
     if (isRecordingWS) {
       detenerReconocimientoVozWS();
     }
   } else {
-    // ▶️ REANUDAR
+    //  REANUDAR
     cicloCtrl.resume();
 
     btnPause.title = "Pausar";
@@ -305,11 +322,11 @@ async function delayPausable(ms) {
     elapsed += chunk;
   }
 }
-
+let titulo = "";
 async function ciclo() {
   cicloCtrl.running = true;
   cicloCtrl.stopped = false;
-   cicloActivo = true;
+  cicloActivo = true;
   btnPause.disabled = false;
 
   try {
@@ -326,10 +343,24 @@ async function ciclo() {
         cambioDeTexto(2);
 
         await esperarSiPausado();
-        let texto = await iniciarReconocimientoVoz(); // si quieres pausa DURANTE escucha, te digo abajo cómo
-
+        let texto = await iniciarReconocimientoVoz(); 
+        console.log("texto: " + texto);
+        numeroPalabras = await contarPalabras(texto);
+        console.log(numeroPalabras);
+         if(numeroPalabras <= 5){
+          await habla("Perdon no te entendi bien, puedes repetir lo que dijiste.");
+          await delay(2000);
+          await ejecutarCiclo();
+        }
+        let msg = responderRompehielosYObjeccionVosk(texto, titulo);
+        if (msg) {
+          await habla(msg);
+          await delay(3000);
+          await ejecutarCiclo();
+        }
         await esperarSiPausado();
-        numeroPalabras = contarPalabras(texto);
+        
+      
         calReco = calReco + numeroPalabras;
 
         respuestaGemini = await evaluarTexto2(texto, pClave);
@@ -377,6 +408,7 @@ async function ciclo() {
         txtHabla = objtxt.objeccion;
         resActual = objtxt.respuestas;
         pClave = objtxt.pClaves;
+        titulo = objtxt.titulo;
 
         incrementarProgreso();
 
@@ -401,7 +433,6 @@ async function ciclo() {
     cicloCtrl.running = false;
   }
 }
-
 
 function restaurarBtnStart() {
   const btn = document.getElementById("btnStart");
@@ -500,7 +531,8 @@ async function ciclo2() {
       if (!item) continue;
 
       const objeccion = item.titulo || "sin texto de objeción registrado";
-      const retro = item.retroalimentacion || "sin retroalimentación registrada";
+      const retro =
+        item.retroalimentacion || "sin retroalimentación registrada";
 
       // 🎙️ Voz: objeción
       await esperarSiPausado();
@@ -527,7 +559,6 @@ async function ciclo2() {
     console.warn("ciclo2 interrumpido:", err?.message || err);
   }
 }
-
 
 function cordinarFinal() {
   caliCono = caliCono / 4;
@@ -923,7 +954,7 @@ async function evaluarTexto2(texto, palabrasClave) {
     let numero = Math.floor(Math.random() * (100 - 70 + 1)) + 70;
     return `{${numero}}\n[${numero - 4}]`;
   }
-  
+
   const resta = Math.floor(Math.random() * 3) + 5;
   const score2 = Math.max(score1 - resta, 0);
 

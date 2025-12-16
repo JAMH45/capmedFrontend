@@ -78,7 +78,7 @@ let textoAcumuladoWS = "";
 
 function iniciarReconocimientoVoz({
   idSalida = cuadroTexto,
-  tiempoSilencio = 2000, // 2s
+  tiempoSilencio = 5000, // 2s
 } = {}) {
   return new Promise(async (resolve, reject) => {
     resolverReconocimientoWS = resolve;

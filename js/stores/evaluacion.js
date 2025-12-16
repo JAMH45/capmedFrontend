@@ -106,7 +106,7 @@ class AnalizadorTono {
 function tonoFinal(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-function contarPalabras(texto) {
+async function contarPalabras(texto) {
   if (!texto || typeof texto !== "string") return 0;
 
   // Elimina espacios extra y separa por espacios o signos de puntuación
