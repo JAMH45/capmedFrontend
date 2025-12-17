@@ -245,13 +245,13 @@
   <!-- ============================================ -->
   <section class="block md:hidden w-full min-h-screen">
     <!-- Overlay para sidebar móvil -->
-    <div id="overlay" class="overlay"></div>
+    <div id="overlay" class="overlay" data-sidebar-target="#sidebar-mobile"></div>
     <!-- Sidebar (responsive) -->
-    <div v-scope="Header()"></div>
+    <div id="sidebar-mobile" v-scope="Header()"></div>
     <!-- Header Móvil -->
     <header class="block md:hidden fixed top-0 inset-x-0 z-50 bg-blue-950/95 backdrop-blur border-b border-blue-900">
       <div class="h-14 px-4 flex items-center justify-between">
-        <button id="mobile-toggle"
+        <button id="mobile-toggle" data-sidebar-target="#sidebar-mobile"
           class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-blue-800 text-gray-100 hover:bg-blue-900 active:scale-95 transition"
           aria-label="Abrir menú">
           <i class="fas fa-bars text-xl"></i>
@@ -301,7 +301,7 @@
             </div>
             <div
               class="w-full h-6 bg-gray-200 grid place-items-center estatusDoc border-l-2 border-r-2 border-blue-900">
-              <p id="estatusDocMv" class="text-black font-medium text-sm text-left pl-3">Sin iniciar.</p>
+              <p id="estatusDocMv" class="text-black font-medium text-sm text-left pl-3 estatusDoct">Sin iniciar.</p>
             </div>
             <div class="w-full h-10 bg-blue-950 grid place-items-center border-l-2 border-r-2 border-blue-900">
               <p id="nombreIa" class="text-white font-semibold text-sm text-left pl-3">Doctora Virtual Judy</p>
@@ -354,7 +354,7 @@
             </div>
             <div
               class="w-full h-6 bg-gray-200 grid place-items-center estatusUser border-l-2 border-r-2 border-blue-900">
-              <p id="estatusUserMv" class="text-black font-medium text-sm text-left pl-3">Sin iniciar.</p>
+              <p id="estatusUserMv" class="text-black font-medium text-sm text-left pl-3 estatusUsert">Sin iniciar.</p>
             </div>
             <div class="w-full h-10 bg-blue-950 grid place-items-center border-l-2 border-r-2 border-blue-900">
               <p id="nombreUsuario" class="text-white font-semibold text-sm text-left pl-3">Tú — Agente de Ventas</p>
@@ -411,4 +411,5 @@
   <script src="./js/stores/chatBot.js"></script>
   <script src="./js/stores/start.js"></script>
   <script src="./js/components/slide.js"></script>
+
 </html>

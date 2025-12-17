@@ -198,5 +198,97 @@ function responderRompehielosYObjeccionVosk(textoUsuario, objActual) {
   return yaTraePuente ? `${base} ${objeccion}`.trim() : `${base} ${puente} ${objeccion}`.trim();
 }
 
+function esTextoFueraDeTema(textoUsuario, palabrasClaveActuales = [], opts = {}) {
+  const {
+    minWords = 6,           // Mínimo de palabras para considerar "fuera de tema"
+    maxCharsRompehielo = 140, // Si es corto, probablemente sea rompehielo
+  } = opts;
 
- 
+  const t = normalizeText(textoUsuario);
+  const palabras = wordCount(textoUsuario);
+  
+  // 1) Si es muy corto, puede ser rompehielo (ya se maneja en otro lado)
+  if (textoUsuario.length <= maxCharsRompehielo && palabras < minWords) {
+    return false; // Dejamos que lo maneje responderRompehielosYObjeccionVosk
+  }
+
+  // 2) Palabras que indican que SÍ está hablando del tema médico/producto
+  const palabrasMedicas = [
+    "medicamento", "medicina", "farmaco", "dosis", "tratamiento", "paciente",
+    "efecto", "secundario", "contraindicacion", "estudio", "clinico", "seguridad",
+    "eficacia", "beneficio", "mecanismo", "accion", "prescribir", "recomendar",
+    "aprobar", "administrar", "tomar", "producto", "farmaceutico", "terapia",
+    "sintoma", "enfermedad", "diagnostico", "resultados", "evidencia", "prueba"
+  ];
+
+  // 3) Si menciona alguna palabra clave del contexto actual, está en tema
+  if (palabrasClaveActuales && palabrasClaveActuales.length > 0) {
+    for (const palabra of palabrasClaveActuales) {
+      if (t.includes(normalizeText(palabra))) {
+        return false; // Está en tema
+      }
+    }
+  }
+
+  // 4) Si menciona palabras médicas generales, está en tema
+  if (includesAny(t, palabrasMedicas)) {
+    return false; // Está en tema
+  }
+
+  // 5) Detectar temas claramente fuera de contexto
+  const temasFueraDeTema = [
+    // Deportes
+    ["futbol", "balon", "gol", "equipo", "partido"],
+    ["basketball", "canasta", "anotar"],
+    
+    // Entretenimiento
+    ["pelicula", "serie", "actor", "netflix", "streaming"],
+    ["musica", "cancion", "cantante", "banda", "concierto"],
+    ["videojuego", "juego", "consola", "play", "xbox"],
+    
+    // Comida (si no es relevante al producto)
+    ["receta", "cocinar", "restaurant", "comida", "comer", "platillo"],
+    
+    // Viajes
+    ["viaje", "viajar", "vacaciones", "playa", "hotel", "turismo"],
+    
+    // Tecnología general
+    ["celular", "telefono", "computadora", "laptop", "internet", "red social"],
+    
+    // Política
+    ["presidente", "gobierno", "elecciones", "partido", "politico"],
+  ];
+
+  for (const grupo of temasFueraDeTema) {
+    let coincidencias = 0;
+    for (const palabra of grupo) {
+      if (t.includes(normalizeText(palabra))) {
+        coincidencias++;
+      }
+    }
+    // Si menciona 2+ palabras de un mismo tema irrelevante
+    if (coincidencias >= 1) {
+      return true; // Definitivamente fuera de tema
+    }
+  }
+
+  // 6) Si llegamos aquí y tiene muchas palabras pero ninguna relevante, probablemente esté fuera de tema
+  if (palabras > 15) {
+    return true;
+  }
+
+  return false; // Por defecto, asumimos que está en tema
+}
+
+// Respuestas cuando está fuera de tema
+const respuestasFueraDeTema = [
+  "En este momento me gustaría que nos centremos en el tema de la sesión.",
+  "Disculpa, pero preferiría que continuemos con lo que estábamos tratando.",
+  "Necesito que nos enfoquemos en el producto que me estás presentando.",
+  "Perdón por interrumpir, pero me gustaría que regresemos al tema de la consulta.",
+  "Prefiero que nos mantengamos en el tema de la sesión. Explícame esto:",
+];
+
+function obtenerRespuestaFueraDeTema() {
+  return respuestasFueraDeTema[Math.floor(Math.random() * respuestasFueraDeTema.length)];
+}
