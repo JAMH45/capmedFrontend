@@ -351,12 +351,21 @@ async function ciclo() {
           await habla("Perdon no te entendi bien, puedes repetir lo que dijiste.");
           await delay(2000);
           await ejecutarCiclo();
+          return;
         }
         let msg = responderRompehielosYObjeccionVosk(texto, titulo);
         if (msg) {
           await habla(msg);
           await delay(3000);
           await ejecutarCiclo();
+          return;
+        }
+        if (esTextoFueraDeTema(texto, pClave, { minWords: 5 })) {
+          const respuestaRedireccion = obtenerRespuestaFueraDeTema();
+          await habla(`${respuestaRedireccion} ${txtHabla}`);
+          await delay(3000);
+          await ejecutarCiclo();
+          return;
         }
         await esperarSiPausado();
         

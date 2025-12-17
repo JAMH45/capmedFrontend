@@ -17,8 +17,8 @@ function setCollapsed(collapsed) {
 }
 
 // Función para cerrar sidebar móvil
-function closeMobileSidebar() {
-  const sidebar = document.querySelector('.sidebar');
+function closeMobileSidebar(targetSelector = '.sidebar') {
+  const sidebar = document.querySelector(targetSelector + ' .sidebar') || document.querySelector(targetSelector);
   const overlay = document.getElementById('overlay');
   sidebar?.classList.remove('mobile-open');
   overlay?.classList.remove('active');
@@ -45,18 +45,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // Variables de control
   let isNavigating = false;
 
-  // Listener para menu items en móvil
+  // Listener para menu items en móvil - ACTUALIZADO
   document.addEventListener('click', (e) => {
     const menuLink = e.target.closest('.sidebar .menu-item');
     if (menuLink && window.innerWidth <= 768) {
       isNavigating = true;
+
+      // Determinar qué sidebar cerrar
+      const sidebar = menuLink.closest('.sidebar')?.parentElement;
+      const targetSelector = sidebar?.id ? '#' + sidebar.id : '.sidebar';
+
       setTimeout(() => {
-        closeMobileSidebar();
+        closeMobileSidebar(targetSelector);
         isNavigating = false;
       }, 150);
-      return; // Dejar que el link funcione
+      return;
     }
-  }, true); // CAPTURE PHASE - se ejecuta primero
+  }, true);
 
   // Resto de los listeners
   document.addEventListener('click', (e) => {
@@ -78,7 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mobileToggle) {
       e.preventDefault();
       e.stopPropagation();
-      const sidebar = document.querySelector('.sidebar');
+
+      // Buscar el sidebar correcto
+      const targetSelector = mobileToggle.dataset.sidebarTarget || '.sidebar';
+      const sidebar = document.querySelector(targetSelector + ' .sidebar') || document.querySelector(targetSelector);
+
       const overlay = document.getElementById('overlay');
       if (sidebar) {
         sidebar.classList.toggle('mobile-open');
@@ -93,7 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (overlayClick) {
       e.preventDefault();
       e.stopPropagation();
-      closeMobileSidebar();
+
+      // Obtener el target del overlay
+      const targetSelector = overlayClick.dataset.sidebarTarget || '.sidebar';
+      closeMobileSidebar(targetSelector);
       return;
     }
   });
