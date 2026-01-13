@@ -2,8 +2,8 @@
 // GROQ API - Parafraseo de Objeciones
 // ========================================
 
-const GROQ_API_KEY = "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";
-const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
+
+//const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 /**
  * Parafrasea una objeción médica manteniendo el significado
