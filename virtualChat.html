@@ -1,415 +1,492 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>PharmaSales Pro - Virtual Chat</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>PharmaSales Pro - Virtual Chat</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Raleway:wght@600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+    />
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/menu.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
-    rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Raleway:wght@600&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" />
-  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/petite-vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/livekit-client@2.11.3/dist/livekit-client.umd.min.js"></script>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/petite-vue"></script>
-  <script src="https://cdn.jsdelivr.net/npm/livekit-client@2.11.3/dist/livekit-client.umd.min.js"></script>
+    <link rel="stylesheet" href="css/style.css" />
 
-  <link rel="stylesheet" href="css/style.css" />
+    <style>
+      body {
+        font-family: "Roboto", "Open Sans", sans-serif;
+      }
+    </style>
+  </head>
 
-  <style>
-    body {
-      font-family: "Roboto", "Open Sans", sans-serif;
-    }
-  </style>
-</head>
+  <body
+    class="bg-[#FFFFFF] text-gray-800 min-h-screen flex flex-col items-center sm:items-stretch text-center"
+  >
+    <!-- ============================================ -->
+    <!-- VERSION WEB (Desktop) - ORIGINAL SIN CAMBIOS -->
+    <!-- ============================================ -->
+    <section class="mt-2 mb-5 flex-grow">
+      <!-- Sidebar (solo desktop) -->
+      <div class="hidden md:block" v-scope="Header()"></div>
 
-<body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col items-center sm:items-stretch text-center">
-
-  <!-- ============================================ -->
-  <!-- VERSION WEB (Desktop) - ORIGINAL SIN CAMBIOS -->
-  <!-- ============================================ -->
-  <section class="mt-[1%] mb-5 px-1 flex-grow hidden md:block">
-    <!-- Sidebar (dinámico) -->
-    <div class="hidden md:block" v-scope="Header()"></div>
-
-    <!-- Contenido principal (empujado por el sidebar) -->
-    <main id="content" class="hidden md:block transition-all duration-300 ml-[80px]">
-      <section class="pb-5 pt-1 mb-5 bg-white rounded-lg shadow-md shadow-black/85 shadow-[0_3px_2px_rgba(0,0,0,0.85)]">
-        <!-- Título -->
-        <div class="p-5 bg-blue-950 rounded-t-lg w-[100%]">
-          <h1 class="text-4xl font-extrabold text-white mb-4">
-            PharmaSales Pro
-          </h1>
-        </div>
-        <div class="px-5 py-4">
-          <h1 class="text-2xl font-extrabold text-blue-950 mb-2 flex items-center gap-3">
-            <i class="fa-solid fa-theater-masks text-blue-950 text-2xl"></i>
-            Roleplay
-          </h1>
-        </div>
-
-        <!-- Grid 50/50 -->
-        <div class="flex w-full gap-10 pl-5 pr-5">
-          <!-- Columna izquierda (Doctor virtual / HeyGen) -->
-          <div class="flex flex-col basis-1/2">
-            <!-- Video HeyGen -->
-            <div id="heygenContainer" class="w-full aspect-video rounded-t-2xl bg-black overflow-hidden">
-              <div id="heygen-avatar" class="relative w-full h-full">
-                <!-- 🎥 Video -->
-                <video id="mediaElementWb" autoplay playsinline class="w-[101%] h-full rounded-lg bg-[#0f0f0f]"></video>
-
-                <!-- 🕹️ Mensaje inicio -->
-                <div id="mensajeInicio"
-                  class="absolute inset-0 flex flex-col items-center justify-center bg-black/70 text-white text-center px-4">
-                  <i id="btnStart2" class="bi bi-play-circle text-5xl text-teal-400 mb-4 animate-pulse"></i>
-                  <p class="text-lg font-medium">
-                    Da clic en el botón
-                    <span class="font-semibold text-teal-400">Play</span> para
-                    comenzar.
-                  </p>
-                </div>
-
-                <!-- ⏳ Loader -->
-                <div id="loadWb" class="absolute inset-0 hidden flex flex-col items-center justify-center bg-black/70">
-                  <div class="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-yellow-500"></div>
-                  <h2 class="text-white mt-4 font-semibold">Cargando...</h2>
-                  <p class="text-gray-300 text-sm text-center px-4">
-                    El especialista estará contigo en unos momentos.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Estatus doctor -->
-            <div id="estatusDocd"
-              class="w-full h-6 bg-gray-200 grid place-items-center estatusDoc border-l-2 border-r-2 border-blue-900">
-              <p id="estatusDoc" class="text-black font-medium text-xl text-left pl-3 estatusDoct">
-                Sin iniciar.
-              </p>
-            </div>
-
-            <!-- Título IA -->
-            <div class="w-full h-10 bg-blue-950 grid place-items-center border-l-2 border-r-2 border-blue-900">
-              <p id="tituloIa" class="text-white font-semibold text-left pl-3">
-                Doctora Virtual Judy
-              </p>
-            </div>
-
-            <!-- Chat IA -->
+      <!-- Contenido principal -->
+      <main id="content" class="mt-2 transition-all duration-300">
+        <section class="mx-auto w-full max-w-7xl px-3 md:px-4 sm:px-6 lg:px-8">
+          <!-- Título -->
+          <div class="p-4 sm:p-5 bg-[#FFFFFF] rounded-t-lg w-full">
             <div
-              class="w-full min-h-[200px] max-h-[200px] overflow-y-auto rounded-b-2xl bg-white p-4 border-b-2 border-l-2 border-r-2 border-blue-900 pb-2">
-              <p id="textoBotWb"></p>
-            </div>
-          </div>
+              class="flex flex-col gap-4 sm:gap-6 lg:flex-row lg:justify-between lg:items-start border-b-2 border-gray-300 pb-6 sm:pb-8"
+            >
+              <!-- Lado izquierdo -->
+              <div class="flex flex-col items-start gap-2">
+                <!-- Badge + título en la misma línea -->
+                <div
+                  class="flex items-center gap-2 sm:gap-3 flex-nowrap sm:flex-wrap"
+                >
+                  <!-- Badge módulo -->
+                  <span
+                    class="px-2 py-0.5 text-xs sm:px-4 sm:py-1 sm:text-lg font-semibold text-white bg-[#2563EB] rounded-full whitespace-nowrap"
+                  >
+                    Módulo 03
+                  </span>
 
-          <!-- Columna derecha (Tu cámara + panel) -->
-          <div class="flex flex-col basis-1/2">
-            <!-- Cámara local -->
-            <div class="relative w-full aspect-video rounded-t-2xl bg-black overflow-hidden">
-              <video id="localVideo" class="w-full h-full object-cover" autoplay playsinline muted></video>
+                  <!-- Título -->
+                  <h1
+                    class="text-base sm:text-3xl lg:text-4xl font-light text-black leading-tight whitespace-nowrap sm:whitespace-normal"
+                  >
+                    Simulador de Diálogo y Roleplaying
+                  </h1>
+                </div>
 
-              <!-- Overlay si no hay cámara -->
-              <div id="noCamOverlay"
-                class="absolute inset-0 flex flex-col items-center justify-center text-center text-gray-300 text-sm bg-black/60">
-                <i class="bi bi-camera-video-off text-4xl text-red-400 mb-3 animate-pulse"></i>
-                <p class="text-gray-300 font-medium text-lg">
-                  Cámara desactivada
+                <!-- Subtítulo (queda igual, debajo) -->
+                <p class="mt-2 text-[#1D4ED8] text-sm sm:text-lg w-full">
+                  <span class="font-extrabold text-blue-700">Tema 3 –</span>
+                  Práctica con avatares de IA, mensajes de campaña y habilidades
+                  de venta en escenarios realistas.
                 </p>
               </div>
 
-              <!-- Barra inferior -->
-              <div
-                class="absolute bottom-0 left-0 w-full flex items-center justify-between px-4 py-2 bg-black/60 backdrop-blur-sm">
-                <!-- Botones izquierda -->
-                <div class="flex items-center gap-3">
-                  <!-- Iniciar (pulsa hasta que se presione) -->
-                  <button id="btnStart"
-                    class="btnStart btn-estado w-10 h-10 grid place-items-center rounded-xl bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition animate-pulse"
-                    title="Iniciar">
-                    <i class="bi bi-play-fill text-lg"></i>
-                    <span class="sr-only">Iniciar</span>
-                  </button>
-
-                  <!-- Objecciones -->
-                  <button id="btnObjections"
-                    class="w-10 h-10 grid place-items-center rounded-xl bg-amber-500 text-white hover:bg-amber-600 active:scale-95 transition"
-                    title="Objecciones">
-                    <i class="bi bi-list text-lg"></i>
-                    <span class="sr-only">Objecciones</span>
-                  </button>
-
-                  <!-- Cámara -->
-                  <button id="btnCam"
-                    class="w-10 h-10 grid place-items-center rounded-xl bg-gray-200 text-gray-700 hover:bg-gray-300 active:scale-95 transition"
-                    title="Cámara">
-                    <i class="bi bi-camera-video-fill text-lg"></i>
-                    <span class="sr-only">Cámara</span>
-                  </button>
-
-                  <!-- Pausa -->
-                  <button id="btnPause"
-                    class="w-10 h-10 grid place-items-center rounded-xl bg-slate-600 text-white hover:bg-slate-700 active:scale-95 transition disabled:opacity-50"
-                    title="Pausar" disabled>
-                    <i class="bi bi-pause-fill text-lg"></i>
-                    <span class="sr-only">Pausar</span>
-                  </button>
-                </div>
-
-                <!-- Indicadores derecha -->
-                <div id="indicat" class="panel-voz flex items-center gap-3 text-white">
-                  <span class="mfTimer font-bold text-sm tabular-nums">00:00</span>
-                  <span class="h-5 w-px bg-white/40"></span>
-                  <span class="text-sm font-semibold">
-                    <span id="mfProgAct">0</span>/<span id="mfProgTot">7</span>
-                  </span>
-                  <span class="recDot inline-block w-2.5 h-2.5 rounded-full bg-red-500 opacity-0"
-                    title="Grabando"></span>
-                  <span class="recLabel text-sm text-white/80">Listo</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Estatus usuario -->
-            <div id="estatusUserd"
-              class="w-full h-6 bg-gray-200 grid place-items-center estatusUser border-l-2 border-r-2 border-blue-900">
-              <p id="estatusUser" class="text-black font-medium text-xl text-left pl-3 estatusUsert">
-                Sin iniciar.
-              </p>
-            </div>
-
-            <!-- Título usuario -->
-            <div class="w-full h-10 bg-blue-950 grid place-items-center border-l-2 border-r-2 border-blue-900">
-              <p id="tituloUse" class="text-white font-semibold text-left pl-3">
-                Tú — Agente de Ventas
-              </p>
-            </div>
-
-            <!-- Chat usuario -->
-            <div
-              class="w-full min-h-[200px] max-h-[200px] overflow-y-auto rounded-b-2xl bg-white p-4 border-l-2 border-r-2 border-b-2 border-blue-900">
-              <p id="textoUsuarioWb"></p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Modal de Objecciones -->
-        <div id="modalObjecciones" class="fixed inset-0 bg-black/50 hidden z-50" role="dialog" aria-modal="true"
-          aria-labelledby="objectionsTitle">
-          <div class="bg-white w-full max-w-2xl mx-auto mt-24 rounded-2xl shadow-xl overflow-hidden">
-            <div class="flex items-center justify-between px-5 py-3 border-b">
-              <h3 id="objectionsTitle" class="text-xl font-bold text-blue-600">
-                Lista de Objecciones
-              </h3>
-              <button id="closeModal" class="p-2 rounded-lg hover:bg-gray-100" aria-label="Cerrar modal">
-                <i class="fa-solid fa-xmark text-gray-600"></i>
-              </button>
-            </div>
-
-            <div class="p-6 overflow-x-auto">
-              <table id="tablaObjWeb" class="w-full border-collapse">
-                <thead>
-                  <tr class="border-b border-gray-300 text-left">
-                    <th class="py-2 px-3 text-gray-700 font-semibold">
-                      Objección
-                    </th>
-                    <th class="py-2 px-3 text-gray-700 font-semibold text-center">
-                      Estado
-                    </th>
-                  </tr>
-                </thead>
-                <tbody id="tablaObjWeb"></tbody>
-              </table>
-            </div>
-
-            <div class="px-6 py-4 border-t">
-              <button id="okModal"
-                class="w-full bg-teal-500 text-white font-bold py-2 px-6 rounded-xl hover:bg-teal-600 active:scale-95 transition-all">
-                Cerrar
+              <!-- Botón tutorial -->
+              <button
+                class="w-full hidden md:flex sm:w-auto flex items-center justify-center gap-2 px-4 py-2 border border-[#2563EB] text-[#2563EB] rounded-full hover:bg-white hover:text-black hover:border-black transition font-semibold text-sm"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-5 h-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 2-3 4" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                <span>Mostrar tutorial</span>
               </button>
             </div>
           </div>
-        </div>
-      </section>
-    </main>
-  </section>
 
-  <!-- ============================================ -->
-  <!-- VERSION MOVIL (responsive) -->
-  <!-- ============================================ -->
-  <section class="block md:hidden w-full min-h-screen">
-    <!-- Overlay para sidebar móvil -->
-    <div id="overlay" class="overlay" data-sidebar-target="#sidebar-mobile"></div>
-    <!-- Sidebar (responsive) -->
-    <div id="sidebar-mobile" v-scope="Header()"></div>
-    <!-- Header Móvil -->
-    <header class="block md:hidden fixed top-0 inset-x-0 z-50 bg-blue-950/95 backdrop-blur border-b border-blue-900">
-      <div class="h-14 px-4 flex items-center justify-between">
-        <button id="mobile-toggle" data-sidebar-target="#sidebar-mobile"
-          class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-blue-800 text-gray-100 hover:bg-blue-900 active:scale-95 transition"
-          aria-label="Abrir menú">
-          <i class="fas fa-bars text-xl"></i>
-        </button>
-        <span class="text-lg font-bold text-white">Roleplay</span>
-        <div class="w-12"></div>
-      </div>
-    </header>
-    <!-- Contenido principal -->
-    <div class="pt-14 px-3 pb-5">
-      <div class="bg-white rounded-lg shadow-md" style="margin-top: 5%;">
-        <!-- Título -->
-        <div class="p-4 bg-blue-950 rounded-t-lg">
-          <h1 class="text-2xl font-extrabold text-white text-center">
-            PharmaSales Pro
-          </h1>
-        </div>
-        <!-- Subtítulo -->
-        <div class="px-4 py-3">
-          <h2 class="text-xl font-extrabold text-blue-950 flex items-center justify-center gap-2">
-            <i class="fa-solid fa-theater-masks text-xl"></i>
-            Roleplay
-          </h2>
-        </div>
-        <!-- Videos apilados -->
-        <div class="px-3 pb-5 space-y-4">
-          <!-- Doctor Virtual -->
-          <div class="flex flex-col w-full">
-            <div class="w-full aspect-video rounded-t-2xl bg-black overflow-hidden relative">
-              <video id="mediaElementMv" autoplay playsinline class="w-full h-full rounded-lg bg-[#0F0F0F]"></video>
-              <!-- Mensaje inicio móvil -->
-              <div id="mensajeInicioMv"
-                class="absolute inset-0 flex flex-col items-center justify-center bg-black/70 text-white text-center px-4">
-                <i id="btnStart2Mv" class="bi bi-play-circle text-5xl text-teal-400 mb-4 animate-pulse"></i>
-                <p class="text-base font-medium">
-                  Da clic en el botón <span class="font-semibold text-teal-400">Play</span> para comenzar.
-                </p>
+          <!-- Layout principal: 1 columna en móvil, 2 en lg -->
+          <div class="w-full py-4 sm:py-5">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <!-- Columna grande (controles + cámaras) -->
+              <div class="lg:col-span-9 flex flex-col gap-6">
+                <!-- Barra azul -->
+                <div
+                  class="w-full bg-[#2563EB] rounded-[24px] sm:rounded-[30px] flex flex-row items-center justify-between gap-2 px-3 sm:px-4 py-3"
+                >
+                  <!-- IZQUIERDA: botones + pausa -->
+                  <div class="flex flex-row items-center gap-2">
+                    <!-- Iniciar Roleplay -->
+                    <button
+                      id="btnStart"
+                      class="flex items-center justify-center bg-white text-[#2563EB] rounded-full font-semibold text-sm hover:bg-black hover:text-white active:scale-95 transition w-8 h-8 p-0 md:w-auto md:h-auto md:px-4 md:py-2"
+                      aria-label="Iniciar Roleplay"
+                      title="Iniciar Roleplay"
+                    >
+                      <span
+                        id="iconStart"
+                        class="flex items-center justify-center"
+                      >
+                        <svg
+                          class="w-4 h-4 md:w-5 md:h-5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <polygon
+                            points="10 8 16 12 10 16"
+                            fill="currentColor"
+                            stroke="none"
+                          />
+                        </svg>
+                      </span>
+
+                      <!-- Texto solo md+ -->
+                      <span id="textStart" class="hidden md:inline ml-2"
+                        >Iniciar Roleplay</span
+                      >
+                    </button>
+
+                    <!-- Pausar Roleplay -->
+                    <button
+                      id="btnPause"
+                      disabled
+                      class="flex items-center justify-center bg-gray-300 border border-white text-gray-500 rounded-full font-semibold text-sm w-8 h-8 p-0 md:w-auto md:h-auto md:px-4 md:py-2"
+                      aria-label="Pausar Roleplay"
+                      title="Pausar Roleplay"
+                    >
+                      <svg
+                        class="w-4 h-4 md:w-5 md:h-5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <rect
+                          x="9"
+                          y="8"
+                          width="2"
+                          height="8"
+                          fill="currentColor"
+                          stroke="none"
+                        />
+                        <rect
+                          x="13"
+                          y="8"
+                          width="2"
+                          height="8"
+                          fill="currentColor"
+                          stroke="none"
+                        />
+                      </svg>
+
+                      <!-- Texto solo md+ -->
+                      <span class="hidden md:inline ml-2">Pausar Roleplay</span>
+                    </button>
+
+                    <!-- Temporizador pausa: visible SIEMPRE, compacto en móvil -->
+                    <div
+                      id="pauseTimerWrap"
+                      class="flex flex-row md:flex-col items-center justify-center gap-1 md:gap-0"
+                    >
+                      <span
+                        class="hidden md:block text-[11px] text-white font-semibold leading-tight text-center"
+                      >
+                        Tiempo restante de pausa
+                      </span>
+
+                      <span
+                        id="pauseTimer"
+                        class="text-xs md:text-sm font-bold text-white tabular-nums bg-white/15 px-2 py-1 rounded-full text-center"
+                      >
+                        2:00
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- DERECHA: timer negro + tutorial -->
+                  <div class="flex items-center gap-2">
+                    <!-- Temporizador -->
+                    <div
+                      class="flex items-center gap-2 text-white font-semibold text-sm tabular-nums bg-black px-2 py-1 rounded-[14px] sm:px-3 sm:py-2 sm:rounded-[20px]"
+                    >
+                      <span class="relative flex h-3 w-3 sm:h-4 sm:w-4">
+                        <span
+                          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-gray-700 opacity-75"
+                        ></span>
+                        <span
+                          class="relative inline-flex rounded-full h-3 w-3 sm:h-4 sm:w-4 bg-gray-700"
+                        ></span>
+                      </span>
+
+                      <span class="font-extralight" id="roleplayTimer">
+                        <span class="mfTimer tabular-nums">00:00</span>
+                      </span>
+                    </div>
+
+                    <!-- Botón tutorial (solo móvil/tablet) -->
+                    <button
+                      id="btnTutorial"
+                      class="w-8 h-8 md:hidden rounded-full bg-white/90 text-[#2563EB] flex items-center justify-center hover:bg-white hover:text-black active:scale-95 transition border border-white/60"
+                      aria-label="Mostrar tutorial"
+                      title="Mostrar tutorial"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-4 h-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M9.09 9a3 3 0 1 1 5.82 1c0 2-3 2-3 4" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
               </div>
-              <!-- Loader móvil -->
-              <div id="loadMv" class="absolute inset-0 hidden flex flex-col items-center justify-center bg-black/70">
-                <div class="w-12 h-12 border-4 border-dashed rounded-full animate-spin border-yellow-500"></div>
-                <h2 class="text-white mt-4 font-semibold text-sm">Cargando...</h2>
-                <p class="text-gray-300 text-xs text-center px-4">
-                  El especialista estará contigo en unos momentos.
-                </p>
-              </div>
-            </div>
-            <div
-              class="w-full h-6 bg-gray-200 grid place-items-center estatusDoc border-l-2 border-r-2 border-blue-900">
-              <p id="estatusDocMv" class="text-black font-medium text-sm text-left pl-3 estatusDoct">Sin iniciar.</p>
-            </div>
-            <div class="w-full h-10 bg-blue-950 grid place-items-center border-l-2 border-r-2 border-blue-900">
-              <p id="nombreIa" class="text-white font-semibold text-sm text-left pl-3">Doctora Virtual Judy</p>
-            </div>
-            <div
-              class="w-full min-h-[150px] max-h-[150px] overflow-y-auto rounded-b-2xl bg-white p-3 border-b-2 border-l-2 border-r-2 border-blue-900">
-              <p id="textoBotMv" class="text-sm"></p>
+
+              <!-- (Opcional) Aquí podrías meter una columna derecha fija en lg si algún día metes algo más -->
             </div>
           </div>
-          <!-- Tú (Usuario) -->
-          <div class="flex flex-col w-full">
-            <div class="relative w-full aspect-video rounded-t-2xl bg-black overflow-hidden">
-              <video id="localVideoMv" class="w-full h-full object-cover" autoplay playsinline muted></video>
-              <div id="noCamOverlayMv"
-                class="absolute inset-0 flex flex-col items-center justify-center text-center text-gray-300 bg-black/60">
-                <i class="bi bi-camera-video-off text-4xl text-red-400 mb-3 animate-pulse"></i>
-                <p class="text-base font-medium">Cámara desactivada</p>
-              </div>
-              <!-- Barra inferior móvil -->
+          <!-- Cámaras + Objeciones: responsivo -->
+          <div class="grid grid-cols-1 lg:grid-cols-[36%_36%_25%] gap-6">
+            <!-- Doc -->
+           <div class="flex flex-col">
               <div
-                class="absolute bottom-0 left-0 w-full flex items-center justify-between px-3 py-2 bg-black/60 backdrop-blur-sm">
-                <div class="flex items-center gap-2">
-                  <button id="iniciarMv"
-                    class="btnStart btn-estado w-10 h-10 grid place-items-center rounded-xl bg-blue-600 text-white hover:bg-blue-700 active:scale-95 transition animate-pulse">
-                    <i class="bi bi-play-fill text-lg"></i>
-                  </button>
-                  <button id="btnObejetionsMv"
-                    class="w-10 h-10 grid place-items-center rounded-xl bg-amber-500 text-white hover:bg-amber-600 active:scale-95 transition">
-                    <i class="bi bi-list text-lg"></i>
-                  </button>
-                  <button id="btnCamMv"
-                    class="w-10 h-10 grid place-items-center rounded-xl bg-gray-200 text-gray-700 hover:bg-gray-300 active:scale-95 transition">
-                    <i class="bi bi-camera-video-fill text-lg"></i>
-                  </button>
-                  <button id="btnPauseMov"
-                    class="w-10 h-10 grid place-items-center rounded-xl bg-slate-600 text-white hover:bg-slate-700 active:scale-95 transition disabled:opacity-50"
-                    disabled>
-                    <i class="bi bi-pause-fill text-lg"></i>
-                    <span class="sr-only">Pausar</span>
-                  </button>
+                id="heygenContainer"
+                class="w-full aspect-video rounded-t-[28px] sm:rounded-t-[35px] bg-black overflow-hidden"
+              >
+                <div
+                  id="heygen-avatar"
+                  class="relative w-full h-full overflow-hidden"
+                >
+                  <div class="absolute top-3 left-3 z-20">
+                    <p
+                      id="estatusDoc"
+                      class="px-3 py-1 rounded-full bg-white text-gray-900 text-xs shadow"
+                    >
+                      Sin iniciar
+                    </p>
+                  </div>
+
+                  <video
+                    id="mediaElementWb"
+                    autoplay
+                    playsinline
+                    class="w-[101%] h-full rounded-lg bg-[#0f0f0f]"
+                  ></video>
+
+                  <div
+                    class="absolute bottom-0 left-0 right-0 z-20 w-full px-4 py-2 backdrop-blur-md bg-white/10 text-white flex items-center justify-between"
+                  >
+                    <span class="text-sm font-semibold"> Jose Smith </span>
+                    <span class="text-xs text-white/70"> Médico Virtual </span>
+                  </div>
+
+                  <div
+                    id="mensajeInicio"
+                    class="absolute inset-0 flex flex-col items-center justify-center bg-black/70 text-white text-center px-4"
+                  >
+                    <p class="text-sm font-medium">
+                      Haz click en el boton
+                      <span id="btnStart2" class="font-semibold text-[#2563EB]"
+                        >Iniciar Roleplay</span
+                      >
+                      para comenzar.
+                    </p>
+                  </div>
+
+                  <div
+                    id="loadWb"
+                    class="absolute inset-0 hidden flex flex-col items-center justify-center bg-black/70"
+                  >
+                    <div
+                      class="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-yellow-500"
+                    ></div>
+                    <h2 class="text-white mt-4 font-semibold">Cargando...</h2>
+                    <p class="text-gray-300 text-sm text-center px-4">
+                      El especialista estará contigo en unos momentos.
+                    </p>
+                  </div>
                 </div>
-                <div class="panel-voz flex items-center gap-2 text-white text-xs">
-                  <span class="mfTimer font-bold tabular-nums">00:00</span>
-                  <span class="h-4 w-px bg-white/40"></span>
-                  <span class="font-semibold contar">
-                    <span id="mfProgActMv">0</span>/<span id="mfProgTotMv">7</span>
-                  </span>
+              </div>
+
+              <div
+                class="w-full min-h-[180px] max-h-[220px] overflow-y-auto rounded-b-[28px] sm:rounded-b-[35px] bg-[#B0E9FF] py-3 border-b-2 border-l-2 border-r-2 border-[#8ADFFF] !text-left p-3"
+              >
+                <p
+                  class="block w-full text-sm text-blue-900 mb-1 pl-1 !text-left"
+                >
+                  Transcripción
+                </p>
+                <div class="px-2">
+                  <p id="textoBotWb"></p>
                 </div>
               </div>
             </div>
-            <div
-              class="w-full h-6 bg-gray-200 grid place-items-center estatusUser border-l-2 border-r-2 border-blue-900">
-              <p id="estatusUserMv" class="text-black font-medium text-sm text-left pl-3 estatusUsert">Sin iniciar.</p>
+
+            <!-- Usuario -->
+            <div class="flex flex-col">
+              <div
+                class="relative w-full aspect-video rounded-t-[28px] sm:rounded-t-[35px] bg-black overflow-hidden"
+              >
+                <div class="absolute top-3 left-3 z-20">
+                  <p
+                    id="estatusUser"
+                    class="px-3 py-1 rounded-full bg-white text-gray-900 text-xs shadow"
+                  >
+                    Sin iniciar
+                  </p>
+                </div>
+
+                <div class="absolute top-3 right-3 z-20 flex gap-2">
+                  <button
+                    disabled
+                    class="w-9 h-9 rounded-full bg-white backdrop-blur flex items-center justify-center text-black"
+                  >
+                    <i id="microfono" class="bi bi-mic-mute"></i>
+                  </button>
+                  <button
+                    id="btnCam"
+                    class="w-9 h-9 rounded-full bg-white backdrop-blur flex items-center justify-center text-blac"
+                  >
+                    <i id="iconCam" class="bi bi-camera-video-off"></i>
+                  </button>
+                </div>
+
+                <video
+                  id="localVideo"
+                  class="w-full h-full object-cover"
+                  autoplay
+                  playsinline
+                  muted
+                ></video>
+
+                <div
+                  class="absolute bottom-0 left-0 right-0 z-20 w-full px-4 py-2 backdrop-blur-md bg-white/10 text-white flex items-center justify-between"
+                >
+                  <span class="text-sm font-semibold"> Joshua Adrian </span>
+                  <span class="text-xs text-white/70"> Agente de ventas </span>
+                </div>
+
+                <div
+                  id="noCamOverlay"
+                  class="absolute inset-0 flex flex-col items-center justify-center text-gray-300 text-sm bg-black/60"
+                >
+                  <i
+                    class="bi bi-camera-video-off text-4xl text-gray-400 mb-3"
+                  ></i>
+                  <p class="text-gray-300 font-medium text-lg">
+                    Cámara desactivada
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class="w-full min-h-[180px] max-h-[220px] overflow-y-auto rounded-b-[28px] sm:rounded-b-[35px] bg-[#B0C8FE] py-3 border-l-2 border-r-2 border-[#8AAEFD] !text-left p-3"
+              >
+                <p
+                  class="block w-full text-sm text-pruple-900 mb-1 pl-1 !text-left"
+                >
+                  Transcripción
+                </p>
+                <p id="textoUsuarioWb"></p>
+              </div>
             </div>
-            <div class="w-full h-10 bg-blue-950 grid place-items-center border-l-2 border-r-2 border-blue-900">
-              <p id="nombreUsuario" class="text-white font-semibold text-sm text-left pl-3">Tú — Agente de Ventas</p>
-            </div>
-            <div
-              class="w-full min-h-[150px] max-h-[150px] overflow-y-auto rounded-b-2xl bg-white p-3 border-l-2 border-r-2 border-b-2 border-blue-900">
-              <p id="textoUsuarioMv" class="text-sm"></p>
+
+            <!-- Objeciones -->
+            <div class="">
+              <div
+                class="w-full bg-gray-200 rounded-[28px] sm:rounded-[35px] p-3 h-full"
+              >
+                <h2
+                  class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-left"
+                >
+                  Lista de objeciones
+                </h2>
+                <div class="w-full h-[2px] bg-gray-400 mb-4"></div>
+                <div id="listaObjecionesWeb" class="flex flex-col gap-3"></div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-    <!-- Modal Objecciones móvil -->
-    <div id="modalObjeccionesMv" class="fixed inset-0 bg-black/50 hidden z-50 p-4">
-      <div
-        class="bg-white w-full max-w-lg mx-auto mt-20 rounded-2xl shadow-xl overflow-hidden max-h-[80vh] flex flex-col">
-        <div class="flex items-center justify-between px-4 py-3 border-b flex-shrink-0">
-          <h3 class="text-lg font-bold text-blue-600">Lista de Objecciones</h3>
-          <button id="closeModalObjeccionesMv" class="p-2 rounded-lg hover:bg-gray-100">
-            <i class="fa-solid fa-xmark text-gray-600"></i>
-          </button>
-        </div>
-        <div class="p-4 overflow-y-auto flex-grow">
-          <table class="w-full border-collapse">
-            <thead>
-              <tr class="border-b border-gray-300 text-left">
-                <th class="py-2 px-2 text-gray-700 font-semibold text-sm">Objección</th>
-                <th class="py-2 px-2 text-gray-700 font-semibold text-center text-sm">Estado</th>
-              </tr>
-            </thead>
-            <tbody id="tablaObjMv"></tbody>
-          </table>
-        </div>
-        <div class="px-4 py-3 border-t flex-shrink-0">
-          <button id="okModalObjeccionesMv"
-            class="w-full bg-teal-500 text-white font-bold py-2 px-4 rounded-xl hover:bg-teal-600 active:scale-95 transition-all">
-            Cerrar
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
+          <!-- Descripción -->
+          <div class="w-full mt-3 bg-white p-4 sm:p-6 rounded-lg text-left">
+            <h2 class="text-2xl sm:text-3xl text-gray-700 mb-5">
+              Descripción del tema
+            </h2>
+            <div class="w-full h-[2px] bg-gray-300 mb-5"></div>
+            <p class="text-base text-gray-500 leading-relaxed">
+              En esta clase, pondrás a prueba los conocimientos recibidos de los
+              productos en los módulos anteriores como si estuvieras en una
+              práctica real con un médico. Para ello te entrevistarás con un
+              avatar de IA que será el médico, al que le darás información
+              acerca del producto y te dará objeciones acerca de la información
+              que le des. Después de cada objeción, deberás responder de manera
+              adecuada según el contexto. Posteriormente, el médico te brindará
+              una retroalimentación sobre tu respuesta.
+            </p>
+          </div>
 
-  <!-- Scripts -->
-  <script type="module" src="./js/main.js"></script>
-  <script src="./js/ia.js"></script>
-  <script src="./js/stores/webSocket.js"></script>
-  <script src="./js/stores/evaluacion.js"></script>
-  <script src="./js/stores/inicio.js"></script>
-  <script src="./js/stores/heygen.js"></script>
-  <script src="./js/stores/gemini.js"></script>
-  <script src="./js/stores/temporizador.js"></script>
-  <script src="./js/stores/camara.js"></script>
-  <script src="./js/stores/chatBot.js"></script>
-  <script src="./js/stores/start.js"></script>
-  <script src="./js/components/slide.js"></script>
+          <!-- Imagen -->
+          <div
+            class="w-full hidden md:flex justify-center items-center overflow-hidden py-6"
+          >
+            <img
+              src="./assets/img/contenido/mapa01.png"
+              alt="Imagen"
+              class="w-full max-w-4xl object-contain"
+            />
+          </div>
+        </section>
 
+        <div class="hidden md:block" v-scope="FooterWb()"></div>
+      </main>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- VERSION MOVIL (responsive) -->
+    <!-- ============================================ -->
+
+    <!-- Scripts -->
+    <script type="module" src="./js/main.js"></script>
+    <script src="./js/ia.js"></script>
+    <script src="./js/stores/webSocket.js"></script>
+    <script src="./js/stores/evaluacion.js"></script>
+    <script src="./js/stores/inicio.js"></script>
+    <script src="./js/stores/heygen.js"></script>
+    <script src="./js/stores/groq.js"></script>
+    <script src="./js/stores/gemini.js"></script>
+    <script src="./js/stores/temporizador.js"></script>
+    <script src="./js/stores/camara.js"></script>
+    <script src="./js/stores/chatBot.js"></script>
+    <script src="./js/stores/start.js"></script>
+    <script src="./js/components/slide.js"></script>
+  </body>
 </html>

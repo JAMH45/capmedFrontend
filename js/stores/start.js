@@ -32,30 +32,39 @@ if (btnStart2) btnStart2.addEventListener("click", inciarWeb);
 if (btnStart) btnStart.addEventListener("click", inciarWeb);
 if (btnStartMv) btnStartMv.addEventListener("click", inciarMovil);
 if (btnStart2Mv) btnStart2Mv.addEventListener("click", inciarMovil);
-
+const btnPause = document.getElementById("btnPause");
 let mediaElement;
 let texto = saludo;
-
+let txtHabla;
 async function inciarWeb() {
   if (segundaFase) {
     ciclo2();
   } else {
     if (btnStart) btnStart.classList.remove("btn-animando");
-
+    cambioDeTexto(6);
     mediaElement = document.getElementById("mediaElementWb");
     agregarClase("mensajeInicio", "hidden");
     quitarClase("loadWb", "hidden");
     if (document.getElementById("iniciarMv")) {
       quitarClase("iniciarMv", "btn-estado");
     }
-
-    mico = ".btn-estado";
-    setEstadoBoton("espera", mico);
     idTextoBot = "textoBotWb";
     tabla = "tablaObjWeb";
 
     cuadroTexto = "textoUsuarioWb";
-
+    btnPause.classList.remove("bg-gray-300", "text-gray-500");
+    btnPause.classList.add(
+      "hover:bg-white",
+      "hover:text-[#2563EB]",
+      "active:scale-95",
+      "transition",
+      "bg-white",
+      "text-[#2563EB]"
+    );
+    btnPause.disabled = false;
+    setRoleplayActivo(true);
+    txtHabla = await parafrasearObjecionGroq("Preséntame el producto en breve");
+    txtHabla = "Hola, soy el doctor Jose Smith cardiologo. " + txtHabla;
     conectarWS();
     await iniciarHeyGen();
     ciclo();
@@ -85,46 +94,37 @@ async function inciarMovil() {
 
 async function iniciarHeyGen() {
   // Usar IDs según el dispositivo
-  const estatusUserClass = "estatusUser";
-  const estatusUserTextClass = "estatusUsert";
-  const estatusDocClass = "estatusDoc";
-  const estatusDocTextClass = "estatusDoct";
-
-  cambiarEstatusColor(
-    estatusUserClass,
-    estatusUserTextClass,
-    "Cargando...",
-    "gris"
-  );
-  cambiarEstatusColor(
-    estatusDocClass,
-    estatusDocTextClass,
-    "Cargando...",
-    "gris"
-  );
 
   await getSessionToken();
   await createNewSession(doctorIa, vozIa);
   await startStreamingSession();
   await delay(4000);
-
+  cambioDeTexto(5);
   agregarClase("loadMv", "hidden");
   agregarClase("loadWb", "hidden");
-
-  cambiarEstatusColor(
-    estatusUserClass,
-    estatusUserTextClass,
-    "Doctor presentandose",
-    "azul"
-  );
-  cambiarEstatusColor(
-    estatusDocClass,
-    estatusDocTextClass,
-    "Doctor presentandose",
-    "azul"
-  );
-
   await habla(respuestaGemini);
+}
+function setMicrofonoActivo(activo) {
+  const btnMic = document.getElementById("btnMic");
+  const iconMic = document.getElementById("microfono");
+
+  if (!btnMic || !iconMic) return;
+
+  if (activo) {
+    // Micrófono ON
+    btnMic.classList.remove("bg-white", "text-black");
+    btnMic.classList.add("bg-green-600", "text-white");
+
+    iconMic.classList.remove("bi-mic-mute");
+    iconMic.classList.add("bi-mic");
+  } else {
+    // Micrófono OFF
+    btnMic.classList.remove("bg-green-600", "text-white");
+    btnMic.classList.add("bg-white", "text-black");
+
+    iconMic.classList.remove("bi-mic");
+    iconMic.classList.add("bi-mic-mute");
+  }
 }
 
 function setEstadoBoton(estado, selector = ".btn-estado") {
@@ -220,7 +220,7 @@ let numeroPalabras = 0;
 let respuestaGemini;
 
 let objActual;
-let txtHabla = primerRespuesta;
+
 let resActual;
 let retro;
 let resRestro;
@@ -270,34 +270,24 @@ const cicloCtrl = {
 };
 let cicloActivo = false;
 const btnPauseMv = document.getElementById("btnPauseMov");
-const btnPause = document.getElementById("btnPause");
+
 // Punto de control: si está pausado, se queda aquí hasta resume()
 btnPause.onclick = () => {
+  togglePausaTimer();
   if (!cicloActivo) return;
 
   if (!cicloCtrl.paused) {
-    //  PAUSAR
+    // ⏸️ PAUSAR
     cicloCtrl.pause();
+    ponerBtnPauseEnReanudar();
 
-    btnPause.title = "Reanudar";
-    btnPause.innerHTML = `
-      <i class="bi bi-play-fill text-lg"></i>
-      <span class="sr-only">Reanudar</span>
-    `;
-
-    // si estaba grabando, corta el mic
     if (isRecordingWS) {
       detenerReconocimientoVozWS();
     }
   } else {
-    //  REANUDAR
+    // ▶️ REANUDAR
     cicloCtrl.resume();
-
-    btnPause.title = "Pausar";
-    btnPause.innerHTML = `
-      <i class="bi bi-pause-fill text-lg"></i>
-      <span class="sr-only">Pausar</span>
-    `;
+    restaurarBtnPauseNormal();
   }
 };
 
@@ -323,6 +313,8 @@ async function delayPausable(ms) {
   }
 }
 let titulo = "";
+let txtHablaOriginal = "";
+
 async function ciclo() {
   cicloCtrl.running = true;
   cicloCtrl.stopped = false;
@@ -331,6 +323,8 @@ async function ciclo() {
 
   try {
     await esperarSiPausado();
+
+    // PRIMERA HABLA: Saludo inicial (sin parafraseo)
     await habla(txtHabla);
 
     await delayPausable(5000);
@@ -339,38 +333,78 @@ async function ciclo() {
       await esperarSiPausado();
 
       try {
+        await esperarSiPausado();
         iniciarCuentaRegresiva(30);
         cambioDeTexto(2);
 
-        await esperarSiPausado();
-        let texto = await iniciarReconocimientoVoz(); 
+        let texto = await iniciarReconocimientoVoz();
+        desMicro();
         console.log("texto: " + texto);
         numeroPalabras = await contarPalabras(texto);
         console.log(numeroPalabras);
-         if(numeroPalabras <= 5){
-          await habla("Perdon no te entendi bien, puedes repetir lo que dijiste.");
+
+        if (numeroPalabras <= 5) {
+          await habla(
+            "Perdon no te entendi bien, puedes repetir lo que dijiste."
+          );
           await delay(2000);
           await ejecutarCiclo();
           return;
         }
-        let msg = responderRompehielosYObjeccionVosk(texto, titulo);
+
+        // CRÍTICO: Verificar que objtxt exista antes de usarlo
+        if (!objtxt) {
+          console.log("⚠️ objtxt no existe, obteniendo primera objeción...");
+          objtxt = await obtenerObjecionParafraseada(true);
+
+          if (!objtxt) {
+            console.error("❌ No se pudo obtener objeción");
+            return;
+          }
+
+          // Inicializar variables
+          hilo = objtxt.argumento;
+          txtHabla = objtxt.objecionParafraseada;
+          txtHablaOriginal = objtxt.objeccion;
+          resActual = objtxt.respuestas;
+          pClave = objtxt.pClaves;
+          titulo = objtxt.titulo;
+        }
+
+        // Rompehielos con objeción parafraseada
+        let msg = await responderRompehielosYObjeccionVosk(texto, objtxt);
         if (msg) {
           await habla(msg);
           await delay(3000);
           await ejecutarCiclo();
           return;
         }
+
+        // Fuera de tema - Parafrasear objeción antes de redirigir
         if (esTextoFueraDeTema(texto, pClave, { minWords: 5 })) {
           const respuestaRedireccion = obtenerRespuestaFueraDeTema();
-          await habla(`${respuestaRedireccion} ${txtHabla}`);
+
+          const textoAParafrasear = txtHablaOriginal || txtHabla;
+          const objecionParafraseadaRedirect = await parafrasearObjecionGroq(
+            textoAParafrasear
+          );
+
+          await habla(
+            `${respuestaRedireccion} ${objecionParafraseadaRedirect}`
+          );
           await delay(3000);
           await ejecutarCiclo();
           return;
         }
+
         await esperarSiPausado();
-        
-      
+
         calReco = calReco + numeroPalabras;
+
+        // Evaluar según versión que escuchó el usuario
+        const textoEvaluacion = objtxt.usandoParafraseada
+          ? objtxt.objecionParafraseada
+          : objtxt.objeccion;
 
         respuestaGemini = await evaluarTexto2(texto, pClave);
         let calTemp = extraerCalificaciones(respuestaGemini);
@@ -385,36 +419,50 @@ async function ciclo() {
 
         caliCono = caliCono + parseInt(calTemp.calReco);
         calMod = calMod + parseInt(calTemp.calC);
+       
 
-        resRestro = obtenerRetroPorCalificacion(calTemp.calReco, resActual);
-
+        resRetro = await generarRetroalimentacionGroq(
+          texto,
+          calTemp.calReco
+        );
+        console.log("RetroalimentacionGroq: " + resRetro);
         if (!pre) {
           agregarAHist(objtxt.titulo, texto, parseInt(calTemp.calReco));
+          marcarSiguienteObjecionOk();
           guardarRetro(
             objtxt.titulo,
             objtxt.objeccion,
             objtxt.argumento,
-            resRestro
+            resRetro
           );
         }
 
         cambioDeTexto(1);
 
         if (segundaFase) {
+          setRoleplayActivo(false);
           await habla(
             "No hay más objeciones, la práctica ha sido finalizada. " +
               "Ahora pasaré a darte tu retroalimentación por cada una de tus respuestas a mis objeciones. " +
-              "Presiona el botón azul para continuar."
+              "Presiona el botón de arriba para continuar."
           );
+          marcarActividadComoCompletada(5);
           isRunning = false;
-          btnStart.disabled = false;
-          restaurarBtnStart();
+
           return;
         }
 
-        objtxt = obtenerObjeccionActual();
+        // Obtener SIGUIENTE objeción parafraseada
+        objtxt = await obtenerObjecionParafraseada(true);
+
+        if (!objtxt) {
+          console.error("❌ No se pudo obtener objeción");
+          return;
+        }
+
         hilo = objtxt.argumento;
-        txtHabla = objtxt.objeccion;
+        txtHabla = objtxt.objecionParafraseada;
+        txtHablaOriginal = objtxt.objeccion;
         resActual = objtxt.respuestas;
         pClave = objtxt.pClaves;
         titulo = objtxt.titulo;
@@ -441,37 +489,6 @@ async function ciclo() {
   } finally {
     cicloCtrl.running = false;
   }
-}
-
-function restaurarBtnStart() {
-  const btn = document.getElementById("btnStart");
-  if (!btn) return;
-
-  // Elimina TODAS las clases previas
-  btn.className = "";
-
-  // Agrega las clases originales
-  btn.classList.add(
-    "btnStart",
-    "btn-estado",
-    "w-10",
-    "h-10",
-    "grid",
-    "place-items-center",
-    "rounded-xl",
-    "bg-blue-600",
-    "text-white",
-    "hover:bg-blue-700",
-    "active:scale-95",
-    "transition",
-    "animate-pulse"
-  );
-
-  // Reestablece icono e info accesible
-  btn.innerHTML = `
-    <i class="bi bi-play-fill text-lg"></i>
-    <span class="sr-only">Iniciar</span>
-  `;
 }
 
 function restaurarBtnStartMv() {
@@ -669,7 +686,7 @@ function avanzarObjeccion() {
 
   indiceObjeccionActual = (indiceObjeccionActual + 1) % listaObjecciones.length;
 
-  // 🔥 Si dio la vuelta y regresó a 0, llamamos otra función
+  // Si dio la vuelta y regresó a 0, llamamos otra función
   if (indiceObjeccionActual === 0 && indiceAnterior !== 0) {
     segundaFase = true;
   }
@@ -874,65 +891,43 @@ function cambiarEstatusColor(contenedorClass, textoClass, text, color) {
 }
 
 function cambioDeTexto(caso) {
-  if (caso === 1) {
-    cambiarEstatusColor(
-      "estatusUser",
-      "estatusUsert",
-      "Dando objeccion",
-      "azul"
-    );
+  const estatusUser = document.getElementById("estatusUser");
+  const estatusDoc = document.getElementById("estatusDoc");
 
-    cambiarEstatusColor(
-      "estatusDoc ",
-      "estatusDoct",
-      "Dando objeccion",
-      "azul"
-    );
-  }
-  if (caso === 2) {
-    cambiarEstatusColor(
-      "estatusUser",
-      "estatusUsert",
-      "Por favor responde",
-      "verde"
-    );
+  if (!estatusUser || !estatusDoc) return;
 
-    cambiarEstatusColor(
-      "estatusDoc",
-      "estatusDoct",
-      "Por favor responde",
-      "verde"
-    );
-  }
-  if (caso === 3) {
-    cambiarEstatusColor(
-      "estatusUser",
-      "estatusUsert",
-      "Retroalimentación",
-      "amarillo"
-    );
+  switch (caso) {
+    case 1:
+      estatusUser.textContent = "Dando objeción";
+      estatusDoc.textContent = "Dando objeción";
+      break;
 
-    cambiarEstatusColor(
-      "estatusDoc",
-      "estatusDoct",
-      "Retroalimentación ",
-      "amarillo"
-    );
-  }
-  if (caso === 4) {
-    cambiarEstatusColor(
-      "estatusUser",
-      "estatusUsert",
-      "Prueba finalizada.",
-      "gris"
-    );
+    case 2:
+      estatusUser.textContent = "Por favor responde";
+      estatusDoc.textContent = "Por favor responde";
+      break;
 
-    cambiarEstatusColor(
-      "estatusDoc",
-      "estatusDoct",
-      "Prueba finalizada.",
-      "gris"
-    );
+    case 3:
+      estatusUser.textContent = "Retroalimentación";
+      estatusDoc.textContent = "Retroalimentación";
+      break;
+
+    case 4:
+      estatusUser.textContent = "Prueba finalizada";
+      estatusDoc.textContent = "Prueba finalizada";
+      break;
+    case 5:
+      estatusUser.textContent = "Medico presentandose";
+      estatusDoc.textContent = "Medico presentandose";
+      break;
+    case 6:
+      estatusUser.textContent = "Cargando...";
+      estatusDoc.textContent = "Cargando...";
+      break;
+
+    default:
+      estatusUser.textContent = "Sin iniciar";
+      estatusDoc.textContent = "Sin iniciar";
   }
 }
 
@@ -990,4 +985,234 @@ function agregarAHist(texto1, texto2, numero) {
     clas: nivel,
   });
   console.log(hist);
+}
+function setRoleplayActivo(activo) {
+  const btn = document.getElementById("btnStart");
+  const icon = document.getElementById("iconStart");
+  const text = document.getElementById("textStart");
+
+  if (!btn || !icon || !text) return;
+
+  if (activo) {
+    // 🔴 Detener
+    text.textContent = "Detener Roleplay";
+
+    icon.innerHTML = `
+      <svg
+        class="w-5 h-5"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <rect x="9" y="9" width="6" height="6" fill="white" />
+      </svg>
+    `;
+
+    btn.classList.remove("bg-white", "text-[#2563EB]");
+    btn.classList.add("bg-red-600", "text-white");
+  } else {
+    // ▶️ Iniciar
+    text.textContent = "Continuar a la retroalimentación";
+
+    icon.innerHTML = `
+      <svg
+        class="w-5 h-5"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <polygon
+          points="10 8 16 12 10 16"
+          fill="currentColor"
+          stroke="none"
+        />
+      </svg>
+    `;
+
+    btn.classList.remove("bg-red-600", "text-white");
+    btn.classList.add("bg-white", "text-[#2563EB]");
+  }
+}
+
+function marcarSiguienteObjecionOk() {
+  if (!window.__objProg) {
+    console.warn(
+      "⚠️ No hay progreso inicializado. Llama primero cargarObjeccionesEnLista()"
+    );
+    return;
+  }
+
+  const { idx, total } = window.__objProg;
+  if (idx >= total) {
+    console.log("✅ Ya están todas marcadas como completadas");
+    return;
+  }
+
+  // Marca en web y móvil
+  setIconEstado("web", idx, "ok");
+  setIconEstado("mv", idx, "ok");
+
+  // Avanza puntero
+  window.__objProg.idx++;
+}
+
+function setIconEstado(prefix, idx, estado) {
+  const wrap = document.getElementById(`${prefix}-iconWrap-${idx}`);
+  const icon = document.getElementById(`${prefix}-icon-${idx}`);
+  if (!wrap || !icon) return;
+
+  // reset
+  wrap.className = "w-5 h-5 rounded-full flex items-center justify-center";
+  icon.className = "bi text-lg";
+
+  if (estado === "ok") {
+    wrap.classList.add("border-2", "border-green-500");
+    icon.classList.add("bi-check", "text-green-500");
+  } else {
+    // pendiente por default
+    icon.classList.add("bi-clock", "text-yellow-500");
+  }
+}
+function desMicro() {
+  const icon = document.getElementById("microfono");
+  const btn = icon?.closest("button");
+
+  if (!icon || !btn) return;
+
+  // Icono
+  icon.classList.remove("bi-mic");
+  icon.classList.add("bi-mic-mute");
+
+  // Botón blanco
+  btn.classList.remove("bg-green-500", "text-white");
+  btn.classList.add("bg-white", "text-black");
+
+  // Volver a deshabilitar si quieres keep safe
+  btn.disabled = true;
+}
+//temp
+function marcarActividadComoCompletada(idActividad) {
+  const data = JSON.parse(localStorage.getItem("semana1")) || [];
+  const actividad = data.find((a) => a.id === idActividad);
+  if (!actividad) return;
+
+  actividad.status = "completada";
+  localStorage.setItem("semana1", JSON.stringify(data));
+
+  console.log(`✅ Actividad ${idActividad} completada`);
+}
+
+//Tiempo pausa
+// ===== Timer de pausa (2 minutos) =====
+let __pauseTimerInterval = null;
+let __pauseRemainingMs = 2 * 60 * 1000; // 2:00
+let __pauseRunning = false;
+
+function __formatMMSS(ms) {
+  const totalSec = Math.max(0, Math.ceil(ms / 1000));
+  const mm = Math.floor(totalSec / 60);
+  const ss = totalSec % 60;
+  return `${mm}:${String(ss).padStart(2, "0")}`;
+}
+
+function __renderPauseTimer() {
+  const el = document.getElementById("pauseTimer");
+  if (el) el.textContent = __formatMMSS(__pauseRemainingMs);
+}
+
+function __stopPauseTimerInterval() {
+  if (__pauseTimerInterval) {
+    clearInterval(__pauseTimerInterval);
+    __pauseTimerInterval = null;
+  }
+}
+
+function togglePausaTimer() {
+  // Si es la primera vez y nunca se ha movido, asegúrate de empezar en 2:00
+  if (__pauseRemainingMs <= 0) {
+    __pauseRemainingMs = 2 * 60 * 1000;
+  }
+
+  // Si está corriendo -> PAUSAR
+  if (__pauseRunning) {
+    __pauseRunning = false;
+    __stopPauseTimerInterval();
+    __renderPauseTimer();
+    return;
+  }
+
+  // Si no está corriendo -> INICIAR o REANUDAR
+  __pauseRunning = true;
+
+  let last = Date.now();
+  __renderPauseTimer();
+
+  __stopPauseTimerInterval();
+  __pauseTimerInterval = setInterval(() => {
+    const now = Date.now();
+    const delta = now - last;
+    last = now;
+
+    __pauseRemainingMs -= delta;
+
+    if (__pauseRemainingMs <= 0) {
+      __pauseRemainingMs = 0;
+      __renderPauseTimer();
+      __pauseRunning = false;
+      __stopPauseTimerInterval();
+      return;
+    }
+
+    __renderPauseTimer();
+  }, 200);
+}
+
+// Opcional: si quieres resetear manualmente a 2:00
+function resetPausaTimer() {
+  __pauseRunning = false;
+  __stopPauseTimerInterval();
+  __pauseRemainingMs = 2 * 60 * 1000;
+  __renderPauseTimer();
+}
+
+// Inicializar UI cuando cargue la página
+document.addEventListener("DOMContentLoaded", () => {
+  __renderPauseTimer();
+});
+
+// Guarda el HTML original una sola vez (después de tener btnPause)
+const __btnPauseOriginalHTML = btnPause.innerHTML;
+const __btnPauseOriginalTitle = btnPause.title || "Pausar Roleplay";
+
+function ponerBtnPauseEnReanudar() {
+  btnPause.title = "Reanudar Roleplay";
+  btnPause.innerHTML = `
+    <!-- Icono Play -->
+    <svg
+      class="w-5 h-5"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <polygon
+        points="10 8 16 12 10 16"
+        fill="currentColor"
+        stroke="none"
+      />
+    </svg>
+    Reanudar Roleplay
+  `;
+}
+
+function restaurarBtnPauseNormal() {
+  btnPause.title = __btnPauseOriginalTitle;
+  btnPause.innerHTML = __btnPauseOriginalHTML;
 }

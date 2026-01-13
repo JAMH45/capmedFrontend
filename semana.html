@@ -10,7 +10,6 @@
     <script src="https://unpkg.com/petite-vue" defer></script>
 
     <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/menu.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
       rel="stylesheet"
@@ -34,6 +33,11 @@
     />
     <link
       rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+
+    <link
+      rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
     />
   </head>
@@ -41,7 +45,7 @@
     body {
       font-family: "Roboto", "Open Sans", sans-serif;
     }
-    
+
     /* Quitar margin-left en móvil */
     @media (max-width: 768px) {
       #content {
@@ -50,7 +54,6 @@
     }
   </style>
   <body class="bg-gray-100 min-h-screen">
-    
     <!-- Overlay para cerrar sidebar en móvil -->
     <div id="overlay" class="overlay"></div>
 
@@ -58,58 +61,529 @@
     <div v-scope="Header()"></div>
 
     <!-- Header Móvil con botón de menú -->
-    <header class="block md:hidden fixed top-0 inset-x-0 z-50 bg-blue-950/95 backdrop-blur border-b border-blue-900">
-      <div class="h-14 px-4 flex items-center justify-between">
-        <!-- Botón de menú -->
-        <button
-          id="mobile-toggle"
-          class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-blue-800
-                 text-gray-100 hover:bg-blue-900 active:scale-95 transition"
-          aria-label="Abrir menú"
-        >
-          <i class="fas fa-bars text-xl"></i>
-        </button>
-
-        <!-- Título -->
-        <span class="text-sm sm:text-lg font-bold text-white">Semanas</span>
-
-        <!-- Espacio vacío para centrar -->
-        <div class="w-12"></div>
-      </div>
-    </header>
 
     <!-- Contenido Principal -->
-    <main id="content" class="transition-all duration-300 mb-4 pt-14 md:pt-0">
-      <section class="m-3 sm:m-5 pb-6 bg-white rounded-lg shadow-md">
-        
-        <!-- Título principal -->
-        <div class="p-4 sm:p-5 bg-blue-950 rounded-t-lg w-full">
-          <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-2 sm:mb-4 text-center">
-            PharmaSales Pro
-          </h1>
-          <h2 class="text-sm sm:text-base md:text-xl font-bold text-blue-200 text-center">
-            Semanas de la capacitación de <span id="titCurso"></span>
-          </h2>
+    <main
+      id="content"
+      class="transition-all duration-300 p-4 mb-4 pt-14 md:pt-0"
+    >
+      <section>
+        <!-- HEADER / HERO -->
+        <div
+          class="w-full mt-3 rounded-[20px] overflow-hidden bg-[url('assets/img/contenido/img03.png')] bg-center bg-cover bg-no-repeat"
+        >
+          <div class="flex w-full min-h-[35vh]">
+            <!-- IZQUIERDA -->
+            <div class="relative flex-1 p-4 sm:p-6">
+              <!-- Botón volver -->
+              <button
+                class="absolute top-4 left-4 px-4 py-2 rounded-full bg-white text-[#2563EB] text-sm font-medium flex items-center gap-2 shadow hover:shadow-md transition"
+              >
+                <i class="bi bi-arrow-left"></i>
+                Volver
+              </button>
+
+              <!-- Títulos -->
+              <div class="mt-14">
+                <h1 class="text-4xl sm:text-6xl text-white leading-none">
+                  Casec
+                </h1>
+                <p class="text-white/90 text-base sm:text-lg mt-2">
+                  Aquí tienes tu analítica hasta el momento
+                </p>
+              </div>
+
+              <!-- Tarjetas stats: móvil 1 columna, web 3 columnas -->
+              <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Card 1 -->
+                <div class="bg-white rounded-[30px] p-5 shadow flex flex-col">
+                  <div class="flex items-center gap-3 text-gray-800 mb-4">
+                    <img
+                      src="assets/img/icons/lego.png"
+                      alt=""
+                      class="w-6 h-6 object-contain"
+                    />
+                    <p class="text-sm text-[#00668C]">Módulos Cursados</p>
+                  </div>
+
+                  <div class="flex-1 flex items-center justify-center">
+                    <p class="text-6xl sm:text-7xl text-[#020045]">72</p>
+                  </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white rounded-[30px] p-5 shadow flex flex-col">
+                  <div class="flex items-center gap-3 text-gray-800 mb-4">
+                    <img
+                      src="assets/img/icons/category.png"
+                      alt=""
+                      class="w-6 h-6 object-contain"
+                    />
+                    <p class="text-sm text-[#0083B5]">Categoría</p>
+                  </div>
+
+                  <div class="flex-1 flex items-center justify-center">
+                    <div class="flex items-center gap-3">
+                      <img
+                        src="assets/img/icons/corona.png"
+                        alt="Rookie"
+                        class="w-9 h-9 sm:w-10 sm:h-10 object-contain"
+                      />
+                      <p
+                        class="text-2xl sm:text-3xl font-extrabold text-[#020045]"
+                      >
+                        Rookie
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white rounded-[30px] p-5 shadow flex flex-col">
+                  <div class="flex items-center gap-3 text-gray-800 mb-4">
+                    <img
+                      src="assets/img/icons/exam.png"
+                      alt=""
+                      class="w-6 h-6 object-contain"
+                    />
+                    <p class="text-sm text-[#0037B2]">Promedio general</p>
+                  </div>
+
+                  <div class="flex-1 flex items-center justify-center">
+                    <p class="text-6xl sm:text-7xl text-[#020045]">6</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DERECHA: imagen producto (OCULTA EN MÓVIL) -->
+            <div
+              class="hidden md:flex w-[21%] min-w-[260px] items-center justify-center p-4"
+            >
+              <img
+                src="assets/img/contenido/casecSF.png"
+                alt="Imagen lateral"
+                class="w-full h-full max-h-[90%] object-contain"
+              />
+            </div>
+          </div>
         </div>
 
-        <!-- Subtítulo -->
+        <!-- MÓDULOS -->
         <div class="px-4 sm:px-5 py-3 sm:py-4">
-          <h1 class="text-xl sm:text-2xl font-extrabold text-blue-950 mb-2 flex items-center gap-3 justify-center md:justify-start">
-            <i class="fa-solid fa-calendar-days text-blue-950 text-xl sm:text-2xl"></i>
-            Semanas
-          </h1>
+          <!-- móvil 1 columna, md 2 columnas, lg 4 columnas -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Tarjeta 1 -->
+            <div
+              class="relative h-[240px] sm:h-[280px] lg:h-[320px] rounded-[24px] bg-blue-200 p-5 text-white"
+            >
+              <span
+                class="inline-block px-4 py-1 rounded-full bg-white text-sky-700 text-sm font-medium"
+              >
+                Módulo 01
+              </span>
+
+              <div class="absolute top-1 right-1 w-6 h-6">
+                <img
+                  src="assets/img/icons/flechaArriba.png"
+                  alt="Ir al módulo"
+                  class="absolute top-5 right-5 w-6 h-6 object-contain"
+                />
+              </div>
+
+              <h2
+                class="mt-10 sm:mt-12 text-xl sm:text-2xl lg:text-3xl font-light leading-tight"
+              >
+                Inteligencia de Producto y Campaña
+              </h2>
+
+              <span
+                class="absolute bottom-5 left-5 px-4 py-1 rounded-full bg-[#004EFB] text-black text-sm"
+              >
+                Cursado
+              </span>
+            </div>
+
+            <!-- Tarjeta 2 -->
+            <div
+              class="relative h-[240px] sm:h-[280px] lg:h-[320px] rounded-[24px] bg-[#004EFB] p-5 text-white"
+            >
+              <span
+                class="inline-block px-4 py-1 rounded-full bg-white text-sky-700 text-sm font-medium"
+              >
+                Módulo 02
+              </span>
+
+              <div class="absolute top-1 right-1 w-6 h-6">
+                <img
+                  src="assets/img/icons/flechaArriba.png"
+                  alt="Ir al módulo"
+                  class="absolute top-5 right-5 w-6 h-6 object-contain"
+                />
+              </div>
+
+              <h2
+                class="mt-10 sm:mt-12 text-xl sm:text-2xl lg:text-3xl font-light leading-tight"
+              >
+                Estrategia Comercial
+              </h2>
+
+              <span
+                class="absolute bottom-5 left-5 px-4 py-1 rounded-full bg-blue-200 text-black text-sm"
+              >
+                Cursado
+              </span>
+            </div>
+
+            <!-- Tarjeta 3 -->
+            <a href="inicio.html" class="block">
+              <div
+                class="relative h-[260px] sm:h-[300px] lg:h-[320px] rounded-[24px] bg-blue-200 p-5 text-white"
+              >
+                <span
+                  class="inline-block px-4 py-1 rounded-full bg-white text-sky-700 text-sm font-medium"
+                >
+                  Módulo 03
+                </span>
+
+                <div class="absolute top-1 right-1 w-6 h-6">
+                  <img
+                    src="assets/img/icons/flechaArriba.png"
+                    alt="Ir al módulo"
+                    class="absolute top-5 right-5 w-6 h-6 object-contain"
+                  />
+                </div>
+
+                <h2
+                  class="mt-10 sm:mt-12 text-xl sm:text-2xl lg:text-3xl font-light leading-tight"
+                >
+                  Manejo de Objeciones
+                </h2>
+
+                <!-- Progreso -->
+                <div class="absolute bottom-5 left-5 right-5">
+                  <div class="flex items-center justify-between mb-2">
+                    <span
+                      class="px-4 py-1 rounded-full bg-[#004EFB] text-white text-sm border-2 border-white"
+                    >
+                      Progreso
+                    </span>
+                    <span class="text-white text-3xl sm:text-4xl">63%</span>
+                  </div>
+
+                  <div class="h-3 rounded-full bg-white/40 overflow-hidden">
+                    <div
+                      class="h-full rounded-full bg-[#001E7A] transition-all duration-700"
+                      style="width: 63%"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </a>
+
+            <!-- Tarjeta 4 -->
+            <div
+              class="relative h-[240px] sm:h-[280px] lg:h-[320px] rounded-[24px] bg-[#004EFB] p-5 text-white"
+            >
+              <span
+                class="inline-block px-4 py-1 rounded-full bg-white text-sky-700 text-sm font-medium"
+              >
+                Módulo 04
+              </span>
+
+              <div class="absolute top-1 right-1 w-6 h-6">
+                <img
+                  src="assets/img/icons/flechaArriba.png"
+                  alt="Ir al módulo"
+                  class="absolute top-5 right-5 w-6 h-6 object-contain"
+                />
+              </div>
+
+              <h2
+                class="mt-10 sm:mt-12 text-xl sm:text-2xl lg:text-3xl font-light leading-tight"
+              >
+                Cierre y Seguimiento
+              </h2>
+
+              <span
+                class="absolute bottom-5 left-5 px-4 py-1 rounded-full bg-black text-white text-sm"
+              >
+                <span>Disponible</span>
+                <span class="font-bold">26.Feb.2026</span>
+              </span>
+            </div>
+          </div>
         </div>
 
-        <!-- Lista de semanas (generada por JS) -->
-        <div class="px-4 sm:px-5 pb-5" id="listaSemanas">
-          <!-- Aquí JS va a generar las semanas -->
-        </div>
+        <!-- GRÁFICAS -->
+        <div class="px-4 sm:px-5 pb-5">
+          <div class="w-full rounded-3xl bg-gray-50 p-4 sm:p-8">
+            <h2
+              class="text-2xl sm:text-3xl font-bold text-gray-700 mb-6 sm:mb-8"
+            >
+              Más datos sobre tu curso
+            </h2>
 
+            <!-- móvil 1 columna (apiladas), lg 3 columnas -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+              <!-- CARD 1 -->
+              <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm">
+                <span
+                  class="inline-block px-5 py-2 rounded-full bg-blue-600 text-white text-sm font-medium"
+                >
+                  Total cursado
+                </span>
+                <div class="mt-6 relative h-[240px] sm:h-[280px]">
+                  <canvas id="chartDonut"></canvas>
+                </div>
+              </div>
+
+              <!-- CARD 2 -->
+              <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm">
+                <span
+                  class="inline-block px-5 py-2 rounded-full bg-blue-600 text-white text-sm font-medium"
+                >
+                  Porcentaje por respuesta
+                </span>
+                <div class="mt-6 relative h-[240px] sm:h-[280px]">
+                  <canvas id="chartRespuestas"></canvas>
+                </div>
+              </div>
+
+              <!-- CARD 3 -->
+              <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm">
+                <span
+                  class="inline-block px-5 py-2 rounded-full bg-blue-600 text-white text-sm font-medium"
+                >
+                  Tiempo diario esta semana
+                </span>
+                <div class="mt-6 relative h-[240px] sm:h-[280px]">
+                  <canvas id="chartSemana"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
-    </main>
 
+      <div class="hidden md:block" v-scope="FooterWb()"></div>
+    </main>
   </body>
   <script type="module" src="./js/main.js"></script>
   <script src="./js/components/slide.js"></script>
   <script src="./js/semana/semana.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <script>
+    // ---------------- Helpers ----------------
+    function makeStripePattern(ctx, bgColor) {
+      const p = document.createElement("canvas");
+      p.width = 18;
+      p.height = 18;
+      const pctx = p.getContext("2d");
+
+      // fondo
+      pctx.fillStyle = bgColor;
+      pctx.fillRect(0, 0, p.width, p.height);
+
+      // rayas blancas suaves
+      pctx.strokeStyle = "rgba(255,255,255,0.25)";
+      pctx.lineWidth = 4;
+      pctx.beginPath();
+      pctx.moveTo(-2, 18);
+      pctx.lineTo(18, -2);
+      pctx.stroke();
+
+      pctx.beginPath();
+      pctx.moveTo(6, 24);
+      pctx.lineTo(24, 6);
+      pctx.stroke();
+
+      return ctx.createPattern(p, "repeat");
+    }
+
+    // Plugin: texto centrado en donut
+    const centerTextPlugin = {
+      id: "centerTextPlugin",
+      afterDraw(chart, args, opts) {
+        const { ctx, chartArea } = chart;
+        if (!chartArea) return;
+
+        ctx.save();
+        ctx.font = "700 64px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+        ctx.fillStyle = opts?.color ?? "#0B0B3B";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(
+          opts?.text ?? "",
+          (chartArea.left + chartArea.right) / 2,
+          (chartArea.top + chartArea.bottom) / 2
+        );
+        ctx.restore();
+      },
+    };
+
+    // Plugin: valores arriba de barras (con sufijo opcional)
+    function makeBarValueLabelsPlugin({ suffix = "" } = {}) {
+      return {
+        id: "barValueLabelsPlugin_" + suffix,
+        afterDatasetsDraw(chart) {
+          const { ctx } = chart;
+          const dataset = chart.data.datasets[0];
+          const meta = chart.getDatasetMeta(0);
+          if (!meta?.data?.length) return;
+
+          ctx.save();
+          ctx.fillStyle = "#0B0B3B";
+          ctx.font =
+            "600 26px system-ui, -apple-system, Segoe UI, Roboto, Arial";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "bottom";
+
+          meta.data.forEach((bar, i) => {
+            const val = dataset.data[i];
+            if (val == null) return;
+            ctx.fillText(String(val) + suffix, bar.x, bar.y - 10);
+          });
+
+          ctx.restore();
+        },
+      };
+    }
+
+    // ------------- Chart 1: Donut segmentado -------------
+    const progreso = 23; // %
+    const segments = 60; // “tiritas” alrededor
+    const filled = Math.round((progreso / 100) * segments);
+
+    const donutData = Array.from({ length: segments }, () => 1);
+    const donutColors = Array.from({ length: segments }, (_, i) =>
+      i < filled ? "#0B4BFF" : "#CFCFCF"
+    );
+
+    new Chart(document.getElementById("chartDonut"), {
+      type: "doughnut",
+      data: {
+        datasets: [
+          {
+            data: donutData,
+            backgroundColor: donutColors,
+            borderWidth: 0,
+            spacing: 4,
+            borderRadius: 999,
+            hoverOffset: 0,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "78%",
+        rotation: -110 * (Math.PI / 180),
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false },
+          centerTextPlugin: { text: progreso + "%", color: "#0B0B3B" },
+        },
+      },
+      plugins: [centerTextPlugin],
+    });
+
+    // ------------- Chart 2: Porcentaje por respuesta -------------
+    const ctxResp = document.getElementById("chartRespuestas").getContext("2d");
+
+    const respLabels = ["Correctas", "Parcialmente", "Incorrectas"];
+    const respVals = [60, 20, 30];
+
+    const respPatterns = [
+      makeStripePattern(ctxResp, "#0B4BFF"),
+      makeStripePattern(ctxResp, "#05B0F6"),
+      makeStripePattern(ctxResp, "#0B0B3B"),
+    ];
+
+    new Chart(ctxResp, {
+      type: "bar",
+      data: {
+        labels: respLabels,
+        datasets: [
+          {
+            data: respVals,
+            backgroundColor: respPatterns,
+            borderWidth: 0,
+            borderRadius: 22,
+            borderSkipped: false,
+            barPercentage: 0.75,
+            categoryPercentage: 0.7,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: { padding: { top: 16 } },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: "#3B3B3B", font: { size: 14, weight: "500" } },
+          },
+          y: {
+            display: false,
+            beginAtZero: true,
+            suggestedMax: 70,
+          },
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false },
+        },
+      },
+      plugins: [makeBarValueLabelsPlugin({ suffix: "%" })],
+    });
+
+    // ------------- Chart 3: Tiempo diario esta semana -------------
+    const ctxSemana = document.getElementById("chartSemana").getContext("2d");
+
+    const semanaLabels = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+    const semanaVals = [2, 3, 6, 5, 1, 1, 2];
+
+    new Chart(ctxSemana, {
+      type: "bar",
+      data: {
+        labels: semanaLabels,
+        datasets: [
+          {
+            data: semanaVals,
+            backgroundColor: "#0B4BFF",
+            borderRadius: 14,
+            borderSkipped: false,
+            barPercentage: 0.45,
+            categoryPercentage: 0.7,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: { padding: { top: 16 } },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: "#3B3B3B", font: { size: 14, weight: "500" } },
+          },
+          y: {
+            beginAtZero: true,
+            suggestedMax: 6,
+            ticks: { color: "#7A7A7A" },
+            grid: { color: "rgba(0,0,0,0.12)", borderDash: [4, 6] },
+          },
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { enabled: false },
+        },
+      },
+      plugins: [makeBarValueLabelsPlugin()],
+    });
+  </script>
 </html>

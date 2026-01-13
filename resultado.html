@@ -1,471 +1,626 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PharmaSales Pro - Resultados</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PharmaSales Pro - Resultados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/petite-vue" defer></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Raleway:wght@600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+    />
+  </head>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/petite-vue" defer></script>
+  <body class="bg-white text-gray-800 min-h-screen">
+    <!-- Overlay para sidebar móvil -->
+    <div id="overlay" class="overlay"></div>
 
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/resultados.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
-    rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Raleway:wght@600&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
-  <link rel="stylesheet" href="css/menu.css" />
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" />
-  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" />
-</head>
+    <!-- Sidebar (responsive) -->
+    <div class="hidden md:block" v-scope="Header()"></div>
 
-<style>
-  body {
-    font-family: "Roboto", "Open Sans", sans-serif;
-  }
+    <!-- Header Móvil -->
 
-  /* Utilidades para el flip */
-  .transform-style-preserve-3d {
-    transform-style: preserve-3d;
-  }
+    <div class="min-h-screen flex items-center px-4 sm:px-4 pb-10 md:pt-0">
+      <main id="content" class="transition-all duration-300 mb-4 w-full">
+        <section class="rounded-lg w-full bg-white mx-auto max-w-7xl">
+          <!-- Header del section -->
+          <div class="p-4 rounded-t-lg w-full">
+            <p class="text-base sm:text-lg text-gray-400">Modulo 3</p>
 
-  .backface-hidden {
-    backface-visibility: hidden;
-  }
+            <!-- ✅ Mobile ajustado, Web igual (md:text-6xl) -->
+            <p class="text-3xl sm:text-4xl md:text-6xl">
+              Simulador de Diálogo y Roleplaying
+            </p>
 
-  .rotate-y-180 {
-    transform: rotateY(180deg);
-  }
-
-  .is-flipped {
-    transform: rotateY(180deg);
-  }
-
-  #graficoTotal canvas {
-    transform: scale(1.4);
-    transform-origin: center;
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    #content {
-      margin-left: 0 !important;
-    }
-    
-    .main-tab-buttons {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    
-    .main-tab-button {
-      min-width: 100px;
-      padding: 12px 16px;
-      font-size: 0.875rem;
-    }
-  }
-</style>
-
-<body class="bg-gray-100 text-gray-800 min-h-screen">
-
-  <!-- Overlay para sidebar móvil -->
-  <div id="overlay" class="overlay"></div>
-
-  <!-- Sidebar (responsive) -->
-  <div v-scope="Header()"></div>
-
-  <!-- Header Móvil -->
-  <header class="block md:hidden fixed top-0 inset-x-0 z-50 bg-blue-950/95 backdrop-blur border-b border-blue-900">
-    <div class="h-14 px-4 flex items-center justify-between">
-      <button id="mobile-toggle" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-blue-800 text-gray-100 hover:bg-blue-900 active:scale-95 transition" aria-label="Abrir menú">
-        <i class="fas fa-bars text-xl"></i>
-      </button>
-      <span class="text-lg font-bold text-white">Resultados</span>
-      <div class="w-12"></div>
-    </div>
-  </header>
-
-  <div class="min-h-screen flex items-center px-3 sm:px-4 pb-10 md:pt-0">
-    <main id="content" class="transition-all duration-300 mb-4 w-full">
-      
-      <section class="mt-3 sm:mt-10 rounded-lg w-full bg-white shadow-md mx-auto max-w-7xl">
-        
-        <!-- Header del section -->
-        <div class="p-4 sm:p-5 bg-blue-950 rounded-t-lg w-full">
-          <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-2 sm:mb-4 text-center">
-            PharmaSales Pro
-          </h1>
-        </div>
-
-        <!-- Subtítulo -->
-        <div class="px-4 sm:px-5 py-3 sm:py-4">
-          <h1 class="text-xl sm:text-2xl font-extrabold text-blue-950 mb-2 flex items-center gap-3 justify-center md:justify-start">
-            <i class="fa-solid fa-chart-line text-blue-950 text-xl sm:text-2xl"></i>
-            Análisis de resultados
-          </h1>
-        </div>
-
-        <!-- Tabs principales -->
-        <div class="main-tabs px-3 sm:px-5 rounded-lg">
-          
-          <div class="main-tab-buttons rounded-t-lg flex-col sm:flex-row">
-            <button class="main-tab-button active text-sm sm:text-base" data-main-tab="mainCom">
-              <i class="fas fa-layer-group"></i> <span class="hidden sm:inline">Por </span>Competencias
-            </button>
-            <button class="main-tab-button text-sm sm:text-base" data-main-tab="mainCla">
-              <i class="fas fa-list-check"></i> Clasificación
-            </button>
-            <button class="main-tab-button text-sm sm:text-base" data-main-tab="mainTab">
-              <i class="fas fa-star-half-alt"></i> <span class="hidden sm:inline">Calificación </span>General
-            </button>
+            <!-- ✅ Mobile ajustado, Web igual (md:text-3xl) -->
+            <p class="text-xl sm:text-2xl md:text-3xl text-[#2563EB]">
+              Análisis de resultados
+            </p>
           </div>
 
-          <!-- ========================================= -->
-          <!-- TAB 1: Por Competencias -->
-          <!-- ========================================= -->
-          <div class="main-tab-content active" id="mainCom">
-            <div class="w-full max-w-[44vh] md:max-w-[54vh] mx-auto lg:max-w-none">
-              
-              <div class="w-full p-2 md:p-0 md:h-[5vh] h-[4vh] bg-white rounded-lg flex items-center gap-2">
-                <i class="fa-solid fa-clipboard-list text-blue-950 text-lg sm:text-xl"></i>
-                <h1 class="font-bold text-lg sm:text-xl md:text-2xl text-blue-950">
-                  Resultados por competencia
-                </h1>
-              </div>
+          <!-- Subtítulo -->
+          <div class="p-3 bg-[#2563EB] rounded-[40px]">
+            <h1
+              class="text-base sm:text-xl text-white flex items-center gap-3 justify-center md:justify-start"
+            >
+              <img
+                src="assets/img/icons/cuadros.png"
+                alt=""
+                class="w-5 h-5 sm:w-6 sm:h-6"
+              />
 
-              <!-- Carousel de competencias -->
-              <div v-scope="{
-                idx: 0,
-                total: 4,
-                perView: 1,
-                init(){
-                  this.updatePerView();
-                  window.addEventListener('resize', this.updatePerView);
-                },
-                updatePerView(){
-                  this.perView = window.innerWidth >= 768 ? 2 : 1;
-                  if (this.idx > this.total - this.perView) this.idx = Math.max(0, this.total - this.perView);
-                },
-                next(){
-                  this.idx = Math.min(this.idx + 1, this.total - this.perView);
-                },
-                prev(){
-                  this.idx = Math.max(this.idx - 1, 0);
-                },
-                trackStyle(){
-                  const step = 100 / this.perView;
-                  return `transform: translateX(-${this.idx * step}%);`;
-                },
-                slideStyle(){
-                  return `flex: 0 0 ${100 / this.perView}%;`;
-                },
-                pageCount(){
-                  return Math.max(1, this.total - this.perView + 1);
-                }
-              }" @vue:mounted="init()" class="relative w-full h-[30vh] md:h-[55vh] overflow-hidden rounded-sm">
-                
-                <div class="flex h-full transition-transform duration-500 ease-out" :style="trackStyle()">
-                  
-                  <!-- Slide 1: Conocimiento del producto -->
-                  <div class="p-2" :style="slideStyle()">
-                    <div id="cardCP" class="relative rounded-lg border-2 border-teal-400 cursor-pointer overflow-hidden h-full">
-                      <div id="cardCPInner" class="absolute inset-0 w-full h-full transition-transform duration-700 transform-style-preserve-3d">
-                        <div class="absolute inset-0 flex flex-col items-center justify-between py-6 backface-hidden">
-                          <h1 class="font-bold text-xl sm:text-2xl md:text-3xl mb-[1vh] md:mb-[2vh] text-center mt-1 md:mt-2 px-2">
-                            Conocimiento del producto
-                          </h1>
-                          <h1 class="text-6xl sm:text-7xl md:text-8xl mt-[7vh] md:mt-[6vh] font-extrabold text-black mb-6 md:mb-[10vh]">
-                            <span id="calP"></span>%
-                          </h1>
-                        </div>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center rotate-y-180 backface-hidden p-5 text-white" id="cardCPBack">
-                          <h1 class="font-bold text-3xl sm:text-4xl md:text-5xl mb-2">Consejo</h1>
-                          <p class="text-lg sm:text-xl md:text-2xl text-center px-4">
-                            Da un repaso rápido antes de entrar a junta...
-                          </p>
-                        </div>
+              <b>Apartado 1 </b> Por Competencias
+            </h1>
+          </div>
+
+          <!-- Tabs principales -->
+          <div class="px-2 sm:px-5 rounded-lg space-y-6">
+            <!-- ========================================= -->
+            <!-- SECCIÓN 1: Por Competencias -->
+            <!-- ========================================= -->
+            <section>
+              <div
+                class="w-full max-w-full md:max-w-[54vh] mx-auto lg:max-w-none"
+              >
+                <!-- ✅ Mobile: 1 por fila | Web: 4 por fila -->
+                <div class="mt-3 grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <!-- Card 1: Conocimiento del producto -->
+                  <div
+                    class="rounded-2xl border-2 border-sky-200 overflow-hidden bg-sky-200/60"
+                  >
+                    <!-- Top -->
+                    <div class="bg-sky-50 p-5">
+                      <p class="text-sm sm:text-base text-blue-950 font-medium">
+                        Conocimiento del producto
+                      </p>
+
+                      <div class="mt-4 flex items-end justify-center gap-2">
+                        <span
+                          id="calP"
+                          class="text-5xl sm:text-6xl font-semibold text-blue-950"
+                        ></span>
+                        <span
+                          class="text-2xl sm:text-3xl font-bold text-blue-950"
+                          >%</span
+                        >
                       </div>
+                    </div>
+
+                    <!-- Bottom -->
+                    <div class="p-5 min-h-[140px]">
+                      <p class="font-bold text-blue-950">Consejo</p>
+                      <p class="mt-2 text-blue-950/90">
+                        Asocia cada beneficio con una emoción y usa un tono que
+                        la refleje para mejorar el recuerdo.
+                      </p>
                     </div>
                   </div>
 
-                  <!-- Slide 2: Ritmo -->
-                  <div class="p-2" :style="slideStyle()">
-                    <div id="cardRT" class="relative rounded-lg bg-white border-2 border-amber-500 cursor-pointer overflow-hidden h-full">
-                      <div id="cardRTInner" class="absolute inset-0 w-full h-full transition-transform duration-700 transform-style-preserve-3d">
-                        <div class="absolute inset-0 flex flex-col items-center justify-between py-6 backface-hidden">
-                          <h1 class="font-bold text-xl sm:text-2xl md:text-3xl mb-[4vh] md:mb-[9vh] md:mt-[2vh] text-center px-2">
-                            Ritmo
-                          </h1>
-                          <div class="flex items-end md:mb-[10vh]">
-                            <h1 class="text-6xl sm:text-7xl md:text-8xl mt-[4vh] md:mt-[3vh] font-extrabold text-amber-500 leading-none">
-                              <span id="calR"></span>
-                            </h1>
-                            <p class="text-xl sm:text-2xl text-amber-500 ml-1 mb-2">ppm</p>
-                          </div>
-                        </div>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center rotate-y-180 backface-hidden bg-amber-500 p-5">
-                          <h1 class="text-white font-bold text-3xl sm:text-4xl md:text-5xl mb-2">Consejo</h1>
-                          <p class="text-white text-lg sm:text-xl md:text-2xl text-center px-4">
-                            Repite en voz alta el discurso cronometrando un minuto; resume sin perder claridad para entrenar síntesis.
-                          </p>
-                        </div>
+                  <!-- Card 2: Ritmo -->
+                  <div
+                    class="rounded-2xl border-2 border-indigo-200 overflow-hidden bg-white bg-indigo-200/60"
+                  >
+                    <div class="bg-indigo-50 p-5">
+                      <p class="text-sm sm:text-base text-blue-950 font-medium">
+                        Ritmo
+                      </p>
+
+                      <div class="mt-4 flex items-end justify-center gap-2">
+                        <span
+                          id="calR"
+                          class="text-5xl sm:text-6xl font-semibold text-blue-950"
+                        ></span>
+                        <span
+                          class="text-2xl sm:text-3xl font-medium text-blue-950"
+                          >ppm</span
+                        >
                       </div>
+                    </div>
+
+                    <div class="bg-indigo-200/60 p-5 min-h-[140px]">
+                      <p class="font-bold text-blue-950">Consejo</p>
+                      <p class="mt-2 text-blue-950/90">
+                        Repite en voz alta el discurso cronometrando un minuto;
+                        resume sin perder claridad para entrenar síntesis.
+                      </p>
                     </div>
                   </div>
 
-                  <!-- Slide 3: Tono -->
-                  <div class="p-2" :style="slideStyle()">
-                    <div id="cardTN" class="relative rounded-lg bg-white border-2 border-green-400 border-b-8 cursor-pointer overflow-hidden h-full">
-                      <div id="cardTNInner" class="absolute inset-0 w-full h-full transition-transform duration-700 transform-style-preserve-3d">
-                        <div class="absolute inset-0 flex flex-col items-center justify-between py-6 backface-hidden">
-                          <h1 class="font-bold text-xl sm:text-2xl md:text-3xl mb-[2vh] md:mt-[2vh] text-center px-2">
-                            Tono
-                          </h1>
-                          <div class="flex items-end md:mb-[8vh]">
-                            <h1 class="text-6xl sm:text-7xl md:text-8xl mt-[6vh] md:mt-[9vh] font-extrabold text-green-400 leading-none">
-                              <span id="calT"></span>
-                            </h1>
-                            <p class="text-2xl sm:text-3xl text-red-400 ml-1 mb-2">claro</p>
-                          </div>
-                        </div>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center rotate-y-180 backface-hidden bg-green-400 p-5">
-                          <h1 class="text-white font-bold text-3xl sm:text-4xl md:text-5xl mb-2">Consejo</h1>
-                          <p class="text-white text-lg sm:text-xl md:text-2xl text-center px-4 p-5">
-                            Asocia cada beneficio con una emoción y usa un tono que la refleje para mejorar el recuerdo.
-                          </p>
-                        </div>
+                  <!-- Card 3: Tono -->
+                  <div
+                    class="rounded-2xl border-2 border-cyan-200 overflow-hidden bg-sky-200/60"
+                  >
+                    <div class="bg-cyan-50 p-5">
+                      <p class="text-sm sm:text-base text-blue-950 font-medium">
+                        Tono
+                      </p>
+
+                      <div class="mt-4 flex items-end justify-center gap-2">
+                        <span
+                          id="calT"
+                          class="text-5xl sm:text-6xl font-semibold text-blue-950"
+                        ></span>
+                        <span
+                          class="text-2xl sm:text-3xl font-medium text-blue-950"
+                          >claro</span
+                        >
                       </div>
+                    </div>
+
+                    <div class="p-5 min-h-[140px]">
+                      <p class="font-bold text-blue-950">Consejo</p>
+                      <p class="mt-2 text-blue-950/90">
+                        Asocia cada beneficio con una emoción y usa un tono que
+                        la refleje para mejorar el recuerdo.
+                      </p>
                     </div>
                   </div>
 
-                  <!-- Slide 4: Modulación -->
-                  <div class="p-2" :style="slideStyle()">
-                    <div id="cardMD" class="relative rounded-lg bg-white border-2 border-teal-400 cursor-pointer overflow-hidden h-full">
-                      <div id="cardMDInner" class="absolute inset-0 w-full h-full transition-transform duration-700 transform-style-preserve-3d">
-                        <div class="absolute inset-0 flex flex-col items-center justify-between py-6 backface-hidden">
-                          <h1 class="font-bold text-xl sm:text-2xl md:text-3xl mb-[2vh] md:mt-[2vh] text-center px-2">
-                            Modulación
-                          </h1>
-                          <div class="flex items-end md:mb-[8vh]">
-                            <h1 class="text-6xl sm:text-7xl md:text-8xl mt-[6vh] md:mt-[9vh] font-extrabold text-teal-400 leading-none">
-                              <span id="calM"></span>
-                            </h1>
-                            <p class="text-2xl sm:text-3xl text-black ml-1 mb-3">claro</p>
-                          </div>
-                        </div>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center rotate-y-180 backface-hidden bg-teal-400 p-5">
-                          <h1 class="text-white font-bold text-4xl sm:text-6xl md:text-8xl mb-2">Consejo</h1>
-                          <p class="text-white text-lg sm:text-xl md:text-2xl text-center px-4">
-                            Divide en secciones (intro, problema, solución, cierre) y cambia ligeramente volumen o ritmo en cada transición.
-                          </p>
-                        </div>
+                  <!-- Card 4: Modulación -->
+                  <div
+                    class="rounded-2xl border-2 border-indigo-200 overflow-hidden bg-white"
+                  >
+                    <div class="bg-indigo-50 p-5">
+                      <p class="text-sm sm:text-base text-blue-950 font-medium">
+                        Modulación
+                      </p>
+
+                      <div class="mt-4 flex items-end justify-center gap-2">
+                        <span
+                          id="calM"
+                          class="text-5xl sm:text-6xl font-semibold text-blue-950"
+                        ></span>
+                        <span
+                          class="text-2xl sm:text-3xl font-medium text-blue-950"
+                          >claro</span
+                        >
                       </div>
                     </div>
+
+                    <div class="bg-indigo-200/60 p-5 min-h-[140px]">
+                      <p class="font-bold text-blue-950">Consejo</p>
+                      <p class="mt-2 text-blue-950/90">
+                        Divide en secciones (intro, problema, solución, cierre)
+                        y cambia ligeramente volumen o ritmo en cada transición.
+                      </p>
+                    </div>
                   </div>
-
-                </div>
-
-                <!-- Controles del carousel -->
-                <button @click="prev" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full w-9 h-9 grid place-items-center text-xl">
-                  ‹
-                </button>
-                <button @click="next" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white rounded-full w-9 h-9 grid place-items-center text-xl">
-                  ›
-                </button>
-
-                <!-- Dots de paginación -->
-                <div class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
-                  <template v-for="n in pageCount()">
-                    <button @click="idx = n-1" class="w-2.5 h-2.5 rounded-full transition-all"
-                      :class="idx === (n-1) ? 'bg-white w-6' : 'bg-white/50'"></button>
-                  </template>
                 </div>
               </div>
+            </section>
 
+            <!-- ========================================= -->
+            <!-- SECCIÓN 2: Clasificación -->
+            <!-- ========================================= -->
+            <div class="p-3 bg-[#2563EB] rounded-[40px]">
+              <h1
+                class="text-base sm:text-xl text-white flex items-center gap-3 justify-center md:justify-start"
+              >
+                <img
+                  src="assets/img/icons/chartBar.png"
+                  alt=""
+                  class="w-5 h-5 sm:w-6 sm:h-6"
+                />
+
+                <b>Apartado 2 </b> Clasificación por respuestas
+              </h1>
             </div>
-          </div>
 
-          <!-- ========================================= -->
-          <!-- TAB 2: Clasificación -->
-          <!-- ========================================= -->
-          <div class="main-tab-content" id="mainCla">
-            <div class="mt-1 w-full max-w-[44vh] mx-auto lg:max-w-none lg:mt-0">
-              
-              <div class="w-full mt-5 md:mt-0 p-2 md:p-0 h-auto md:h-[5vh] bg-white rounded-lg flex items-center">
-                <h1 class="font-bold text-lg sm:text-xl md:text-2xl text-blue-950 flex items-center gap-2">
-                  <i class="fa-solid fa-chart-pie text-blue-950"></i>
-                  Calificación general
-                </h1>
-              </div>
+            <section class="mt-5">
+              <div class="w-full bg-gray-100 rounded-2xl p-4">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <!-- Card 1: Nombre -->
+                  <div
+                    class="bg-white rounded-2xl p-6 min-h-[22vh] flex flex-col"
+                  >
+                    <p class="text-gray-500">Nombre</p>
+                    <div class="flex-1 flex items-center justify-center">
+                      <p
+                        id="nombreTexto"
+                        class="text-xl md:text-4xl text-blue-950 text-center leading-snug"
+                      >
+                        Rodrigo Mauricio<br />Galindo Pérez
+                      </p>
+                    </div>
+                  </div>
 
-              <!-- Card de calificación general -->
-              <div class="mt-3 border-2 border-blue-600 w-full min-h-[25vh] rounded-lg bg-white flex flex-col sm:flex-row p-0 m-0 items-center">
-                
-                <!-- Columna 1: Info del usuario -->
-                <div class="w-full sm:w-[49%] h-full flex flex-col justify-center items-start p-4 sm:pl-4">
-                  <p class="font-bold text-blue-950 text-base sm:text-lg">Nombre:</p>
-                  <p class="text-gray-700 text-sm sm:text-base">Joshua Adiran Mascota</p>
+                  <!-- Card 2: Categoría -->
+                  <div
+                    class="bg-white rounded-2xl p-6 min-h-[22vh] flex flex-col"
+                  >
+                    <p class="text-gray-500">Categoría</p>
+                    <div class="flex-1 flex items-center justify-center gap-4">
+                      <i class="fa-solid fa-crown text-blue-600 text-5xl"></i>
+                      <p
+                        id="categoriaTexto"
+                        class="text-5xl sm:text-6xl text-blue-950"
+                      >
+                        Rookie
+                      </p>
+                    </div>
+                  </div>
 
-                  <p class="font-bold text-blue-950 text-base sm:text-lg mt-2">Rango:</p>
-                  <p id="nivelTexto" class="text-gray-700 text-sm sm:text-base">---</p>
-                </div>
-
-                <!-- Separador -->
-                <div class="w-full sm:w-[1%] h-px sm:h-[80%] border-t-2 sm:border-t-0 sm:border-l-2 border-blue-600"></div>
-
-                <!-- Columna 3: Gráfico dona -->
-                <div class="w-full sm:w-[50%] h-full flex flex-col items-center justify-center p-4">
-                  <p class="font-semibold text-gray-800 mb-1 text-sm sm:text-base">Total</p>
-                  <div id="graficoTotal" class="grafico-grande w-[65%] h-full flex flex-col items-center justify-center"></div>
-                </div>
-              </div>
-
-              <!-- Card de categoría -->
-              <div class="mt-3 sm:mt-6 border-2 border-blue-600 w-full min-h-[15vh] rounded-lg bg-white flex flex-row items-center justify-between px-4 py-3">
-                <div class="flex flex-col justify-center items-start">
-                  <p class="font-semibold text-gray-800 text-xs sm:text-sm">Calificación del curso</p>
-                  <p class="text-xl sm:text-2xl font-bold text-gray-700 leading-none"><span id="promGeneral"></span>%</p>
-                </div>
-
-                <div class="flex flex-col justify-center items-end">
-                  <p class="font-semibold text-gray-800 text-xs sm:text-sm">Categoría</p>
-                  <div class="flex items-center gap-2 mt-[2px]">
-                    <i class="fa-solid fa-crown text-green-500 text-base sm:text-lg"></i>
-                    <p id="categoriaTexto" class="font-bold text-base sm:text-lg">---</p>
+                  <!-- Card 3: Calificación (Chart.js) -->
+                  <div
+                    class="bg-white rounded-2xl p-6 min-h-[22vh] flex flex-col"
+                  >
+                    <p class="text-gray-500">Calificación del tema</p>
+                    <div class="flex-1 flex items-center justify-center">
+                      <div class="w-[220px] h-[220px]">
+                        <canvas id="chartCalificacion"></canvas>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
+            </section>
 
-              <!-- Título video -->
-              <div class="w-full p-2 h-auto md:h-[5vh] md:p-0 bg-white rounded-lg flex items-center mt-5">
-                <h1 class="font-bold text-lg sm:text-xl md:text-2xl text-blue-950 flex items-center gap-2">
-                  <i class="fa-solid fa-video text-blue-950"></i>
-                  Video del Roleplay
-                </h1>
-              </div>
+            <!-- ========================================= -->
+            <!-- SECCIÓN 3: Respuestas del usuario -->
+            <!-- ========================================= -->
+            <div class="p-3 bg-[#2563EB] rounded-[40px]">
+              <h1
+                class="text-base sm:text-xl text-white flex items-center gap-3 justify-center md:justify-start"
+              >
+                <img
+                  src="assets/img/icons/star.png"
+                  alt=""
+                  class="w-5 h-5 sm:w-6 sm:h-6"
+                />
 
-              <!-- Video -->
-              <div class="mt-3 sm:mt-9 border-2 border-gray-400 w-full aspect-video rounded-lg bg-black overflow-hidden flex items-center justify-center">
-                <video src="./assets/video/" controls muted loop class="w-full h-full object-cover rounded-lg"></video>
-              </div>
-
+                <b>Apartado 3 </b> Calificación general
+              </h1>
             </div>
-          </div>
 
-          <!-- ========================================= -->
-          <!-- TAB 3: Respuestas del usuario -->
-          <!-- ========================================= -->
-          <div class="main-tab-content" id="mainTab">
-            <div class="mt-5 w-full max-w-[40vh] mb-0 md:mb-0 mx-auto h-auto lg:max-w-none">
-              
-              <div class="w-full p-2 h-auto md:h-[5vh] md:p-0 bg-white rounded-lg flex items-center">
-                <h1 class="font-bold text-lg sm:text-xl md:text-2xl text-blue-950 flex items-center gap-2">
-                  <i class="fa-solid fa-user-check text-blue-950"></i>
-                  Respuestas del usuario
-                </h1>
-              </div>
-
-              <!-- Tabla de respuestas -->
-              <div class="mt-[1vh] rounded-lg overflow-hidden w-full max-w-md mx-auto lg:max-w-none">
-                <table class="w-full border bg-white">
-                  <thead>
-                    <tr class="bg-blue-950 border-blue-800 text-white">
-                      <th class="border border-blue-800 py-2 text-center font-semibold text-xs sm:text-sm md:text-base">
-                        Correcto
-                      </th>
-                      <th class="border border-blue-800 py-2 text-center font-semibold text-xs sm:text-sm md:text-base">
-                        Parcialmente
-                      </th>
-                      <th class="border border-blue-800 py-2 text-center font-semibold text-xs sm:text-sm md:text-base">
-                        Incorrecto
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="text-center font-bold text-gray-900">
-                      <td class="border rounded-2xl border-blue-800 py-3 text-2xl sm:text-3xl">
-                        <span id="bienT"></span>
-                      </td>
-                      <td class="border border-blue-800 py-3 text-2xl sm:text-3xl">
-                        <span id="momT"></span>
-                      </td>
-                      <td class="border border-blue-800 py-3 text-2xl sm:text-3xl">
-                        <span id="malT"></span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                <!-- Título clasificación -->
-                <div class="w-full p-2 mt-5 h-auto md:h-[5vh] md:p-0 bg-white rounded-lg flex items-center gap-2">
-                  <i class="fa-solid fa-layer-group text-blue-950 text-lg sm:text-xl"></i>
-                  <h1 class="font-bold text-lg sm:text-xl md:text-2xl text-blue-950">
-                    Clasificación de respuestas
+            <section>
+              <div
+                class="mt-[1vh] rounded-lg overflow-hidden w-full max-w-full sm:max-w-md mx-auto lg:max-w-none"
+              >
+                <div class="w-full bg-gray-100 rounded-2xl p-5">
+                  <h1
+                    class="text-lg sm:text-xl md:text-4xl p-2 text-gray-500 flex items-center gap-2"
+                  >
+                    Respuestas del usuario
                   </h1>
-                </div>
 
-                <!-- Contenedor scrolleable de tarjetas -->
-                <div class="overflow-y-auto bg-white max-h-[40vh] lg:max-h-[64vh] scrollbar-hidden">
-                  <div class="mt-5 w-full" id="respuestasWrap">
-                    <!-- Las tarjetas se generan dinámicamente por JavaScript -->
+                  <div class="grid grid-cols-1 mt-4 lg:grid-cols-3 gap-6">
+                    <div
+                      class="bg-white rounded-2xl p-4 min-h-[120px] flex flex-col"
+                    >
+                      <p class="text-gray-500 text-lg sm:text-xl font-semibold">
+                        Correctas
+                      </p>
+                      <div class="flex-1 flex items-center justify-center">
+                        <span
+                          id="bienT"
+                          class="text-5xl sm:text-6xl font-medium text-blue-950"
+                          >2</span
+                        >
+                      </div>
+                    </div>
+
+                    <div
+                      class="bg-white rounded-2xl p-4 min-h-[120px] flex flex-col"
+                    >
+                      <p class="text-gray-500 text-lg sm:text-xl font-semibold">
+                        Parcialmente
+                      </p>
+                      <div class="flex-1 flex items-center justify-center">
+                        <span
+                          id="momT"
+                          class="text-5xl sm:text-6xl font-medium text-blue-950"
+                          >1</span
+                        >
+                      </div>
+                    </div>
+
+                    <div
+                      class="bg-white rounded-2xl p-4 min-h-[120px] flex flex-col"
+                    >
+                      <p class="text-gray-500 text-lg sm:text-xl font-semibold">
+                        Incorrectas
+                      </p>
+                      <div class="flex-1 flex items-center justify-center">
+                        <span
+                          id="malT"
+                          class="text-5xl sm:text-6xl font-medium text-blue-950"
+                          >0</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="w-full max-w-7xl mx-auto px-4 py-6">
+              <!-- Header pill -->
+              <div class="p-3 bg-[#2563EB] rounded-[40px]">
+                <h1
+                  class="text-base sm:text-xl text-white flex items-center gap-3 justify-center md:justify-start"
+                >
+                  <img
+                    src="assets/img/icons/videoconferencia.png"
+                    alt=""
+                    class="w-5 h-5 sm:w-6 sm:h-6"
+                  />
+
+                  <b>Apartado 4 </b> Roleplay
+                </h1>
+              </div>
+
+              <!-- Grid -->
+              <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- LEFT -->
+                <div>
+                  <h2 class="text-2xl sm:text-3xl md:text-4xl text-slate-900">
+                    Video del Roleplay
+                  </h2>
+
+                  <div
+                    class="mt-5 relative rounded-3xl overflow-hidden bg-slate-200 shadow-sm"
+                  >
+                    <!-- VIDEO REAL -->
+                    <video
+                      id="roleplayVideo"
+                      class="w-full h-[240px] sm:h-[320px] md:h-[360px] object-cover"
+                      src="./assets/vid/casec.webm"
+                      preload="metadata"
+                    ></video>
+
+                    <!-- BOTÓN PLAY (overlay) -->
+                    <button
+                      id="playBtn"
+                      class="absolute inset-0 grid place-items-center transition-opacity"
+                      aria-label="Reproducir video"
+                      type="button"
+                    >
+                      <span
+                        class="w-20 h-20 rounded-full bg-sky-500/90 grid place-items-center ring-4 ring-sky-500/30 hover:scale-105 transition"
+                      >
+                        <svg
+                          class="w-9 h-9 text-white translate-x-[2px]"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path d="M8 5v14l11-7z"></path>
+                        </svg>
+                      </span>
+                    </button>
+
+                    <!-- ✅ Barra inferior: en móvil se apila, en web sigue en fila -->
+                    <div
+                      class="absolute left-4 right-4 bottom-4 bg-white/90 backdrop-blur rounded-2xl px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4"
+                    >
+                      <div class="flex items-center gap-3 text-slate-700">
+                        <span
+                          class="w-9 h-9 rounded-xl bg-slate-100 grid place-items-center"
+                        >
+                          <svg
+                            class="w-5 h-5 text-slate-700"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                          >
+                            <path d="M8 2v4M16 2v4"></path>
+                            <rect
+                              x="3"
+                              y="4"
+                              width="18"
+                              height="18"
+                              rx="2"
+                            ></rect>
+                            <path d="M3 10h18"></path>
+                          </svg>
+                        </span>
+
+                        <p class="text-sm sm:text-base">
+                          Fecha de la sesión:
+                          <span class="font-semibold text-slate-900">
+                            25 Noviembre 2025
+                          </span>
+                        </p>
+                      </div>
+
+                      <a
+                        href="/videos/roleplay.mp4"
+                        download
+                        class="text-blue-600 font-semibold flex items-center gap-2 hover:underline justify-center sm:justify-end"
+                      >
+                        <svg
+                          class="w-5 h-5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <path d="M12 3v12"></path>
+                          <path d="M7 10l5 5 5-5"></path>
+                          <path d="M5 21h14"></path>
+                        </svg>
+                        Descargar video
+                      </a>
+                    </div>
                   </div>
                 </div>
 
+                <!-- RIGHT -->
+                <div class="h-[560px] flex flex-col">
+                  <h2
+                    class="text-2xl sm:text-3xl md:text-4xl text-slate-900 shrink-0"
+                  >
+                    Objeciones realizadas
+                  </h2>
+
+                  <!-- CONTENEDOR SCROLL -->
+                  <div class="space-y-6 overflow-y-auto pr-2">
+                    <div id="respuestasWrap"></div>
+                  </div>
+                </div>
               </div>
-            </div>
+            </section>
           </div>
+        </section>
+      </main>
+    </div>
 
-        </div>
-      </section>
-    </main>
-  </div>
+    <div class="hidden md:block" v-scope="FooterWb()"></div>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script type="module" src="./js/main.js"></script>
 
-  <!-- Scripts -->
-  <script type="module" src="./js/main.js"></script>
-  <script src="./js/resultado/res.js"></script>
-  <script src="./js/components/slide.js"></script>
-  
-  <script>
-    // Sistema de tabs
-    (function initMainTabs() {
-      const root = document.querySelector('.main-tabs');
-      if (!root) return;
+    <script>
+      // Sistema de tabs
+      (function initMainTabs() {
+        const root = document.querySelector(".main-tabs");
+        if (!root) return;
 
-      const panels = [...root.querySelectorAll('.main-tab-content')];
-      const activePanel = root.querySelector('.main-tab-content.active') || panels[0];
-      panels.forEach(p => p.classList.add('hidden'));
-      activePanel?.classList.remove('hidden');
+        const panels = [...root.querySelectorAll(".main-tab-content")];
+        const activePanel =
+          root.querySelector(".main-tab-content.active") || panels[0];
+        panels.forEach((p) => p.classList.add("hidden"));
+        activePanel?.classList.remove("hidden");
 
-      root.addEventListener('click', (e) => {
-        const btn = e.target.closest('.main-tab-button');
-        if (!btn || !root.contains(btn)) return;
+        root.addEventListener("click", (e) => {
+          const btn = e.target.closest(".main-tab-button");
+          if (!btn || !root.contains(btn)) return;
 
-        root.querySelectorAll('.main-tab-button.active').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+          root
+            .querySelectorAll(".main-tab-button.active")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
 
-        const allPanels = root.querySelectorAll('.main-tab-content');
-        allPanels.forEach(p => {
-          p.classList.add('hidden');
-          p.classList.remove('active');
+          const allPanels = root.querySelectorAll(".main-tab-content");
+          allPanels.forEach((p) => {
+            p.classList.add("hidden");
+            p.classList.remove("active");
+          });
+
+          let targetId = (btn.dataset.mainTab || "").trim();
+          let targetPanel = targetId
+            ? root.querySelector(`#${targetId}`)
+            : null;
+
+          if (!targetPanel) {
+            const buttons = [...root.querySelectorAll(".main-tab-button")];
+            const idx = Math.max(0, buttons.indexOf(btn));
+            targetPanel = allPanels[idx] || allPanels[0];
+          }
+
+          targetPanel?.classList.remove("hidden");
+          targetPanel?.classList.add("active");
+        });
+      })();
+    </script>
+
+    <script>
+      // Plugin para texto al centro
+      const CenterTextPlugin = {
+        id: "centerText",
+        afterDraw(chart, args, pluginOptions) {
+          const { ctx, chartArea } = chart;
+          if (!chartArea) return;
+
+          const value = pluginOptions?.text ?? "";
+          const x = (chartArea.left + chartArea.right) / 2;
+          const y = (chartArea.top + chartArea.bottom) / 2;
+
+          ctx.save();
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillStyle = "#0A0F3D"; // azul oscuro parecido a la imagen
+          ctx.font =
+            "700 56px system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+          ctx.fillText(value, x, y);
+          ctx.restore();
+        },
+      };
+
+      /**
+       * Dona tipo “rayitas” como tu screenshot.
+       * - totalTicks: cuántas rayas (más = más fino)
+       * - percent: 0-100
+       */
+      function renderTickRingChart(canvasId, percent, totalTicks = 60) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+
+        const filled = Math.round((percent / 100) * totalTicks);
+
+        // Cada tick vale 1
+        const data = new Array(totalTicks).fill(1);
+
+        // Colores: primeros "filled" azules, resto grises
+        const colors = data.map((_, i) => (i < filled ? "#14A3FF" : "#D9D9D9"));
+
+        // Si ya existía un chart en el canvas, destrúyelo
+        if (canvas._chart) canvas._chart.destroy();
+
+        const chart = new Chart(canvas, {
+          type: "doughnut",
+          data: {
+            labels: data.map((_, i) => `t${i}`),
+            datasets: [
+              {
+                data,
+                backgroundColor: colors,
+                borderWidth: 0,
+                spacing: 3, // separa “rayitas”
+                hoverOffset: 0,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "76%", // grosor del aro
+            rotation: -90, // inicia arriba
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: false },
+              centerText: { text: `${percent}%` },
+            },
+          },
+          plugins: [CenterTextPlugin],
         });
 
-        let targetId = (btn.dataset.mainTab || '').trim();
-        let targetPanel = targetId ? root.querySelector(`#${targetId}`) : null;
+        canvas._chart = chart;
+      }
 
-        if (!targetPanel) {
-          const buttons = [...root.querySelectorAll('.main-tab-button')];
-          const idx = Math.max(0, buttons.indexOf(btn));
-          targetPanel = allPanels[idx] || allPanels[0];
-        }
+      // EJEMPLO: 67% como en la imagen
+      renderTickRingChart("chartCalificacion", 76, 70);
 
-        targetPanel?.classList.remove('hidden');
-        targetPanel?.classList.add('active');
-      });
-    })();
-  </script>
-
-</body>
+      // Si quieres actualizar dinámico:
+      // renderTickRingChart('chartCalificacion', Number(document.getElementById('promGeneral').textContent || 0), 60);
+    </script>
+    <script src="./js/resultado/res.js"></script>
+    <script src="./js/components/slide.js"></script>
+  </body>
 </html>

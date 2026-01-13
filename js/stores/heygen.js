@@ -362,9 +362,9 @@ async function sendText(text, taskType = "talk") {
 
       updateStatus(`Sent text (${taskType}): ${text}`);
       await escribirComoPersona(idTextoBot, text, {
-        velocidad: 40,
+        velocidad: 60,
         pausaPunto: 200,
-        pausaComa: 100,
+        pausaComa: 90,
         pausaEspacio: 50,
       });
 
@@ -447,10 +447,10 @@ function escribirComoPersona(id, texto, opciones = {}) {
 
   // Opciones por defecto
   const config = {
-    velocidad: opciones.velocidad || 50,
-    pausaPunto: opciones.pausaPunto || 500,
-    pausaComa: opciones.pausaComa || 250,
-    pausaEspacio: opciones.pausaEspacio || 100,
+    velocidad: opciones.velocidad || 1000,
+    pausaPunto: opciones.pausaPunto || 5000,
+    pausaComa: opciones.pausaComa || 2500,
+    pausaEspacio: opciones.pausaEspacio || 1000,
     ...opciones,
   };
 

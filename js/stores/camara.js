@@ -11,13 +11,9 @@ const recLabel = document.getElementById("recLabel");
 // Botones / refs que SÍ usamos
 
 const btnCamWeb = document.getElementById("btnCam");
-const btnCamMv = document.getElementById("btnCamMv");
-const btnObj = document.getElementById("btnObjections");
 
-// Modal
-const modal = document.getElementById("modalObjecciones");
-const closeModal = document.getElementById("closeModal");
-const okModal = document.getElementById("okModal");
+const btnCamMv = document.getElementById("btnCamMv");
+
 
 // Preview
 const localVideoWeb = document.getElementById("localVideo");
@@ -52,13 +48,7 @@ async function ensureRecordingStream() {
   return recordingStream;
 }
 
-// ===== Modal =====
-btnObj.addEventListener("click", () => modal.classList.remove("hidden"));
-closeModal.addEventListener("click", () => modal.classList.add("hidden"));
-okModal.addEventListener("click", () => modal.classList.add("hidden"));
-modal.addEventListener("click", (e) => {
-  if (e.target === modal) modal.classList.add("hidden");
-});
+
 
 // ===== Cámara: SOLO vista previa (no afecta la grabación) =====
 if (btnCamWeb) {
@@ -68,16 +58,28 @@ if (btnCamWeb) {
       previewOn = !previewOn;
 
       if (previewOn) {
+        // Cámara ON
         localVideoWeb.srcObject = recordingStream;
         localVideoWeb.muted = true;
         noCamOverlayWeb.classList.add("hidden");
+
         btnCamWeb.classList.remove("bg-gray-200", "text-gray-700");
         btnCamWeb.classList.add("bg-blue-600", "text-white");
+
+        // 🔁 CAMBIO DE ICONO
+        iconCam.classList.remove("bi-camera-video-off");
+        iconCam.classList.add("bi-camera-video");
       } else {
+        // Cámara OFF
         localVideoWeb.srcObject = null;
         noCamOverlayWeb.classList.remove("hidden");
+
         btnCamWeb.classList.add("bg-gray-200", "text-gray-700");
         btnCamWeb.classList.remove("bg-blue-600", "text-white");
+
+        // 🔁 REGRESA ICONO ORIGINAL
+        iconCam.classList.remove("bi-camera-video");
+        iconCam.classList.add("bi-camera-video-off");
       }
     } catch (err) {
       console.error("Cam error:", err);

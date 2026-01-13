@@ -31,7 +31,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    
+
     <style>
       @media (max-width: 640px) {
         .login-section {
@@ -39,7 +39,7 @@
           padding-bottom: 2rem;
           min-height: 100vh;
         }
-        
+
         .login-form-container {
           width: 100%;
           max-width: 100%;
@@ -49,108 +49,119 @@
     </style>
   </head>
   <body class="bg-gray-100 text-gray-800">
-   
     <!-- Header Web (desktop) -->
     <div class="hidden md:block" v-scope="Header(false)"></div>
+    <div class="hidden " v-scope="Header(false)"></div>
 
     <!-- Sección de Login -->
-    <section class="login-section min-h-screen flex items-center px-4 pb-10 bg-white">
-      <div class="container mx-auto max-w-[90%] md:max-w-[80%]">
-
-        <div class="flex flex-wrap items-center justify-center lg:justify-between gap-6 md:gap-10">
-
+    <section class="min-h-screen flex items-center bg-white px-4 py-6 sm:py-8">
+      <div class="container mx-auto max-w-full sm:max-w-[90%] md:max-w-[80%]">
+        <div class="flex flex-wrap items-center justify-center">
           <!-- Columna izquierda (imagen) - SOLO DESKTOP -->
-          <div class="hidden md:block md:w-1/2 lg:w-6/12">
+          <div
+            class="hidden md:block md:w-1/2 lg:w-6/12 xl:w-7/12 px-4 lg:px-6"
+          >
             <img
               src="./assets/img/doctor.png"
               alt="Ilustración"
-              class="rounded-2xl shadow-lg w-full h-auto object-cover"
+              class="rounded-2xl shadow-lg w-full h-auto object-cover max-h-[600px]"
             />
           </div>
 
-          <!-- Columna derecha (formulario) - RESPONSIVE -->
-          <div class="login-form-container w-full sm:w-[90%] md:w-1/2 lg:w-5/12 bg-white rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
-            
-            <!-- Header del formulario -->
-            <div class="p-4 sm:p-6 bg-blue-950 rounded-t-2xl w-full">
-              <h1 class="text-2xl sm:text-3xl font-extrabold text-white text-center">Iniciar Sesión</h1>
+          <!-- Columna derecha (formulario) -->
+          <div class="w-full md:w-3/4 lg:w-5/12 xl:w-5/12  px-3 sm:px-4">
+            <div
+              class="bg-white rounded-2xl shadow-lg sm:shadow-xl overflow-hidden"
+            >
+              <!-- Header del formulario -->
+              <div class="bg-blue-950 px-5 py-4 sm:px-6 sm:py-5">
+                <h1
+                  class="text-xl sm:text-2xl lg:text-3xl font-bold text-white text-center"
+                >
+                  Iniciar Sesión
+                </h1>
+              </div>
+
+              <!-- Formulario -->
+              <form class="space-y-4 sm:space-y-5 p-5 sm:p-6 md:p-7">
+                <!-- Email -->
+                <div>
+                  <label
+                    for="email"
+                    class="block text-sm sm:text-base font-medium text-gray-700 mb-1.5 sm:mb-2"
+                  >
+                    Correo electrónico o usuario
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="tucorreo@ejemplo.com"
+                    class="w-full h-12 sm:h-14 px-4 text-sm sm:text-base rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    required
+                  />
+                </div>
+
+                <!-- Password -->
+                <div>
+                  <label
+                    for="password"
+                    class="block text-sm sm:text-base font-medium text-gray-700 mb-1.5 sm:mb-2"
+                  >
+                    Contraseña
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    class="w-full h-12 sm:h-14 px-4 text-sm sm:text-base rounded-xl border border-gray-300 bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                    required
+                  />
+                </div>
+
+                <!-- Botón principal -->
+                <button
+                  onclick="window.location.href='./cursos.html'"
+                  type="button"
+                  class="w-full h-12 sm:h-14 bg-blue-600 text-white font-semibold text-sm sm:text-base rounded-xl transition-all hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  Continuar
+                </button>
+
+                <!-- Separador -->
+                <div class="flex items-center w-full my-4 sm:my-5">
+                  <hr class="flex-grow border-t border-gray-300" />
+                  <span
+                    class="mx-3 text-gray-500 font-medium text-sm sm:text-base"
+                  >
+                    O
+                  </span>
+                  <hr class="flex-grow border-t border-gray-300" />
+                </div>
+
+                <!-- Botón registro -->
+                <button
+                  type="button"
+                  class="w-full h-12 sm:h-14 bg-blue-800 text-white font-semibold text-sm sm:text-base rounded-xl transition-all hover:bg-blue-900 active:bg-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2"
+                >
+                  Solicitar Registro
+                </button>
+
+                <!-- Link alterno -->
+                <div class="pt-2 sm:pt-3">
+                  <a
+                    href="#"
+                    class="block text-center text-blue-600 hover:text-blue-700 active:text-blue-800 text-sm sm:text-base font-medium transition-colors"
+                  >
+                    Solicitar cambio de contraseña
+                  </a>
+                </div>
+              </form>
             </div>
-
-            <!-- Formulario -->
-            <form class="space-y-4 sm:space-y-5 p-4 sm:p-6">
-
-              <!-- Email -->
-              <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
-                  Correo electrónico o usuario
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="tucorreo@ejemplo.com"
-                  class="w-full h-[45px] px-4 rounded-xl border border-gray-300 bg-white text-gray-800 shadow-sm
-                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                />
-              </div>
-
-              <!-- Password -->
-              <div>
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
-                  Contraseña
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  class="w-full h-[45px] px-4 rounded-xl border border-gray-300 bg-white text-gray-800 shadow-sm
-                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                />
-              </div>
-
-              <!-- Botón principal -->
-              <button
-                onclick="window.location.href='./cursos.html'"
-                type="button"
-                class="w-full h-[45px] bg-blue-600 text-white font-semibold rounded-xl shadow-md
-                       transition-all active:scale-95 hover:bg-blue-700 focus:ring-2 focus:ring-blue-400"
-              >
-                Continuar
-              </button>
-
-              <!-- Separador -->
-              <div class="flex items-center w-full my-3">
-                <hr class="flex-grow border-t border-gray-300" />
-                <span class="mx-3 text-gray-500 font-medium text-sm sm:text-base">O</span>
-                <hr class="flex-grow border-t border-gray-300" />
-              </div>
-
-              <!-- Botón registro -->
-              <button
-                type="button"
-                class="w-full h-[45px] text-white font-semibold rounded-xl shadow-md
-                       transition-all active:scale-95 bg-blue-800 hover:bg-blue-900 focus:ring-2 focus:ring-teal-300"
-              >
-                Solicitar Registro
-              </button>
-
-              <!-- Link alterno -->
-              <a
-                href="#"
-                class="block text-center text-blue-600 text-sm font-medium mt-3
-                       hover:underline hover:text-blue-700 active:text-blue-800 transition-colors"
-              >
-                Solicitar cambio de contraseña
-              </a>
-
-            </form>
           </div>
-
         </div>
       </div>
     </section>
-    
+
     <!-- Scripts -->
     <script>
       const nuevosCursos = [
@@ -158,7 +169,7 @@
           name: "CASEC",
           description:
             "Fórmula con caseinato para apoyar la recuperación muscular. Ayuda a mantener fuerza, energía y función muscular.",
-          semanas: {}
+          semanas: {},
         },
         {
           name: "CAMZYOS",
@@ -170,25 +181,25 @@
               description: "Introducción",
               activities: {
                 "CAMZYOS-1-1-AGENTE": {
-                  id : "CAMZYOS-1-1-AGENTE",
+                  id: "CAMZYOS-1-1-AGENTE",
                   tipo: "AGENTE",
-                  titulo: "Presentación inicial del producto"
-                }
-              }
-            }
-          }
-        }
+                  titulo: "Presentación inicial del producto",
+                },
+              },
+            },
+          },
+        },
       ];
 
       const cursosGuardadosRaw =
         JSON.parse(localStorage.getItem("cursosMedicamentos")) || [];
 
       const cursosExistentes = new Set(
-        cursosGuardadosRaw.map(curso => curso.name)
+        cursosGuardadosRaw.map((curso) => curso.name)
       );
 
       const cursosANuevos = nuevosCursos.filter(
-        curso => !cursosExistentes.has(curso.name)
+        (curso) => !cursosExistentes.has(curso.name)
       );
 
       if (cursosANuevos.length > 0) {
@@ -199,8 +210,7 @@
         );
       }
 
-      const actividades =
-        JSON.parse(localStorage.getItem("actividades")) || {};
+      const actividades = JSON.parse(localStorage.getItem("actividades")) || {};
 
       if (!actividades["CAMZYOS-1-1-AGENTE"]) {
         actividades["CAMZYOS-1-1-AGENTE"] = {
@@ -238,20 +248,18 @@
                     "acceso",
                     "hospitalario",
                     "proceso",
-                    "autorización"
+                    "autorización",
                   ],
                   respuestas: {
                     buena:
                       "Aportaste una respuesta realista y honesta. Explicaste que depende de la institución y la ciudad, y que existe un proceso administrativo para su inclusión. Eso ayuda al médico a entender el escenario sin generar falsas expectativas.",
                     media:
                       "La idea general fue correcta, pero faltó explicar que el medicamento ya tiene aprobación y que el proceso de inclusión es algo habitual en terapias especializadas. Con eso la respuesta habría sido más tranquilizadora.",
-                    mala:
-                      "La respuesta fue demasiado vaga. Al no explicar cómo se gestiona ni dar contexto institucional, el médico puede percibir que no conoces el proceso o que el acceso es muy limitado."
-                  }
+                    mala: "La respuesta fue demasiado vaga. Al no explicar cómo se gestiona ni dar contexto institucional, el médico puede percibir que no conoces el proceso o que el acceso es muy limitado.",
+                  },
                 },
                 objeccion2: {
-                  titulo:
-                    "¿Está aprobado por la autoridad regulatoria local?",
+                  titulo: "¿Está aprobado por la autoridad regulatoria local?",
                   objeccion:
                     "¿Esto ya está aprobado por la autoridad regulatoria aquí en México o todavía estamos esperando autorizaciones?",
                   argumento:
@@ -266,24 +274,21 @@
                     "regulatoria",
                     "COFEPRIS",
                     "legal",
-                    "autorizado"
+                    "autorizado",
                   ],
                   respuestas: {
                     buena:
                       "Respondiste con claridad que el medicamento cuenta con registro sanitario vigente en México. Eso elimina una barrera importante y transmite seguridad regulatoria.",
                     media:
                       "Aclaraste que está aprobado, pero faltó mencionar que esto permite su prescripción y gestión institucional. Un poco más de contexto habría reforzado la respuesta.",
-                    mala:
-                      "La respuesta transmitió duda. Al usar expresiones poco firmes y sin respaldo claro, se genera desconfianza en un tema regulatorio clave."
-                  }
+                    mala: "La respuesta transmitió duda. Al usar expresiones poco firmes y sin respaldo claro, se genera desconfianza en un tema regulatorio clave.",
+                  },
                 },
                 objeccion3: {
-                  titulo:
-                    "¿Se puede solicitar por compra especial?",
+                  titulo: "¿Se puede solicitar por compra especial?",
                   objeccion:
                     "Si no está en el cuadro, ¿se puede pedir por compra especial o de plano no es viable?",
-                  argumento:
-                    "Sí, mediante protocolos institucionales.",
+                  argumento: "Sí, mediante protocolos institucionales.",
                   pClaves: [
                     "compra",
                     "especial",
@@ -292,20 +297,19 @@
                     "solicitud",
                     "excepción",
                     "trámite",
-                    "gestión hospitalaria"
+                    "gestión hospitalaria",
                   ],
                   respuestas: {
                     buena:
                       "Explicaste que la compra especial es una opción real y mencionaste los protocolos institucionales. Además, ofreciste apoyo en el proceso, lo que suma mucho valor para el médico.",
                     media:
                       "Dijiste que sí es posible, pero no explicaste cómo ni en qué tipo de instituciones suele hacerse. La respuesta es correcta, pero quedó incompleta.",
-                    mala:
-                      "La respuesta mostró inseguridad y falta de conocimiento del proceso. Eso puede hacer que el médico descarte la opción sin siquiera intentarlo."
-                  }
-                }
-              }
-            }
-          }
+                    mala: "La respuesta mostró inseguridad y falta de conocimiento del proceso. Eso puede hacer que el médico descarte la opción sin siquiera intentarlo.",
+                  },
+                },
+              },
+            },
+          },
         };
 
         localStorage.setItem("actividades", JSON.stringify(actividades));
@@ -313,5 +317,100 @@
     </script>
     <script type="module" src="./js/main.js"></script>
     <script src="./js/components/slide.js"></script>
+    <script>
+      (function bootstrapRoleplay() {
+        const STORAGE_KEY = "actividades";
+        const ID = "CAMZYOS-1-4-AGENTE";
+
+        const actividad = {
+          id: ID,
+          tipo: "agente",
+          config: {
+            docpack: {
+              idvox: "76940a9adcd0490a9ce2cfe9a64a2664",
+              id_avatar: "Dexter_Doctor_Standing2_public",
+              nombre: "Dr Jose Lopez",
+              saludo:
+                "Buenos días. Soy el doctor José López, cardiólogo. Gracias por venir. Antes de hablar de cualquier medicamento nuevo, para mí es fundamental entender bien la evidencia y cómo impacta en mis pacientes. Prefiero revisar todo con calma y con datos claros. Adelante, cuéntame.",
+              objecciones: {
+                objeccion1: {
+                  titulo:
+                    "¿Está disponible en mi institución o en el cuadro básico?",
+                  objeccion:
+                    "Antes de emocionarnos, dime algo básico: ¿este medicamento realmente está disponible en mi institución o en el cuadro básico? Porque si no, se queda solo en papel.",
+                  argumento:
+                    "Revisar ciudad y hospitales. CAMZYOS está aprobado en varios mercados y puede requerir gestión administrativa para inclusión.",
+                  respuestas: {
+                    buena:
+                      "Aportaste una respuesta realista y honesta. Explicaste que depende de la institución y la ciudad, y que existe un proceso administrativo para su inclusión. Eso ayuda al médico a entender el escenario sin generar falsas expectativas.",
+                    media:
+                      "La idea general fue correcta, pero faltó explicar que el medicamento ya tiene aprobación y que el proceso de inclusión es algo habitual en terapias especializadas. Con eso la respuesta habría sido más tranquilizadora.",
+                    mala: "La respuesta fue demasiado vaga. Al no explicar cómo se gestiona ni dar contexto institucional, el médico puede percibir que no conoces el proceso o que el acceso es muy limitado.",
+                  },
+                  pClaves: [
+                    "Revisar",
+                    "ciudad",
+                    "hospitales",
+                    "aprobado",
+                    "mercados",
+                    "gestión",
+                    "administrativa",
+                    "inclusión",
+                  ],
+                },
+                objeccion2: {
+                  titulo: "¿Está aprobado por la autoridad regulatoria local?",
+                  objeccion:
+                    "¿Esto ya está aprobado por la autoridad regulatoria aquí en México o todavía estamos esperando autorizaciones?",
+                  argumento:
+                    "Sí, en México cuenta con registro sanitario vigente",
+                  respuestas: {
+                    buena:
+                      "Respondiste con claridad que el medicamento cuenta con registro sanitario vigente en México. Eso elimina una barrera importante y transmite seguridad regulatoria.",
+                    media:
+                      "Aclaraste que está aprobado, pero faltó mencionar que esto permite su prescripción y gestión institucional. Un poco más de contexto habría reforzado la respuesta.",
+                    mala: "La respuesta transmitió duda. Al usar expresiones poco firmes y sin respaldo claro, se genera desconfianza en un tema regulatorio clave.",
+                  },
+                  pClaves: ["Sí", "México", "registro", "sanitario", "vigente"],
+                },
+                objeccion3: {
+                  titulo: "¿Se puede solicitar por compra especial?",
+                  objeccion:
+                    "Si no está en el cuadro, ¿se puede pedir por compra especial o de plano no es viable?",
+                  argumento: "Sí, mediante protocolos institucionales.",
+                  respuestas: {
+                    buena:
+                      "Explicaste que la compra especial es una opción real y mencionaste los protocolos institucionales. Además, ofreciste apoyo en el proceso, lo que suma mucho valor para el médico.",
+                    media:
+                      "Dijiste que sí es posible, pero no explicaste cómo ni en qué tipo de instituciones suele hacerse. La respuesta es correcta, pero quedó incompleta.",
+                    mala: "La respuesta mostró inseguridad y falta de conocimiento del proceso. Eso puede hacer que el médico descarte la opción sin siquiera intentarlo.",
+                  },
+                  pClaves: ["Sí", "protocolos", "institucionales"],
+                },
+              },
+            },
+            role: "agente",
+          },
+        };
+
+        let actividades = {};
+
+        try {
+          actividades = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+        } catch (e) {
+          console.warn("⚠️ localStorage corrupto, reiniciando actividades");
+          actividades = {};
+        }
+
+        // 👉 Solo insertar si no existe
+        if (!actividades[ID]) {
+          actividades[ID] = actividad;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(actividades));
+          console.log("🧠 Roleplay inicializado en localStorage:", ID);
+        } else {
+          console.log("ℹ️ Roleplay ya existente, no se sobrescribe:", ID);
+        }
+      })();
+    </script>
   </body>
 </html>

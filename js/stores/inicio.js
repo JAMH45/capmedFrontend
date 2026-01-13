@@ -12,11 +12,54 @@ let interrupcionesActivas;
 let coaching = true;
 let primerRespuesta;
 let indiceObjeccionActual = 0;
+actividades = JSON.parse(localStorage.getItem("actividades")) || {};
+console.log(actividades);
 const dataFromLS = getRoleplayDataFromLocalStorage();
 const data = dataFromLS;
 const listaObjecciones = Object.values(data.docpack.objecciones);
 
 objeciones = data.docpack.objecciones;
+
+
+/**
+ * Obtiene la objeción actual y la parafrasea antes de usarla
+ * @param {boolean} forzarParafraseo - Si true, siempre parafrasea
+ * @returns {Promise<Object>} - Objeto con objeción parafraseada
+ */
+async function obtenerObjecionParafraseada(forzarParafraseo = true) {
+  const objOriginal = obtenerObjeccionActual();
+  
+  if (!objOriginal) {
+    console.error("❌ No hay objeción actual");
+    return null;
+  }
+
+  // Crear copia para no modificar el original
+  const objParafraseada = { ...objOriginal };
+
+  // Parafrasear si se requiere
+  if (forzarParafraseo) {
+    try {
+      console.log("🔄 Parafraseando objeción:", objOriginal.titulo);
+      
+      const textoParafraseado = await parafrasearObjecionGroq(objOriginal.objeccion);
+      
+      objParafraseada.objecionParafraseada = textoParafraseado;
+      objParafraseada.usandoParafraseada = true;
+      
+    } catch (error) {
+      console.error("❌ Error al parafrasear:", error);
+      objParafraseada.objecionParafraseada = objOriginal.objecion;
+      objParafraseada.usandoParafraseada = false;
+    }
+  } else {
+    objParafraseada.objecionParafraseada = objOriginal.objecion;
+    objParafraseada.usandoParafraseada = false;
+  }
+
+  return objParafraseada;
+}
+
 console.log(objeciones);
 /*
 (async () => {
@@ -66,10 +109,8 @@ console.log(objeciones);
 })();
 console.log(objeciones);
 */
-async function consultarIa(text) {
-  let prompt = `Te voy a enviar unas preguntas a continuacion, tu tarea es reformular esas preguntas a un tono mas natural y coloquial con unas 50 palabras por duda como si fuera un medico amable e interesado en el producto. Tienes que regresarme cada pregunta entre []. Ejemplo duda: "No tengo suficiente experiencia con inhibidores de miosina cardíaca.” Tu me regresas: "[La verdad no tengo suficiente experiencia con inhibidores de miosina cardiaca. ¿Como puedo saber que es bueno?]"
-dudas:
-${text}`;
+async function consultarIa() {
+  let prompt = `Regresame un saludo, eres el doctor Jose Smith y te vengo a ofrecer un medicamento. Pide que te presente el medicamento de una forma seria. SOlo regresa el texto que te pedi nada mas.`;
   let respuesta = await consultarOpenRouter(prompt);
   return respuesta;
 }
@@ -147,10 +188,10 @@ if (tipo == "agente") {
 }*/
 
   console.log("OBJECIONES FINALES:", objeciones);
-  cargarObjeccionesEnTabla(objeciones);
+  cargarObjeccionesEnLista(objeciones);
   // Recargar después de un delay para asegurar que el DOM móvil esté listo
   setTimeout(() => {
-    cargarObjeccionesEnTabla(objeciones);
+    cargarObjeccionesEnLista(objeciones);
   }, 200);
   primerRespuesta = data.docpack.saludo;
   doctorIa = data.docpack.id_avatar;
@@ -158,8 +199,7 @@ if (tipo == "agente") {
   historialChat = [];
   interrupcionesActivas = true;
   coaching = false;
-  document.getElementById("nombreIa").innerText = "Doctor - Jose Smith";
-  document.getElementById("nombreUsuario").innerText = "Tu - Agente de ventas";
+
 }
 if (tipo == "coach") {
   primerRespuesta =
@@ -238,88 +278,80 @@ function quitarClase(idElemento, clase) {
     el.classList.remove(clase);
   }
 }
-function cargarObjeccionesEnTabla(objeccionesFuente) {
-  // Buscar ambas tablas
-  let tbodyWeb = document.getElementById("tablaObjWeb");
-  let tbodyMv = document.getElementById("tablaObjMv");
-  
-  console.log("🔍 Buscando tablas:");
-  console.log("- Web:", tbodyWeb);
-  console.log("- Móvil:", tbodyMv);
-  
-  if (!tbodyWeb && !tbodyMv) {
-    console.error("❌ No se encontró ninguna tabla (ni Web ni Móvil)");
+
+function cargarObjeccionesEnLista(objeccionesFuente) {
+  // Contenedores (web/móvil)
+  const contWeb = document.getElementById("listaObjecionesWeb");
+  const contMv  = document.getElementById("listaObjecionesMv");
+
+  console.log("🔍 Buscando contenedores:");
+  console.log("- Web:", contWeb);
+  console.log("- Móvil:", contMv);
+
+  if (!contWeb && !contMv) {
+    console.error("❌ No se encontró ningún contenedor (ni Web ni Móvil)");
     return;
   }
 
-  // Definir la fuente de objecciones
+  // Resolver lista de objeciones
   let lista;
 
   if (Array.isArray(objeccionesFuente)) {
     lista = objeccionesFuente;
   } else if (objeccionesFuente && typeof objeccionesFuente === "object") {
     lista = Object.values(objeccionesFuente);
-  } else if (data && data.docpack && data.docpack.objecciones) {
+  } else if (typeof data !== "undefined" && data?.docpack?.objecciones) {
     lista = Object.values(data.docpack.objecciones);
   } else {
-    console.warn("⚠️ No hay objecciones para cargar:", objeccionesFuente);
+    console.warn("⚠️ No hay objeciones para cargar:", objeccionesFuente);
     return;
   }
 
-  console.log("📋 Lista de objecciones a cargar:", lista);
+  console.log("📋 Lista de objeciones a cargar:", lista);
 
-  // Función para llenar una tabla
-  const llenarTabla = (tbody) => {
-    if (!tbody) return;
-    
-    tbody.innerHTML = "";
+  const render = (container, prefix) => {
+    if (!container) return;
+    container.innerHTML = "";
 
     lista.forEach((obj, idx) => {
-      const tr = document.createElement("tr");
-      tr.className = "border-b border-gray-200";
+      const titulo = obj?.titulo || `Objeción ${idx + 1}`;
 
-      const titulo = obj.titulo || `Objección ${idx + 1}`;
+      // ids para poder cambiar iconos luego
+      const itemId = `${prefix}-obj-${idx}`;
+      const iconWrapId = `${prefix}-iconWrap-${idx}`;
+      const iconId = `${prefix}-icon-${idx}`;
 
-      tr.innerHTML = `
-        <td class="py-2 px-3 text-gray-800">
-          ${titulo}
-        </td>
-        <td class="py-2 px-3 text-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 mx-auto text-yellow-500"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-8.75V6a.75.75 0 00-1.5 0v4.25a.75.75 0 00.22.53l2.5 2.5a.75.75 0 101.06-1.06l-2.28-2.22z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </td>
+      const item = document.createElement("div");
+      item.id = itemId;
+      item.className = "flex items-center gap-3 bg-white rounded-xl p-3 shadow-sm";
+
+      // Todo inicia en estado "pendiente" (reloj amarillo)
+      item.innerHTML = `
+        <div id="${iconWrapId}" class="w-5 h-5 rounded-full flex items-center justify-center">
+          <i id="${iconId}" class="bi bi-clock text-yellow-500 text-lg"></i>
+        </div>
+        <span class="text-sm text-gray-800">${titulo}</span>
       `;
 
-      tbody.appendChild(tr);
+      container.appendChild(item);
     });
-    
-    console.log(`✅ Tabla llenada con ${lista.length} objecciones`);
+
+    console.log(`✅ Lista (${prefix}) llenada con ${lista.length} objeciones`);
   };
 
-  // Llenar ambas tablas si existen
-  llenarTabla(tbodyWeb);
-  llenarTabla(tbodyMv);
+  render(contWeb, "web");
+  render(contMv, "mv");
 
-  // Actualizar contador de progreso
+  // Actualizar contador si lo sigues usando
   const total = lista.length;
-  let elProgTot = document.getElementById("mfProgTot");
-  if (!elProgTot) elProgTot = document.getElementById("mfProgTotMv");
+  let elProgTot = document.getElementById("mfProgTot") || document.getElementById("mfProgTotMv");
   if (elProgTot) elProgTot.textContent = total;
+  window.__objProg = { idx: 0, total };
 }
 
 function getRoleplayDataFromLocalStorage() {
   const params = new URLSearchParams(window.location.search);
-  const id = params.get("id"); // CASEC-1-5-AGENTE
+  const id = "CAMZYOS-1-4-AGENTE";
   const tipo = params.get("tipo"); // agente / doctor
 
   if (!id) {

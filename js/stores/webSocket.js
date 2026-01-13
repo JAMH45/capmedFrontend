@@ -2,8 +2,9 @@
 let ws = null;
 
 // 🌍 Variable global: URL fija del WebSocket
-//const WS_URL = "ws://74.208.137.121:2700";
-const WS_URL = "ws://localhost:2700";
+//const WS_URL = "";
+//const WS_URL = "ws://localhost:2700";
+const WS_URL = "wss://capacitacion-ia.byronmuller.com/ws";
 
 // 🌍 Función global para conectar tu WebSocket
 function conectarWS() {
@@ -84,8 +85,8 @@ function iniciarReconocimientoVoz({
     resolverReconocimientoWS = resolve;
     rechazarReconocimientoWS = reject;
     idSalidaActualWS = idSalida;
-    setEstadoBoton("habla", mico);
-
+    setMicrofonoActivo(true);
+    actMicro();
     let haEmpezadoAHablar = false;
     let yaResuelto = false; // 🔥 clave para no resolver dos veces
 
@@ -193,11 +194,12 @@ function iniciarReconocimientoVoz({
             if (finalTexto) {
               textoAcumuladoWS = (textoAcumuladoWS + " " + finalTexto).trim();
               salida.textContent = textoAcumuladoWS;
-
+              desMicro();
               detenerReconocimientoVozWS();
               safeResolve(textoAcumuladoWS);
             }
           } else if (data.error) {
+            desMicro();
             detenerReconocimientoVozWS();
             safeReject(data.error);
           }
@@ -225,7 +227,7 @@ function iniciarReconocimientoVoz({
 
 function detenerReconocimientoVozWS() {
   console.log("⛔ Deteniendo reconocimiento SIN cerrar WebSocket...");
-setEstadoBoton("espera", mico);
+setMicrofonoActivo(false);
   // Evita dobles paradas
   if (!isRecordingWS) return;
   isRecordingWS = false;
@@ -267,3 +269,21 @@ setEstadoBoton("espera", mico);
 
 
 
+
+function actMicro() {
+  const icon = document.getElementById("microfono");
+  const btn = icon?.closest("button");
+
+  if (!icon || !btn) return;
+
+  // Icono
+  icon.classList.remove("bi-mic-mute");
+  icon.classList.add("bi-mic");
+
+  // Botón verde
+  btn.classList.remove("bg-white", "text-black");
+  btn.classList.add("bg-green-500", "text-white");
+
+  // Habilitar por si estaba disabled
+  btn.disabled = false;
+}

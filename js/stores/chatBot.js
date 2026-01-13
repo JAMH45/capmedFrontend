@@ -180,7 +180,7 @@ const rompehielosDoctor = [
   },
 ];
 
-function responderRompehielosYObjeccionVosk(textoUsuario, objActual) {
+async function responderRompehielosYObjeccionVosk(textoUsuario, objActual) {
   const r = detectarRompehielosVosk(textoUsuario, rompehielosDoctor, {
     maxWords: 16,
     maxChars: 140,
@@ -190,12 +190,25 @@ function responderRompehielosYObjeccionVosk(textoUsuario, objActual) {
   if (!r.ok) return null;
 
   const puente = " expliqueme esto";
-  const objeccion = objActual?.objeccion || objActual || "";
-
   
+  // CAMBIO PRINCIPAL: Parafrasear la objeción cada vez
+  let objeccionTexto = "";
+  
+  if (objActual?.objeccion) {
+    console.log("🔄 Parafraseando objeción para rompehielo...");
+    objeccionTexto = await parafrasearObjecionGroq(objActual.objeccion);
+  } else if (typeof objActual === "string") {
+    objeccionTexto = await parafrasearObjecionGroq(objActual);
+  } else {
+    objeccionTexto = "";
+  }
+
   const base = r.text;
   const yaTraePuente = base.includes("expliqueme") || base.includes("digame esto");
-  return yaTraePuente ? `${base} ${objeccion}`.trim() : `${base} ${puente} ${objeccion}`.trim();
+  
+  return yaTraePuente 
+    ? `${base} ${objeccionTexto}`.trim() 
+    : `${base} ${puente} ${objeccionTexto}`.trim();
 }
 
 function esTextoFueraDeTema(textoUsuario, palabrasClaveActuales = [], opts = {}) {

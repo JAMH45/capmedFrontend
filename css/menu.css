@@ -347,12 +347,7 @@ body.sidebar-open {
 }
 
 /* ===== Contenido Principal ===== */
-.content {
-    margin-left: var(--sidebar-width);
-    min-height: 100vh;
-    transition: var(--transition);
-    background: #f8fafc;
-}
+
 
 .content.expanded {
     margin-left: var(--sidebar-collapsed-width);
@@ -532,10 +527,7 @@ body.sidebar-open {
 }
 
 /* Empuje del contenido cuando el sidebar está abierto */
-#content {
-  margin-left: var(--sb-w);
-  transition: margin-left .3s ease;
-}
+
 
 /* Cuando el sidebar esté colapsado */
 body.sidebar-collapsed #content {
@@ -543,9 +535,7 @@ body.sidebar-collapsed #content {
 }
 
 /* (Opcional) En móvil no empujar contenido */
-@media (max-width: 768px) {
-  #content { margin-left: 0; }
-}
+
 
 /* Asegurar que el sidebar esté por encima del overlay en móvil */
 @media (max-width: 768px) {

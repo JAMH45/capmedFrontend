@@ -1,87 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PharmaSales Pro - Curso</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PharmaSales Pro - Curso</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/petite-vue" defer></script>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/petite-vue" defer></script>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Raleway:wght@600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+    />
+  </head>
 
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/menu.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
-    rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Raleway:wght@600&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" />
-  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" />
-</head>
-
-<style>
-  body {
-    font-family: "Roboto", "Open Sans", sans-serif;
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    #content {
-      margin-left: 0 !important;
+  <style>
+    body {
+      font-family: "Roboto", "Open Sans", sans-serif;
     }
-  }
-</style>
 
-<body class="bg-gray-100 min-h-screen">
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      #content {
+        margin-left: 0 !important;
+      }
+    }
+  </style>
 
-  <!-- Overlay para sidebar móvil -->
-  <div id="overlay" class="overlay"></div>
+  <body class="bg-white min-h-screen">
+    <!-- Overlay para sidebar móvil -->
+    <div id="overlay" class="overlay"></div>
 
-  <!-- Sidebar (responsive) -->
-  <div v-scope="Header()"></div>
+    <!-- Sidebar (responsive) -->
+    <div class="hidden md:block" v-scope="Header()"></div>
 
-  <!-- Header Móvil -->
-  <header class="block md:hidden fixed top-0 inset-x-0 z-50 bg-blue-950/95 backdrop-blur border-b border-blue-900">
-    <div class="h-14 px-4 flex items-center justify-between">
-      <button id="mobile-toggle" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-blue-800 text-gray-100 hover:bg-blue-900 active:scale-95 transition" aria-label="Abrir menú">
-        <i class="fas fa-bars text-xl"></i>
-      </button>
-      <span class="text-lg font-bold text-white">Video</span>
-      <div class="w-12"></div>
-    </div>
-  </header>
+    <!-- Header Móvil -->
 
-  <main id="content" class="transition-all duration-300 mb-4 pt-14 md:pt-0">
-    <section class="m-3 sm:m-5 pb-6 bg-white rounded-lg shadow-md">
-      
-      <!-- Header del section -->
-      <div class="p-4 sm:p-5 bg-blue-950 rounded-t-lg w-full text-center">
-        <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-2 sm:mb-4">
-          PharmaSales Pro
-        </h1>
-        <h2 class="text-base sm:text-lg md:text-xl font-bold text-blue-200">Video</h2>
-      </div>
+    <main id="content" class="transition-all duration-300 mb-4 pt-14 md:pt-0">
+      <section class="bg-gray-50/40">
+        <!-- HEADER -->
+         <div class="flex flex-col items-start gap-2 p-4">
+                <!-- Badge + título en la misma línea -->
+                <div
+                  class="flex items-center gap-2 sm:gap-3 flex-nowrap sm:flex-wrap"
+                >
+                  <!-- Badge módulo -->
+                  <span
+                    class="px-2 py-0.5 text-xs sm:px-4 sm:py-1 sm:text-lg font-semibold text-white bg-[#2563EB] rounded-full whitespace-nowrap"
+                  >
+                    Módulo 03
+                  </span>
 
-      <!-- Título del video -->
-      <div class="px-4 sm:px-5 py-3 sm:py-4">
-        <h1 class="text-lg sm:text-xl md:text-2xl font-extrabold text-blue-950 mb-2 flex items-center justify-center md:justify-start gap-2 sm:gap-3">
-          <i class="fa-solid fa-video text-blue-950 text-lg sm:text-xl md:text-2xl"></i>
-          <span id="tituloVideo"></span>
-        </h1>
-      </div>
+                  <!-- Título -->
+                  <h1
+                    class="text-base sm:text-3xl lg:text-4xl font-light text-black leading-tight whitespace-nowrap sm:whitespace-normal"
+                  >
+                    Simulador de Diálogo y Roleplaying
+                  </h1>
+                </div>
 
-      <!-- Contenedor del video -->
-      <div id="videoContainer" class="flex flex-col items-center gap-4 sm:gap-6 px-3 sm:px-5 pb-6 sm:pb-8"></div>
-      
-    </section>
-  </main>
+                <!-- Subtítulo (queda igual, debajo) -->
+                <p class="mt-2 text-[#1D4ED8] text-sm sm:text-lg w-full">
+                  <span class="font-extrabold text-blue-700">Tema 3 –</span>
+                  Práctica con avatares de IA, mensajes de campaña y habilidades
+                  de venta en escenarios realistas.
+                </p>
+              </div>
 
-</body>
+        <!-- CONTENIDO -->
+        <div class="w-full px-4 sm:px-6 lg:px-12 py-6">
+          <!-- Grid: Video + Transcripción -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- VIDEO -->
+            <div class="lg:col-span-9">
+              <div class="w-full rounded-2xl overflow-hidden bg-black">
+                <video
+                  id="video-actividad-1"
+                  controls
+                  class="w-full h-full object-cover"
+                >
+                  <source
+                    src="assets/vid/videoplayback .mp4"
+                    type="video/mp4"
+                  />
+                  Tu navegador no soporta video HTML5.
+                </video>
+              </div>
 
-<script type="module" src="./js/main.js"></script>
-<script src="./js/components/slide.js"></script>
-<script src="./js/video/video.js"></script>
+              <!-- BOTONES (debajo del video, solo se muestran al terminar) -->
+              <div
+                id="video-actions"
+                class="mt-4 hidden flex flex-col sm:flex-row gap-3 sm:gap-4 sm:justify-end"
+              >
+                <button
+                  id="btn-replay"
+                  class="px-5 py-2 rounded-full border border-blue-600 text-blue-600 hover:bg-blue-50 active:scale-95 transition text-sm sm:text-base"
+                >
+                  Ver de nuevo
+                </button>
 
+                <a href="./inicio.html" class="w-full sm:w-auto">
+                  <button
+                    id="btn-finalizar"
+                    class="w-full sm:w-auto px-5 py-2 rounded-full bg-[#2563EB] text-white font-semibold hover:bg-blue-700 active:scale-95 transition text-sm sm:text-base"
+                  >
+                    Finalizar actividad
+                  </button>
+                </a>
+              </div>
+
+              <!-- DESCRIPCIÓN (debajo del video) -->
+              <div class="mt-6 bg-white rounded-2xl p-4 sm:p-6">
+                <h4 class="text-xl sm:text-2xl lg:text-3xl text-gray-800">
+                  Descripción del tema
+                </h4>
+                <div class="h-px bg-gray-200 my-4"></div>
+                <p class="text-gray-600 text-sm sm:text-base leading-relaxed">
+                  En esta clase, pondrás a prueba los conocimientos recibidos de
+                  los productos en los módulos anteriores como si estuvieras en
+                  una platica real con un médico. Para ello te entrevistarás con
+                  un avatar de IA que será el médico, a el que le darás
+                  información acerca del producto y te dará objeciones acerca de
+                  la información que le des. Después de cada objeción, deberás
+                  responder de manera adecuada según el contexto.
+                  Posteriormente, el médico te brindará una retroalimentación
+                  sobre tu respuesta.
+                </p>
+              </div>
+            </div>
+
+            <!-- TRANSCRIPCIÓN -->
+            <aside class="lg:col-span-3">
+              <div
+                class="rounded-2xl border border-gray-200 bg-[#F7F7F7] p-4 max-h-[70vh] lg:max-h-[90vh] overflow-y-auto"
+              >
+                <h3
+                  class="text-base sm:text-lg font-semibold mb-3 sticky top-0 bg-[#F7F7F7] pb-2"
+                >
+                  Transcripción
+                </h3>
+
+                <div class="space-y-4 text-sm text-gray-700 leading-relaxed">
+                  <!-- Bloque -->
+                  <div>
+                    <p class="text-xs text-gray-400 mb-1">
+                      [00:00:00] ·
+                      <span class="font-semibold text-blue-700"
+                        >Hablante 1</span
+                      >
+                    </p>
+                    <p>
+                      Qué es Casec y para qué sirve. Casec Big Bust es proteína
+                      en polvo de alta calidad para adicionar a los alimentos.
+                      Es un suplemento alimenticio fácil de combinar con
+                      alimentos líquidos y sólidos, sin modificar olor ni sabor,
+                      ya que aporta 8.8 gramos de proteína de alto valor
+                      biológico y contiene el 14% del calcio de la ingesta
+                      diaria recomendada...
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="text-xs text-gray-400 mb-1">
+                      [00:01:17] ·
+                      <span class="font-semibold text-blue-700"
+                        >Hablante 1</span
+                      >
+                    </p>
+                    <p>
+                      Cuáles son los beneficios de Casec. Casec es un suplemento
+                      alimenticio oral a base de caseinato de calcio. Es
+                      utilizado para ayudar a aumentar el contenido de proteínas
+                      de la dieta y se puede mezclar en una amplia variedad de
+                      alimentos y bebidas...
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="text-xs text-gray-400 mb-1">
+                      [00:02:45] ·
+                      <span class="font-semibold text-blue-700"
+                        >Hablante 1</span
+                      >
+                    </p>
+                    <p>
+                      Agregar un poco del líquido indicado por su profesional de
+                      la salud y mezclar hasta integrar el polvo. Repita la
+                      indicación anterior hasta integrar el total del líquido...
+                    </p>
+                  </div>
+
+                  <div>
+                    <p class="text-xs text-gray-400 mb-1">
+                      [00:04:11] ·
+                      <span class="font-semibold text-blue-700"
+                        >Hablante 1</span
+                      >
+                    </p>
+                    <p>
+                      Este producto contiene lactosa residual y está
+                      contraindicado en personas con galactosemia. Contiene
+                      derivados de leche y soya. Consulte a su médico antes de
+                      consumir este producto...
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="hidden md:block" v-scope="FooterWb()"></div>
+  </body>
+
+  <script type="module" src="./js/main.js"></script>
+  <script src="./js/components/slide.js"></script>
+  <script src="./js/video/video.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const video = document.getElementById("video-actividad-1");
+      const acciones = document.getElementById("video-actions");
+      const btnFinalizar = document.getElementById("btn-finalizar");
+      const btnReplay = document.getElementById("btn-replay");
+
+      if (!video || !acciones || !btnFinalizar || !btnReplay) return;
+
+      // Mostrar botones SOLO cuando termine el video
+      video.addEventListener("ended", () => {
+        acciones.classList.remove("hidden");
+      });
+
+      // Ver de nuevo
+      btnReplay.addEventListener("click", () => {
+        acciones.classList.add("hidden");
+        video.currentTime = 0;
+        video.play();
+      });
+
+      // Finalizar actividad
+      btnFinalizar.addEventListener("click", () => {
+        marcarActividadComoCompletada(1);
+
+        btnFinalizar.textContent = "Actividad completada";
+        btnFinalizar.disabled = true;
+        btnFinalizar.classList.add("bg-green-600", "cursor-not-allowed");
+      });
+
+      function activarBotones() {
+        btnReplay.disabled = false;
+        btnReplay.className =
+          "px-6 py-2 rounded-full border border-blue-600 text-blue-600 hover:bg-blue-50 transition";
+
+        btnFinalizar.disabled = false;
+        btnFinalizar.className =
+          "px-6 py-2 rounded-full bg-[#2563EB] text-white font-semibold hover:bg-blue-700 active:scale-95 transition";
+      }
+
+      function desactivarBotones() {
+        btnReplay.disabled = true;
+        btnReplay.className =
+          "px-6 py-2 rounded-full border border-gray-300 text-gray-400 cursor-not-allowed transition";
+
+        btnFinalizar.disabled = true;
+        btnFinalizar.className =
+          "px-6 py-2 rounded-full bg-gray-300 text-white font-semibold cursor-not-allowed transition";
+      }
+    });
+
+    function marcarActividadComoCompletada(idActividad) {
+      const data = JSON.parse(localStorage.getItem("semana1")) || [];
+      const actividad = data.find((a) => a.id === idActividad);
+      if (!actividad) return;
+
+      actividad.status = "completada";
+      localStorage.setItem("semana1", JSON.stringify(data));
+
+      console.log(`✅ Actividad ${idActividad} completada`);
+    }
+  </script>
 </html>

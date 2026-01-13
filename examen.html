@@ -1,87 +1,309 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PharmaSales Pro - Curso</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PharmaSales Pro - Curso</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/petite-vue" defer></script>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/petite-vue" defer></script>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Raleway:wght@600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+    />
+  </head>
 
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/menu.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
-    rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Raleway:wght@600&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" />
-  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" />
-</head>
-
-<style>
-  body {
-    font-family: "Roboto", "Open Sans", sans-serif;
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    #content {
-      margin-left: 0 !important;
+  <style>
+    body {
+      font-family: "Roboto", "Open Sans", sans-serif;
     }
-  }
-</style>
 
-<body class="bg-gray-100 min-h-screen">
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      #content {
+        margin-left: 0 !important;
+      }
+    }
+  </style>
 
-  <!-- Overlay para sidebar móvil -->
-  <div id="overlay" class="overlay"></div>
+  <body class="bg-white min-h-screen">
+    <!-- Overlay para sidebar móvil -->
+    <div id="overlay" class="overlay"></div>
 
-  <!-- Sidebar (responsive) -->
-  <div v-scope="Header()"></div>
+    <!-- Sidebar (responsive) -->
+    <div class="hidden md:block" v-scope="Header()"></div>
 
-  <!-- Header Móvil -->
-  <header class="block md:hidden fixed top-0 inset-x-0 z-50 bg-blue-950/95 backdrop-blur border-b border-blue-900">
-    <div class="h-14 px-4 flex items-center justify-between">
-      <button id="mobile-toggle" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-blue-800 text-gray-100 hover:bg-blue-900 active:scale-95 transition" aria-label="Abrir menú">
-        <i class="fas fa-bars text-xl"></i>
-      </button>
-      <span class="text-lg font-bold text-white">Examen</span>
-      <div class="w-12"></div>
-    </div>
-  </header>
+    <!-- Header Móvil -->
 
-  <main id="content" class="transition-all duration-300 mb-4 pt-14 md:pt-0">
-    <section class="m-3 sm:m-5 pb-6 bg-white rounded-lg shadow-md">
-      
-      <!-- Header del section -->
-      <div class="p-4 sm:p-5 bg-blue-950 rounded-t-lg w-full text-center">
-        <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-2 sm:mb-4">
-          PharmaSales Pro
-        </h1>
-        <h2 class="text-base sm:text-lg md:text-xl font-bold text-blue-200">Examen</h2>
-      </div>
+    <main id="content" class="transition-all duration-300 mb-4 pt-14 md:pt-0">
+      <section class="p-4 sm:p-5 bg-gray-50/40">
+        <!-- Header del section -->
+        <div class="flex flex-col items-start gap-2 p-4">
+          <!-- Badge + título en la misma línea -->
+          <div
+            class="flex items-center gap-2 sm:gap-3 flex-nowrap sm:flex-wrap"
+          >
+            <!-- Badge módulo -->
+            <span
+              class="px-2 py-0.5 text-xs sm:px-4 sm:py-1 sm:text-lg font-semibold text-white bg-[#2563EB] rounded-full whitespace-nowrap"
+            >
+              Módulo 03
+            </span>
 
-      <!-- Título del examen -->
-      <div class="px-4 sm:px-5 py-3 sm:py-4">
-        <h1 class="text-lg sm:text-xl md:text-2xl font-extrabold text-blue-950 mb-2 flex items-center justify-center md:justify-start gap-2 sm:gap-3">
-          <i class="fa-solid fa-clipboard text-blue-950 text-lg sm:text-xl md:text-2xl"></i>
-          <span id="tituloExamen"></span>
-        </h1>
-      </div>
+            <!-- Título -->
+            <h1
+              class="text-base sm:text-3xl lg:text-4xl font-light text-black leading-tight whitespace-nowrap sm:whitespace-normal"
+            >
+              Simulador de Diálogo y Roleplaying
+            </h1>
+          </div>
 
-      <!-- Contenedor del examen -->
-      <div id="examenContainer" class="flex flex-col items-center gap-4 sm:gap-6 px-3 sm:px-5 pb-6 sm:pb-8"></div>
-      
-    </section>
-  </main>
+          <!-- Subtítulo (queda igual, debajo) -->
+          <p class="mt-2 text-[#1D4ED8] text-sm sm:text-lg w-full">
+            <span class="font-extrabold text-blue-700">Tema 3 –</span>
+            Práctica con avatares de IA, mensajes de campaña y habilidades de
+            venta en escenarios realistas.
+          </p>
+        </div>
+        <!-- Quiz -->
+        <form id="quiz" class="mx-1 w-full max-w-3xl space-y-6">
+          <!-- Pregunta -->
+          <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5">
+            <p class="font-semibold text-gray-800 mb-3">
+              1. ¿Para qué sirve CASEC?
+            </p>
 
-</body>
+            <label class="flex items-start gap-3 py-2 cursor-pointer">
+              <input class="mt-1" type="radio" name="q1" value="a" />
+              <span class="text-gray-700">
+                Para sustituir tratamientos médicos
+              </span>
+            </label>
 
-<script type="module" src="./js/main.js"></script>
-<script src="./js/components/slide.js"></script>
-<script src="./js/examen/examen.js"></script>
+            <label class="flex items-start gap-3 py-2 cursor-pointer">
+              <input class="mt-1" type="radio" name="q1" value="b" />
+              <span class="text-gray-700">
+                Para complementar la dieta diaria
+              </span>
+            </label>
 
+            <label class="flex items-start gap-3 py-2 cursor-pointer">
+              <input class="mt-1" type="radio" name="q1" value="c" />
+              <span class="text-gray-700">
+                Como medicamento de uso hospitalario
+              </span>
+            </label>
+          </div>
+
+          <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5">
+            <p class="font-semibold text-gray-800 mb-3">
+              2. ¿En qué presentación comercial se ofrece CASEC?
+            </p>
+
+            <label class="flex items-start gap-3 py-2 cursor-pointer">
+              <input class="mt-1" type="radio" name="q2" value="a" />
+              <span class="text-gray-700">Cápsulas de 500 mg</span>
+            </label>
+
+            <label class="flex items-start gap-3 py-2 cursor-pointer">
+              <input class="mt-1" type="radio" name="q2" value="b" />
+              <span class="text-gray-700">Jarabe de 250 ml</span>
+            </label>
+
+            <label class="flex items-start gap-3 py-2 cursor-pointer">
+              <input class="mt-1" type="radio" name="q2" value="c" />
+              <span class="text-gray-700">Polvo de 300 g</span>
+            </label>
+          </div>
+
+          <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5">
+            <p class="font-semibold text-gray-800 mb-3">
+              3. ¿Qué grupo podría requerir dosis más altas?
+            </p>
+
+            <label class="flex items-start gap-3 py-2 cursor-pointer">
+              <input class="mt-1" type="radio" name="q3" value="a" />
+              <span class="text-gray-700">Deportistas</span>
+            </label>
+
+            <label class="flex items-start gap-3 py-2 cursor-pointer">
+              <input class="mt-1" type="radio" name="q3" value="b" />
+              <span class="text-gray-700">Niños menores de 5 años</span>
+            </label>
+
+            <label class="flex items-start gap-3 py-2 cursor-pointer">
+              <input class="mt-1" type="radio" name="q3" value="c" />
+              <span class="text-gray-700">
+                Mujeres embarazadas sin supervisión
+              </span>
+            </label>
+          </div>
+
+          <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5">
+            <p class="font-semibold text-gray-800 mb-3">
+              4. ¿Cuál es una posible precaución al usar CASEC?
+            </p>
+
+            <label class="flex items-start gap-3 py-2 cursor-pointer">
+              <input class="mt-1" type="radio" name="q4" value="a" />
+              <span class="text-gray-700">Produce dependencia</span>
+            </label>
+
+            <label class="flex items-start gap-3 py-2 cursor-pointer">
+              <input class="mt-1" type="radio" name="q4" value="b" />
+              <span class="text-gray-700">
+                Puede causar alergias en personas sensibles
+              </span>
+            </label>
+
+            <label class="flex items-start gap-3 py-2 cursor-pointer">
+              <input class="mt-1" type="radio" name="q4" value="c" />
+              <span class="text-gray-700">Reemplaza comidas completas</span>
+            </label>
+          </div>
+
+          <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5">
+            <p class="font-semibold text-gray-800 mb-3">
+              5. ¿Puede CASEC sustituir un tratamiento médico?
+            </p>
+
+            <label class="flex items-start gap-3 py-2 cursor-pointer">
+              <input class="mt-1" type="radio" name="q5" value="a" />
+              <span class="text-gray-700">Sí, completamente</span>
+            </label>
+
+            <label class="flex items-start gap-3 py-2 cursor-pointer">
+              <input class="mt-1" type="radio" name="q5" value="b" />
+              <span class="text-gray-700">Solo en enfermedades leves</span>
+            </label>
+
+            <label class="flex items-start gap-3 py-2 cursor-pointer">
+              <input class="mt-1" type="radio" name="q5" value="c" />
+              <span class="text-gray-700">No, solo es un complemento</span>
+            </label>
+          </div>
+
+          <!-- Acción -->
+          <div class="flex justify-end">
+            <button
+              type="button"
+              onclick="calificar()"
+              class="w-full sm:w-auto mt-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:scale-95 transition font-semibold"
+            >
+              Calificar examen
+            </button>
+          </div>
+        </form>
+
+        <!-- Modal Resultado -->
+        <div
+          id="modalResultado"
+          class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50 p-4"
+        >
+          <div
+            class="bg-white rounded-xl p-6 w-full max-w-md text-center space-y-4"
+          >
+            <h3 class="text-2xl font-semibold text-gray-800">
+              Resultado del examen
+            </h3>
+
+            <p id="modalCalificacion" class="text-xl font-bold">
+              Calificación: 0 / 5
+            </p>
+
+            <a href="inicio.html" class="block">
+              <button
+                class="w-full mt-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:scale-95 transition font-semibold"
+              >
+                Terminar
+              </button>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="hidden md:block" v-scope="FooterWb()"></div>
+  </body>
+  <!-- Modal -->
+
+  <script type="module" src="./js/main.js"></script>
+  <script src="./js/components/slide.js"></script>
+  <script src="./js/examen/examen.js"></script>
+  <script>
+    function calificar() {
+      marcarActividadComoCompletada(3);
+      const respuestasCorrectas = {
+        q1: "b",
+        q2: "c",
+        q3: "a",
+        q4: "b",
+        q5: "c",
+      };
+
+      let score = 0;
+      let total = Object.keys(respuestasCorrectas).length;
+
+      for (let pregunta in respuestasCorrectas) {
+        const seleccion = document.querySelector(
+          `input[name="${pregunta}"]:checked`
+        );
+        if (seleccion && seleccion.value === respuestasCorrectas[pregunta]) {
+          score++;
+        }
+      }
+
+      // Mostrar resultado en modal
+      const texto = `Calificación: ${score} / ${total}`;
+      const modalText = document.getElementById("modalCalificacion");
+      modalText.textContent = texto;
+
+      modalText.className =
+        score >= 4
+          ? "text-xl font-bold text-green-600"
+          : "text-xl font-bold text-red-600";
+
+      document.getElementById("modalResultado").classList.remove("hidden");
+    }
+
+    function cerrarModal() {
+      document.getElementById("modalResultado").classList.add("hidden");
+
+      // 👉 Opcional: redirigir al terminar
+      // window.location.href = "index.html";
+    }
+
+    function marcarActividadComoCompletada(idActividad) {
+      const data = JSON.parse(localStorage.getItem("semana1")) || [];
+      const actividad = data.find((a) => a.id === idActividad);
+      if (!actividad) return;
+
+      actividad.status = "completada";
+      localStorage.setItem("semana1", JSON.stringify(data));
+
+      console.log(`✅ Actividad ${idActividad} completada`);
+    }
+  </script>
 </html>

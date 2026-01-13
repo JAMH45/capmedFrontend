@@ -10,7 +10,6 @@
     <script src="https://unpkg.com/petite-vue" defer></script>
 
     <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/menu.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Poppins:wght@500;700&display=swap"
       rel="stylesheet"
@@ -41,7 +40,7 @@
     body {
       font-family: "Roboto", "Open Sans", sans-serif;
     }
-    
+
     /* Quitar margin-left en móvil */
     @media (max-width: 768px) {
       #content {
@@ -49,70 +48,325 @@
       }
     }
   </style>
-  <body class="bg-gray-100 min-h-screen">
-    
+  <body class="bg-white min-h-screen">
     <!-- Overlay para cerrar sidebar en móvil -->
     <div id="overlay" class="overlay"></div>
 
     <!-- Sidebar -->
-    <div v-scope="Header()"></div>
+    <div class="hidden md:block" v-scope="Header()"></div>
 
     <!-- Header Móvil con botón de menú -->
-    <header class="block md:hidden fixed top-0 inset-x-0 z-50 bg-blue-950/95 backdrop-blur border-b border-blue-900">
-      <div class="h-14 px-4 flex items-center justify-between">
-        <!-- Botón de menú -->
-        <button
-          id="mobile-toggle"
-          class="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-blue-800
-                 text-gray-100 hover:bg-blue-900 active:scale-95 transition"
-          aria-label="Abrir menú"
-        >
-          <i class="fas fa-bars text-xl"></i>
-        </button>
-
-        <!-- Título -->
-        <span class="text-sm sm:text-lg font-bold text-white">Curso</span>
-
-        <!-- Espacio vacío para centrar -->
-        <div class="w-12"></div>
-      </div>
-    </header>
-
+  
     <!-- Contenido Principal -->
     <main id="content" class="transition-all duration-300 mb-4 pt-14 md:pt-0">
-      <section class="m-3 sm:m-5 pb-6 bg-white rounded-lg shadow-md">
-        
-        <!-- Título principal -->
-        <div class="p-4 sm:p-5 bg-blue-950 rounded-t-lg w-full">
-          <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-2 sm:mb-4 text-center">
-            PharmaSales Pro
-          </h1>
-          <h2 class="text-sm sm:text-base md:text-xl font-bold text-blue-200 text-center" id="tituloSemana">
-            <!-- JS actualizará esto dinámicamente -->
-          </h2>
-        </div>
-
-        <!-- Subtítulo -->
-        <div class="px-4 sm:px-5 py-3 sm:py-4">
-          <h1 class="text-xl sm:text-2xl font-extrabold text-blue-950 mb-2 flex items-center gap-3 justify-center md:justify-start">
-            <i class="fa-solid fa-graduation-cap text-blue-950 text-xl sm:text-2xl"></i>
-            Actividades
-          </h1>
-        </div>
-
-        <!-- Grid de actividades (generada por JS) -->
+      <section>
+        <!-- Encabezado -->
         <div
-          class="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 px-4 sm:px-5"
-          id="contenedorActividades"
+          class="mt-6 bg-white rounded-t-lg w-full flex flex-col gap-4 px-4 sm:px-6 lg:px-12 py-6"
         >
-          <!-- Aquí JS va a generar las actividades -->
+          <!-- Título -->
+          <div class="w-full md:w-[70%] lg:w-[55%]">
+            <h2 class="text-3xl sm:text-5xl lg:text-6xl leading-tight">
+              Simulador de Diálogo y Roleplaying
+            </h2>
+          </div>
+
+          <!-- Badge + descripción -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full">
+            <div class="bg-white rounded flex items-start">
+              <span
+                class="inline-block px-4 py-1 text-sm sm:text-base md:text-lg font-semibold text-white bg-[#2563EB] rounded-full"
+              >
+                Módulo 03
+              </span>
+            </div>
+
+            <div class="bg-white rounded">
+              <p class="text-sm sm:text-base text-gray-500 leading-relaxed">
+                En esta clase, pondrás a prueba los conocimientos recibidos de
+                los productos en los módulos anteriores como si estuvieras en
+                una práctica real con un médico. Para ello te entrevistarás con
+                un avatar de IA que será el médico, al que le darás información
+                acerca del producto y te dará objeciones acerca de la
+                información que le des. Después de cada objeción, deberás
+                responder de manera adecuada según el contexto. Posteriormente,
+                el médico te brindará una retroalimentación sobre tu respuesta.
+              </p>
+            </div>
+          </div>
+
+          <hr class="border-gray-200" />
         </div>
 
+        <!-- Grid de actividades -->
+        <div class="w-full bg-white px-4 sm:px-6 lg:px-12 py-5" id="weeks-ui">
+          <!-- ===== Semana 1 ===== -->
+          <section class="border-b border-gray-200">
+            <button
+              type="button"
+              class="w-full flex items-center gap-3 px-2 sm:px-4 py-5 sm:py-6 text-lg sm:text-2xl font-semibold text-gray-700 hover:bg-gray-50 rounded-lg"
+              data-acc-btn
+              aria-expanded="false"
+            >
+              <span
+                class="text-gray-500 text-xl sm:text-2xl leading-none"
+                data-chevron
+                >⌄</span
+              >
+              <span>Semana 1</span>
+            </button>
+
+            <div class="hidden px-2 sm:px-4 pb-6" data-acc-panel>
+              <div class="h-px bg-gray-200 mb-6"></div>
+
+              <div class="space-y-3 sm:space-y-4">
+                <!-- 01 -->
+                <a
+                  href="video.html"
+                  data-actividad-id="1"
+                  class="actividad flex items-center gap-3 sm:gap-4 rounded-full border border-gray-200 px-4 sm:px-6 py-3 sm:py-4 transition hover:bg-gray-50"
+                >
+                  <div class="w-7 sm:w-9 flex justify-center">
+                    <span class="actividad-icono"></span>
+                  </div>
+
+                  <div
+                    class="w-8 sm:w-10 text-base sm:text-xl font-semibold text-indigo-900"
+                  >
+                    01
+                  </div>
+
+                  <p
+                    class="flex-1 text-indigo-900 text-sm sm:text-base leading-snug"
+                  >
+                    [Video] CASEC suplemento review, casec PARA QUE SIRVE, casec
+                    BENEFICIOS
+                  </p>
+
+                  <div class="w-6 sm:w-10 flex justify-end text-xl sm:text-2xl">
+                    ↗
+                  </div>
+                </a>
+
+                <!-- 02 -->
+                <a
+                  href="lectura.html"
+                  data-actividad-id="2"
+                  class="actividad flex items-center gap-3 sm:gap-4 rounded-full border border-gray-200 px-4 sm:px-6 py-3 sm:py-4 transition hover:bg-gray-50"
+                >
+                  <div class="w-7 sm:w-9 flex justify-center">
+                    <span class="actividad-icono"></span>
+                  </div>
+
+                  <div
+                    class="w-8 sm:w-10 text-base sm:text-xl font-semibold text-indigo-900"
+                  >
+                    02
+                  </div>
+
+                  <p
+                    class="flex-1 text-indigo-900 text-sm sm:text-base leading-snug"
+                  >
+                    [Lectura] ¿Que es CASEC?
+                  </p>
+
+                  <div class="w-6 sm:w-10 flex justify-end text-xl sm:text-2xl">
+                    ↗
+                  </div>
+                </a>
+
+                <!-- 03 -->
+                <a
+                  href="examen.html"
+                  data-actividad-id="3"
+                  class="actividad flex items-center gap-3 sm:gap-4 rounded-full border border-gray-200 px-4 sm:px-6 py-3 sm:py-4 transition hover:bg-gray-50"
+                >
+                  <div class="w-7 sm:w-9 flex justify-center">
+                    <span class="actividad-icono"></span>
+                  </div>
+
+                  <div
+                    class="w-8 sm:w-10 text-base sm:text-xl font-semibold text-indigo-900"
+                  >
+                    03
+                  </div>
+
+                  <p
+                    class="flex-1 text-indigo-900 text-sm sm:text-base leading-snug"
+                  >
+                    [Examen 1] Conceptos básicos de CASEC
+                  </p>
+
+                  <div class="w-6 sm:w-10 flex justify-end text-xl sm:text-2xl">
+                    ↗
+                  </div>
+                </a>
+
+                <!-- 04 -->
+                <a
+                  href="audio.html"
+                  data-actividad-id="4"
+                  class="actividad flex items-center gap-3 sm:gap-4 rounded-full border border-gray-200 px-4 sm:px-6 py-3 sm:py-4 transition hover:bg-gray-50"
+                >
+                  <div class="w-7 sm:w-9 flex justify-center">
+                    <span class="actividad-icono"></span>
+                  </div>
+
+                  <div
+                    class="w-8 sm:w-10 text-base sm:text-xl font-semibold text-indigo-900"
+                  >
+                    04
+                  </div>
+
+                  <p
+                    class="flex-1 text-indigo-900 text-sm sm:text-base leading-snug"
+                  >
+                    [Audio 1] Conceptos básicos de CASEC
+                  </p>
+
+                  <div class="w-6 sm:w-10 flex justify-end text-xl sm:text-2xl">
+                    ↗
+                  </div>
+                </a>
+
+                <!-- 05 -->
+                <a
+                  href="virtualChat.html?tipo=agente"
+                  data-actividad-id="5"
+                  class="actividad flex items-center gap-3 sm:gap-4 rounded-full border border-gray-200 px-4 sm:px-6 py-3 sm:py-4 transition hover:bg-gray-50"
+                >
+                  <div class="w-7 sm:w-9 flex justify-center">
+                    <span class="actividad-icono"></span>
+                  </div>
+
+                  <div
+                    class="w-8 sm:w-10 text-base sm:text-xl font-semibold text-indigo-900"
+                  >
+                    05
+                  </div>
+
+                  <p
+                    class="flex-1 text-indigo-900 text-sm sm:text-base leading-snug"
+                  >
+                    [RolePlay1] Doctor Jose Smith esta interesado en nuestro
+                    producto.
+                  </p>
+
+                  <div class="w-6 sm:w-10 flex justify-end text-xl sm:text-2xl">
+                    ↗
+                  </div>
+                </a>
+
+                <!-- 06 -->
+                <div
+                  data-actividad-id="6"
+                  class="actividad flex items-center gap-3 sm:gap-4 rounded-full border border-gray-200 px-4 sm:px-6 py-3 sm:py-4 transition"
+                >
+                  <div class="w-7 sm:w-9 flex justify-center">
+                    <span class="actividad-icono"></span>
+                  </div>
+
+                  <div
+                    class="w-8 sm:w-10 text-base sm:text-xl font-semibold text-indigo-900"
+                  >
+                    06
+                  </div>
+
+                  <p
+                    class="flex-1 text-gray-600 text-sm sm:text-base leading-snug"
+                  >
+                    Lorem ipsum dolor sit amet consectetur venenatis at tellus
+                    duis tristique.
+                  </p>
+
+                  <div class="w-6 sm:w-10 flex justify-end text-xl sm:text-2xl">
+                    ↗
+                  </div>
+                </div>
+
+                <!-- 07 -->
+                <div
+                  data-actividad-id="7"
+                  class="actividad flex items-center gap-3 sm:gap-4 rounded-full border border-gray-200 px-4 sm:px-6 py-3 sm:py-4 transition"
+                >
+                  <div class="w-7 sm:w-9 flex justify-center">
+                    <span class="actividad-icono"></span>
+                  </div>
+
+                  <div
+                    class="w-8 sm:w-10 text-base sm:text-xl font-semibold text-indigo-900"
+                  >
+                    07
+                  </div>
+
+                  <p
+                    class="flex-1 text-gray-600 text-sm sm:text-base leading-snug"
+                  >
+                    Lorem ipsum dolor sit amet consectetur venenatis at tellus
+                    duis tristique.
+                  </p>
+
+                  <div class="w-6 sm:w-10 flex justify-end text-xl sm:text-2xl">
+                    ↗
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+
+        </div>
+
+        <!-- IMPORTANTE -->
+        <div class="w-full px-4 sm:px-6 lg:px-12 pb-6">
+          <div class="w-full bg-[#020045] p-4 sm:p-5 rounded-[20px]">
+            <p class="text-white text-lg sm:text-xl font-semibold">
+              IMPORTANTE
+            </p>
+            <p class="text-white mt-2 text-sm sm:text-base">
+              Los temas serán desbloqueados un por día a partir de que el módulo
+              esté disponible, estas serán las tareas diarias por hacer. Son
+              acumulativas y en caso de no realizarlas el día en que se
+              desbloquean, se podrán realizar después.
+            </p>
+          </div>
+        </div>
       </section>
     </main>
 
+    <div class="hidden md:block" v-scope="FooterWb()"></div>
   </body>
   <script type="module" src="./js/main.js"></script>
   <script src="./js/components/slide.js"></script>
   <script src="./js/inicio/inicio.js"></script>
+  <script src="./js/inicio/temp.js"></script>
+  <script>
+    // Acordeón: solo una semana abierta a la vez (como UI típica)
+    const root = document.getElementById("weeks-ui");
+    const btns = root.querySelectorAll("[data-acc-btn]");
+
+    btns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const section = btn.closest("section");
+        const panel = section.querySelector("[data-acc-panel]");
+        const chevron = section.querySelector("[data-chevron]");
+        const isOpen = btn.getAttribute("aria-expanded") === "true";
+
+        // cerrar todas
+        btns.forEach((b) => {
+          b.setAttribute("aria-expanded", "false");
+          const s = b.closest("section");
+          s.querySelector("[data-acc-panel]").classList.add("hidden");
+          s.querySelector("[data-chevron]").textContent = "⌄";
+        });
+
+        // abrir la clickeada si estaba cerrada
+        if (!isOpen) {
+          btn.setAttribute("aria-expanded", "true");
+          panel.classList.remove("hidden");
+          chevron.textContent = "⌃";
+        }
+      });
+    });
+  </script>
 </html>

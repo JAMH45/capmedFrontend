@@ -157,9 +157,7 @@ btnCloseModalObjeccionesMv?.addEventListener("click", closeModalObjeccionesMv);
 btnOkModalObjeccionesMv?.addEventListener("click", closeModalObjeccionesMv);
 
 // Cerrar con clic en backdrop
-modalObjeccionesMv.addEventListener("click", (e) => {
-  if (e.target === modalObjeccionesMv) closeModalObjeccionesMv();
-});
+
 
 // Cerrar con ESC
 document.addEventListener("keydown", (e) => {
